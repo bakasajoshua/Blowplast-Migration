@@ -10,6 +10,6 @@ class Random extends Model
 {
     public static function import()
     {
-    	Excel::import(new BlowplastImport, 'blowplast.xlsx');
+    	Excel::import(new BlowplastImport, public_path('import/blowplast.xlsx'));
     }
 }
