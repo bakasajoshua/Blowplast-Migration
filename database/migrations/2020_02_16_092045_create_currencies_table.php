@@ -18,7 +18,7 @@ class CreateCurrenciesTable extends Migration
             $table->string('Country_Code', 10);
             $table->decimal('Exchange_Rate');
 
-            $table->foreign('Country_Code')->references('Country_Code')->on('Countries');
+            // $table->foreign('Country_Code')->references('Country_Code')->on('Countries');
         });
     }
 

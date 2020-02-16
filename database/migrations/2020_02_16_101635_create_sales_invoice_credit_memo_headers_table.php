@@ -29,8 +29,8 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
             $table->decimal('Total_Amount_Including_Tax');
             $table->string('Currency_Code');
 
-            $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
-            $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
+            // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
+            // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
         });
     }
 

@@ -21,8 +21,8 @@ class CreateInventoriesTable extends Migration
             $table->string('Dimension1');
             $table->string('Dimension2');
 
-            $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
-            $table->foreign('Customer_No')->references('Customer_No')->on('Customers');
+            // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
+            // $table->foreign('Customer_No')->references('Customer_No')->on('Customers');
         });
     }
 

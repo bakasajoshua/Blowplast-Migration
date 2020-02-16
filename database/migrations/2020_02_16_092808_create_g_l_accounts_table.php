@@ -23,7 +23,7 @@ class CreateGLAccountsTable extends Migration
             $table->tinyInteger('Blocked')->nullable();
             $table->string('Company_Code', 10);
 
-            $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
+            // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
         });
     }
 

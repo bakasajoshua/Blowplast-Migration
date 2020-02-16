@@ -19,7 +19,7 @@ class CreateCompaniesTable extends Migration
             $table->string('Local_Currency_Code', 10);
             $table->string('Country_Code', 10);
 
-            $table->foreign('Country_Code')->references('Country_Code')->on('Countries');
+            // $table->foreign('Country_Code')->references('Country_Code')->on('Countries');
         });
     }
 

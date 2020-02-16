@@ -25,9 +25,9 @@ class CreateGLEntriesTable extends Migration
             $table->text('Description')->nullable();
             $table->string('Company_Code', 10);
 
-            $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
-            $table->foreign('GL_Account_No')->references('GL_Account_No')->on('GL Accounts');
-            $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
+            // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
+            // $table->foreign('GL_Account_No')->references('GL_Account_No')->on('GL Accounts');
+            // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
         });
     }
 
