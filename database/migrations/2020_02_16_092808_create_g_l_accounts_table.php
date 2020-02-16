@@ -34,6 +34,6 @@ class CreateGLAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('g_l_accounts');
+        Schema::dropIfExists('GL Accounts');
     }
 }

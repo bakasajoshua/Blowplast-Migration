@@ -22,10 +22,10 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
             $table->string('Bill-To-Customer-Name')->nullable();
             $table->date('Posting_Date');
             $table->date('Due_Date')->nullable();
-            $table->date('Order Date');
+            $table->date('Order_Date');
             $table->string('Company_Code');
             $table->enum('Type', ['Invoice', 'Credit Memo']);
-            $table->decimal('Total_Amount_Excluding_Tax');
+            $table->decimal('Total_Amount_Excluding_Tax')->nullable();
             $table->decimal('Total_Amount_Including_Tax');
             $table->string('Currency_Code');
 
@@ -41,6 +41,6 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales_invoice_credit_memo_headers');
+        Schema::dropIfExists('Sales Invoice Credit Memo Headers');
     }
 }

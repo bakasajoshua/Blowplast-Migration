@@ -43,6 +43,6 @@ class CreateCustomerLedgerEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer_ledger_entries');
+        Schema::dropIfExists('Customer Ledger Entries');
     }
 }

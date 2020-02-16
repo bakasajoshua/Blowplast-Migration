@@ -38,6 +38,6 @@ class CreateGLEntriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('g_l_entries');
+        Schema::dropIfExists('GL Entries');
     }
 }

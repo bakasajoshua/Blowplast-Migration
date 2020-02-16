@@ -23,15 +23,15 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
             $table->text('Item_Description')->nullable();
             $table->integer('Quantity');
             $table->decimal('Unit_Price');
-            $table->decimal('Unit_Cost');
+            $table->decimal('Unit_Cost')->nullable();
             $table->string('Company_Code');
             $table->string('Currency_Code');
             $table->enum('Type', ['Invoice', 'Credit Memo']);
-            $table->decimal('Total_Amount_Excluding_Tax');
+            $table->decimal('Total_Amount_Excluding_Tax')->nullable();
             $table->decimal('Total_Amount_Including_Tax');
-            $table->string('Sales_Unit_of_Measure');
+            $table->string('Sales_Unit_of_Measure')->nullable();
             $table->date('Posting_Date');
-            $table->date('Order Date');
+            $table->date('Order_Date');
             $table->date('Due_Date')->nullable();
 
             // $table->foreign('Invoice_Credit_Memo_No')->references('Invoice_Credit_Memo_No')->on('Sales Invoice Credit Memo Headers');
@@ -48,6 +48,6 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sales_invoice_credit_memo_lines');
+        Schema::dropIfExists('Sales Invoice Credit Memo Lines');
     }
 }

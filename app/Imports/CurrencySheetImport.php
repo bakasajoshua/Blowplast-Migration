@@ -2,11 +2,11 @@
 
 namespace App\Imports;
 
-use App\Country;
+use App\Currency;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class CountryImport implements ToModel, WithHeadingRow
+class CurrencySheetImport implements ToModel, WithHeadingRow
 {
     /**
     * @param array $row
@@ -15,9 +15,10 @@ class CountryImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        return new Country([
-            'Country_Code' => $row['country_code'],
-            'Country_Name' => $row['country_name'],
+        return new Currency([
+            "Currency_Code" => $row["country_code"],
+            "Country_Code" => $row["currency_code"],
+            "Exchange_Rate" => $row["exchange_rate"],
         ]);
     }
 }
