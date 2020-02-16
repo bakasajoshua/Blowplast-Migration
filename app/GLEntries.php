@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Currency extends Model
+class GLEntries extends Model
 {
-    protected $table = 'Currencies';
+    protected $table = 'GL Entries';
 }

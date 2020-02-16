@@ -13,12 +13,12 @@ class CreateCurrenciesTable extends Migration
      */
     public function up()
     {
-        Schema::create('currencies', function (Blueprint $table) {
+        Schema::create('Currencies', function (Blueprint $table) {
             $table->string('Currency_Code', 10)->primary();
             $table->string('Country_Code', 10);
             $table->decimal('Exchange_Rate');
 
-            $table->foreign('Country_Code')->references('Country_Code')->on('countries');
+            $table->foreign('Country_Code')->references('Country_Code')->on('Countries');
         });
     }
 
