@@ -31,7 +31,7 @@ class CreateCustomerLedgerEntriesTable extends Migration
             $table->decimal('Remaining_Amount')->default(0.00);
             $table->tinyInteger('Open');
 
-            // $table->foreign('Customer_No')->references('Customer_No')->on('Customers');
+            // $table->foreign('Customer_No')->references('Customer_No')->on('Customer Master');
             // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
         });
     }

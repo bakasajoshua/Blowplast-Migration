@@ -13,11 +13,11 @@ class CreateInventoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('Inventories', function (Blueprint $table) {
+        Schema::create('Item Master', function (Blueprint $table) {
             $table->string('Item_No', 50)->primary();
             $table->text('Item_Description');
             $table->string('Company_Code');
-            $table->string('Customer_No')->nullable();
+            // $table->string('Customer_No')->nullable();
             $table->string('Dimension1')->nullable();
             $table->string('Dimension2')->nullable();
 
@@ -33,6 +33,7 @@ class CreateInventoriesTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('Item Master');
         Schema::dropIfExists('Inventories');
     }
 }
