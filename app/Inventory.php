@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Inventory extends Model
 {
-    protected $table = 'Inventories';
+    protected $table = 'Item Master';
 
     protected $guarded = [];
 

@@ -19,7 +19,7 @@ class InventorySheetImport implements ToModel, WithHeadingRow
             "Item_No" => $row["item_no"],
             "Item_Description" => $row["item_description"],
             "Company_Code" => $row["company_code"],
-            "Customer_No" => $row["customer_code"],
+            // "Customer_No" => $row["customer_code"],
             "Dimension1" => $row["dimention_1"],
             "Dimension2" => $row["dimension_2"],
         ]);

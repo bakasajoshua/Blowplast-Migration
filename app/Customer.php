@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-    protected $table = 'Customers';
+    protected $table = 'Customer Master';
 
     protected $guarded = [];
 
