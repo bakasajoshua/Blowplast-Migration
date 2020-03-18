@@ -17,7 +17,7 @@ class CreateGLEntriesTable extends Migration
             $table->string('Entry_No', 50)->primary();
             $table->string('GL_Account_No', 50)->nullable();
             $table->string('Balancing_GL_Account_No', 50)->nullable();
-            $table->decimal('Amounts')->nullable();
+            $table->float('Amounts')->nullable();
             $table->string('Currency_Code', 10)->nullable();
             $table->date('Posting_Date')->nullable();
             $table->string('Document_No')->nullable();

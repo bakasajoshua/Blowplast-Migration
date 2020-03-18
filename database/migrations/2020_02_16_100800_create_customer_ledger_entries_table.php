@@ -23,12 +23,12 @@ class CreateCustomerLedgerEntriesTable extends Migration
             $table->string('Sell-To-Customer-Name')->nullable();
             $table->string('Bill-To-Customer-No')->nullable();
             $table->string('Bill-To-Customer-Name')->nullable();
-            $table->decimal('Original_Amount_LCY')->nullable();
-            $table->decimal('Original_Amount')->nullable();
+            $table->float('Original_Amount_LCY')->nullable();
+            $table->float('Original_Amount')->nullable();
             $table->string('Currency_Code')->nullable();
-            $table->decimal('Currency_Factor')->nullable();
-            $table->decimal('Remaining_Amount_LCY')->default(0.00);
-            $table->decimal('Remaining_Amount')->default(0.00);
+            $table->float('Currency_Factor')->nullable();
+            $table->float('Remaining_Amount_LCY')->default(0.00);
+            $table->float('Remaining_Amount')->default(0.00);
             $table->tinyInteger('Open')->nullable();
 
             // $table->foreign('Customer_No')->references('Customer_No')->on('Customer Master');

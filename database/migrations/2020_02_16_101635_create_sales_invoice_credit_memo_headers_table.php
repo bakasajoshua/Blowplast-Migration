@@ -25,8 +25,8 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
             $table->date('Order_Date')->nullable();
             $table->string('Company_Code')->nullable();
             $table->enum('Type', ['Invoice', 'Credit Memo'])->nullable();
-            $table->decimal('Total_Amount_Excluding_Tax')->nullable();
-            $table->decimal('Total_Amount_Including_Tax')->nullable();
+            $table->float('Total_Amount_Excluding_Tax')->nullable();
+            $table->float('Total_Amount_Including_Tax')->nullable();
             $table->string('Currency_Code')->nullable();
 
             // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
