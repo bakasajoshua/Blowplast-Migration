@@ -16,11 +16,12 @@ class BlowplastImport implements WithMultipleSheets
             // 'Company' => new CompanySheetImport(),
             // 'Currency' => new CurrencySheetImport(),
             // 'Customers' => new CustomerSheetImport(),
+            'Customer Ledger Entries' => new CustomerLedgerEntriesSheetImport(),
             // 'Inventory' => new InventorySheetImport(),
-            'GL Accounts' =>  new GLAccountsSheetImport(),
-            'GL Entries' => new GLEntriesSheetImport(),
-            // 'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
-            // 'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
+            // 'GL Accounts' =>  new GLAccountsSheetImport(),
+            // 'GL Entries' => new GLEntriesSheetImport(),
+            'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
+            'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
         ];
     }
 }
