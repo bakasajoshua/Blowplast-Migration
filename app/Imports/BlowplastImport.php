@@ -17,8 +17,8 @@ class BlowplastImport implements WithMultipleSheets
             'Currency' => new CurrencySheetImport(),
             'Customers' => new CustomerSheetImport(),
             'Inventory' => new InventorySheetImport(),
-            'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
-            'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
+            // 'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
+            // 'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
             // 'Gl Accounts' => new GLAccountsSheetImport(),
         ];
     }
