@@ -15,8 +15,8 @@ class CreateInventoriesTable extends Migration
     {
         Schema::create('Item Master', function (Blueprint $table) {
             $table->string('Item_No', 50)->primary();
-            $table->text('Item_Description');
-            $table->string('Company_Code');
+            $table->text('Item_Description')->nullable();
+            $table->string('Company_Code')->nullable();
             // $table->string('Customer_No')->nullable();
             $table->string('Dimension1')->nullable();
             $table->string('Dimension2')->nullable();

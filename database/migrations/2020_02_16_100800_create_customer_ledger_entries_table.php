@@ -15,21 +15,21 @@ class CreateCustomerLedgerEntriesTable extends Migration
     {
         Schema::create('Customer Ledger Entries', function (Blueprint $table) {
             $table->string('Entry_No', 10)->primary();
-            $table->string('Document_No');
-            $table->string('Customer_No');
-            $table->date('Posting_Date');
+            $table->string('Document_No')->nullable();
+            $table->string('Customer_No')->nullable();
+            $table->date('Posting_Date')->nullable();
             $table->date('Due_Date')->nullable();
-            $table->string('Sell-To-Customer-No');
+            $table->string('Sell-To-Customer-No')->nullable();
             $table->string('Sell-To-Customer-Name')->nullable();
-            $table->string('Bill-To-Customer-No');
+            $table->string('Bill-To-Customer-No')->nullable();
             $table->string('Bill-To-Customer-Name')->nullable();
-            $table->decimal('Original_Amount_LCY');
-            $table->decimal('Original_Amount');
-            $table->string('Currency_Code');
-            $table->decimal('Currency_Factor');
+            $table->decimal('Original_Amount_LCY')->nullable();
+            $table->decimal('Original_Amount')->nullable();
+            $table->string('Currency_Code')->nullable();
+            $table->decimal('Currency_Factor')->nullable();
             $table->decimal('Remaining_Amount_LCY')->default(0.00);
             $table->decimal('Remaining_Amount')->default(0.00);
-            $table->tinyInteger('Open');
+            $table->tinyInteger('Open')->nullable();
 
             // $table->foreign('Customer_No')->references('Customer_No')->on('Customer Master');
             // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');

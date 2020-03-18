@@ -15,8 +15,8 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('Companies', function (Blueprint $table) {
             $table->string('Company_Code', 10)->primary();
-            $table->string('Company_Name');
-            $table->string('Local_Currency_Code', 10);
+            $table->string('Company_Name')->nullable();
+            $table->string('Local_Currency_Code', 10)->nullable();
             $table->string('Country_Code', 10);
 
             // $table->foreign('Country_Code')->references('Country_Code')->on('Countries');

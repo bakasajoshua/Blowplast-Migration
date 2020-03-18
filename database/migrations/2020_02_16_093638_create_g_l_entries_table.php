@@ -15,15 +15,15 @@ class CreateGLEntriesTable extends Migration
     {
         Schema::create('GL Entries', function (Blueprint $table) {
             $table->string('Entry_No', 50)->primary();
-            $table->string('GL_Account_No', 50);
-            $table->string('Balancing_GL_Account_No', 50);
-            $table->decimal('Amounts');
-            $table->string('Currency_Code', 10);
-            $table->date('Posting_Date');
-            $table->string('Document_No');
-            $table->enum('Document_Type', ['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund']);
+            $table->string('GL_Account_No', 50)->nullable();
+            $table->string('Balancing_GL_Account_No', 50)->nullable();
+            $table->decimal('Amounts')->nullable();
+            $table->string('Currency_Code', 10)->nullable();
+            $table->date('Posting_Date')->nullable();
+            $table->string('Document_No')->nullable();
+            $table->enum('Document_Type', ['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund'])->nullable();
             $table->text('Description')->nullable();
-            $table->string('Company_Code', 10);
+            $table->string('Company_Code', 10)->nullable();
 
             // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
             // $table->foreign('GL_Account_No')->references('GL_Account_No')->on('GL Accounts');

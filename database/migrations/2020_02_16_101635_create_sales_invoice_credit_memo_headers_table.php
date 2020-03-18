@@ -16,18 +16,18 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
         Schema::create('Sales Invoice Credit Memo Headers', function (Blueprint $table) {
             $table->string('Invoice_Credit_Memo_No')->primary();
             $table->string('Document_No')->nullable();
-            $table->string('Sell-To-Customer-No');
+            $table->string('Sell-To-Customer-No')->nullable();
             $table->string('Sell-To-Customer-Name')->nullable();
-            $table->string('Bill-To-Customer-No');
+            $table->string('Bill-To-Customer-No')->nullable();
             $table->string('Bill-To-Customer-Name')->nullable();
-            $table->date('Posting_Date');
+            $table->date('Posting_Date')->nullable();
             $table->date('Due_Date')->nullable();
-            $table->date('Order_Date');
-            $table->string('Company_Code');
-            $table->enum('Type', ['Invoice', 'Credit Memo']);
+            $table->date('Order_Date')->nullable();
+            $table->string('Company_Code')->nullable();
+            $table->enum('Type', ['Invoice', 'Credit Memo'])->nullable();
             $table->decimal('Total_Amount_Excluding_Tax')->nullable();
-            $table->decimal('Total_Amount_Including_Tax');
-            $table->string('Currency_Code');
+            $table->decimal('Total_Amount_Including_Tax')->nullable();
+            $table->string('Currency_Code')->nullable();
 
             // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
             // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
