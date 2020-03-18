@@ -5,8 +5,9 @@ namespace App\Imports;
 use App\GLEntries;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class GLEntriesSheetImport implements ToModel, WithHeadingRow
+class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 {
     /**
     * @param array $row
@@ -27,5 +28,10 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow
             "Description" => $row["description"],
             "Company_Code" => $row["company_code"],
         ]);
+    }
+
+    public function chunkSize(): int
+    {
+        return 10000;
     }
 }

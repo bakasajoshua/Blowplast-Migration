@@ -5,8 +5,9 @@ namespace App\Imports;
 use App\GLAccounts;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class GLAccountsSheetImport implements ToModel, WithHeadingRow
+class GLAccountsSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 {
     /**
     * @param array $row
@@ -25,5 +26,10 @@ class GLAccountsSheetImport implements ToModel, WithHeadingRow
             "Blocked" => $row["blocked"],
             "Company_Code" => $row["company_code"],
         ]);
+    }
+
+    public function chunkSize(): int
+    {
+        return 10000;
     }
 }
