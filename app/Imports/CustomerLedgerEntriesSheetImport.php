@@ -16,7 +16,7 @@ class CustomerLedgerEntriesSheetImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new CustomerLedgerEntry([
-            "Entry_No" => $row["entry_no"],
+            // "Entry_No" => $row["entry_no"],
             "Document_No" => $row["document_no"],
             "Customer_No" => $row["customer_no"],
             "Posting_Date" => $row["posting_date"],

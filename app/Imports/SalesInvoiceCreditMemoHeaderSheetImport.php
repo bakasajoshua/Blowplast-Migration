@@ -34,9 +34,12 @@ class SalesInvoiceCreditMemoHeaderSheetImport implements ToModel, WithHeadingRow
                 "Order_Date" => $date,
                 "Company_Code" => $row["company_code"],
                 "Type" => $row["type"],
-                "Total_Amount_Excluding_Tax" => $row["total_amount_ex_tax"],
-                "Total_Amount_Including_Tax" => $row["total_amount_inc_tax"],
+                "Total_Amount_Excluding_Tax" => $row["total_amount_excluding_tax"],
+                "Total_Amount_Including_Tax" => $row["total_amount_including_tax"],
                 "Currency_Code" => $row["currency_code"],
         ]);
     }
 }
+
+
+
