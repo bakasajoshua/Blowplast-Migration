@@ -17,7 +17,7 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     public function model(array $row)
     {
         return new GLEntries([
-            "Entry_No" => $row["entry_no"],
+            // "Entry_No" => $row["entry_no"],
             "GL_Account_No" => $row["gl_account_number"],
             "Balancing_GL_Account_No" => $row["balancing_gl_account_no"],
             "Amounts" => $row["amount"],
@@ -32,6 +32,6 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 
     public function chunkSize(): int
     {
-        return 10000;
+        return 1000;
     }
 }
