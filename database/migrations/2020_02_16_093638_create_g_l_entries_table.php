@@ -21,7 +21,7 @@ class CreateGLEntriesTable extends Migration
             $table->string('Currency_Code', 10)->nullable();
             $table->date('Posting_Date')->nullable();
             $table->string('Document_No')->nullable();
-            $table->enum('Document_Type', ['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund'])->nullable();
+            $table->string('Document_Type')->comment("['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund']")->nullable();
             $table->text('Description')->nullable();
             $table->string('Company_Code', 10)->nullable();
 

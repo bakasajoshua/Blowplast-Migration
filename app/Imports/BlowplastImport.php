@@ -11,18 +11,16 @@ class BlowplastImport implements WithMultipleSheets
     */
     public function sheets(): array
     {
-        ini_set('memory_limit', '-1');
         return [
-            // 'Country' => new CountrySheetImport(),
-            // 'Company' => new CompanySheetImport(),
-            // 'Currency' => new CurrencySheetImport(),
-            // 'Customers' => new CustomerSheetImport(),
-            // 'Inventory' => new InventorySheetImport(),
-            // 'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
-            // 'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
-            // 'Customer Ledger Entries' => new CustomerLedgerEntriesSheetImport(),
-            // 'GL Accounts' =>  new GLAccountsSheetImport(),
-            'GL Entries' => new GLEntriesSheetImport(),
+            'Country' => new CountrySheetImport(),
+            'Company' => new CompanySheetImport(),
+            'Currency' => new CurrencySheetImport(),
+            'Customers' => new CustomerSheetImport(),
+            'Inventory' => new InventorySheetImport(),
+            'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
+            'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
+            'Customer Ledger Entries' => new CustomerLedgerEntriesSheetImport(),
+            'GL Accounts' =>  new GLAccountsSheetImport(),
         ];
     }
 }
