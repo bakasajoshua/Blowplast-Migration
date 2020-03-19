@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Imports\BlowplastImport;
+use App\Imports\GLEntriesSheetImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class Random extends Model
