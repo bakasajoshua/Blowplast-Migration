@@ -11,6 +11,7 @@ class BlowplastImport implements WithMultipleSheets
     */
     public function sheets(): array
     {
+        ini_set('memory_limit', '-1');
         return [
             // 'Country' => new CountrySheetImport(),
             // 'Company' => new CompanySheetImport(),
