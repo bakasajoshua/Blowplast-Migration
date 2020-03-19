@@ -18,12 +18,12 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     {
         return new GLEntries([
             // "Entry_No" => $row["entry_no"],
-            "GL_Account_No" => $row["gl_account_number"],
+            "GL_Account_No" => $row["gl_account_no"],
             "Balancing_GL_Account_No" => $row["balancing_gl_account_no"],
-            "Amounts" => $row["amount"],
-            "Currency_Code" => $row["currency"],
+            "Amounts" => $row["amounts"],
+            "Currency_Code" => $row["currency_code"],
             "Posting_Date" => $row["posting_date"],
-            "Document_No" => $row["document_number"],
+            "Document_No" => $row["document_no"],
             "Document_Type" => $row["document_type"],
             "Description" => $row["description"],
             "Company_Code" => $row["company_code"],
