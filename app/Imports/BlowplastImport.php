@@ -23,7 +23,7 @@ class BlowplastImport implements WithMultipleSheets
             'GL Accounts' =>  new GLAccountsSheetImport(),
 
             
-            // 'GL Entries' => new GLEntriesSheetImport(),
+            'GL Entries' => new GLEntriesSheetImport(),
             
         ];
     }
