@@ -21,10 +21,7 @@ class BlowplastImport implements WithMultipleSheets
             // 'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
             // 'Customer Ledger Entries' => new CustomerLedgerEntriesSheetImport(),
             'GL Accounts' =>  new GLAccountsSheetImport(),
-
-            
-            // 'GL Entries' => new GLEntriesSheetImport(),
-            
+            'GL Entries' => new GLEntriesSheetImport(),
         ];
     }
 }
