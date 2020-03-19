@@ -32,6 +32,6 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 
     public function chunkSize(): int
     {
-        return 500;
+        return 10000;
     }
 }
