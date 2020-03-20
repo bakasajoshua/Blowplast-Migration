@@ -17,6 +17,7 @@ class CreateDaysTable extends Migration
             $table->bigIncrements('id');
             $table->integer('day');
             $table->integer('week');
+            $table->integer('month');
         });
     }
 

@@ -16,7 +16,6 @@ class CreateWeeksTable extends Migration
         Schema::create('LU_Week', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('week');
-            $table->integer('month');
         });
     }
 
