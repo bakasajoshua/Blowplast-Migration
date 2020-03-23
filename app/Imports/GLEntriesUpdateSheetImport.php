@@ -6,6 +6,7 @@ use App\GLEntries;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Carbon\Carbon;
 
 class GLEntriesUpdateSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 {
@@ -16,7 +17,8 @@ class GLEntriesUpdateSheetImport implements ToModel, WithHeadingRow, WithChunkRe
     */
     public function model(array $row)
     {
-    	dd($row);
+    	$posting_date = Carbon::parse($row['posting_date']);
+    	dd($posting_date);
     	$gl_entries = GLEntries::find($row['id']);
     	$gl_entries->Posting_Date = $row['posting_date'];
     	dd($gl_entries);
