@@ -17,7 +17,7 @@ class GLEntriesUpdateSheetImport implements ToModel, WithHeadingRow, WithChunkRe
     */
     public function model(array $row)
     {
-    	$posting_date = Carbon::parse($row['posting_date']);
+    	$posting_date = Carbon::parse($row['posting_date'])->format('Y-m-d');
     	dd($posting_date);
     	$gl_entries = GLEntries::find($row['id']);
     	$gl_entries->Posting_Date = $row['posting_date'];
