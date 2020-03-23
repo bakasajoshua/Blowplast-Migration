@@ -18,7 +18,7 @@ class GLEntriesUpdateSheetImport implements ToModel, WithHeadingRow, WithChunkRe
     {
     	$gl_entries = GLEntries::find($row['id']);
     	$gl_entries->Posting_Date = $row['posting_date'];
-
+    	dd($gl_entries);
         return $gl_entries->save();
     }
 
