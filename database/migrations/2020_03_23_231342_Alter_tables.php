@@ -34,7 +34,7 @@ class AlterTables extends Migration
         Schema::table('Sales Invoice Credit Memo Lines', function (Blueprint $table) {
             $table->renameColumn('Line_No', 'SI_Li_Line_No');
             $table->renameColumn('Document_No', 'SI_Li_Document_No');
-            $table->renameColumn('Type', 'SI_Li_Type');
+            // $table->renameColumn('Type', 'SI_Li_Type');
             $table->renameColumn('Posting_Date', 'SI_Li_Posting_Date');
             $table->renameColumn('Order_Date', 'SI_Li_Order_Date');
             $table->renameColumn('Due_Date', 'SI_Li_Due_Date');
