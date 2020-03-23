@@ -14,7 +14,7 @@ class CreateDaysTable extends Migration
     public function up()
     {
         Schema::create('LU_Day', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('day_id');
             $table->integer('day');
             $table->integer('week');
             $table->integer('month');

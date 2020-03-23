@@ -14,7 +14,7 @@ class CreateMonthsTable extends Migration
     public function up()
     {
         Schema::create('LU_Month', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('month_id');
             $table->integer('month_of_year_id');
             $table->integer('year');
         });
