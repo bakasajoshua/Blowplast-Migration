@@ -17,7 +17,7 @@ class Random extends Model
     	// SalesInvoiceCreditMemoLine::truncate();
     	// CustomerLedgerEntry::truncate();
     	// GLAccounts::truncate();
-    	GLEntries::truncate();
+    	// GLEntries::truncate();
 
     	// echo "==> Inserting the general data\n";
     	// Excel::import(new BlowplastImport, public_path('import/blowplast.xlsx'));
