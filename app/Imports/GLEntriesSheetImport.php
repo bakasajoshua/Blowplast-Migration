@@ -17,8 +17,12 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     */
     public function model(array $row)
     {
+        $posting_date = null;
+        $csv_date = explode("/", $row['posting_date']);
+        if (sizeof($csv_date) == 3)
+            $posting_date = $csv_date[2] . '-' . $csv_date[1] . '-' . $csv_date[0];
         // dd($row);
-        $posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
+        // $posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
         dd($posting_date);
         return new GLEntries([
             // "Entry_No" => $row["entry_no"],
