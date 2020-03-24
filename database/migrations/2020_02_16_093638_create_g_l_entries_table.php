@@ -14,14 +14,14 @@ class CreateGLEntriesTable extends Migration
     public function up()
     {
         Schema::create('GL Entries', function (Blueprint $table) {
-            $table->string('Entry_No', 50)->primary();
+            $table->string('GL_Entry_No', 50)->primary();
             $table->string('GL_Account_No', 50)->nullable();
             $table->string('Balancing_GL_Account_No', 50)->nullable();
             $table->float('Amounts')->nullable();
             $table->string('Currency_Code', 10)->nullable();
-            $table->date('Posting_Date')->nullable();
-            $table->string('Document_No')->nullable();
-            $table->string('Document_Type')->comment("['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund']")->nullable();
+            $table->date('GL_Posting_Date')->nullable();
+            $table->string('GL_Document_No')->nullable();
+            $table->string('GL_Document_Type')->comment("['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund']")->nullable();
             $table->text('Description')->nullable();
             $table->string('Company_Code', 10)->nullable();
 
