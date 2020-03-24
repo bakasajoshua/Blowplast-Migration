@@ -18,9 +18,7 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     public function model(array $row)
     {
         // dd($row);
-        // $posting_date = Carbon::createFromFormat('Y-m-d', $row['posting_date']);
-        $posting_date = date('Y-m-d', strtotime($row['posting_date']));
-        dd($posting_date);
+        $posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
         return new GLEntries([
             // "Entry_No" => $row["entry_no"],
             "GL_Account_No" => $row["gl_account_no"],
@@ -37,6 +35,6 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 
     public function chunkSize(): int
     {
-        return 10000;
+        return 1000;
     }
 }
