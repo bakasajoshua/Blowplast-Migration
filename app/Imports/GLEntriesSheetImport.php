@@ -6,7 +6,7 @@ use App\GLEntries;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
-// use Carbon\Carbon;
+use Carbon\Carbon;
 
 class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
 {
@@ -18,7 +18,8 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     public function model(array $row)
     {
         // dd($row);
-        // $posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
+        $posting_date = Carbon\Carbon::createFromFormat('Y-m-d', $row['posting_date']);
+        dd($posting_date);
         return new GLEntries([
             // "Entry_No" => $row["entry_no"],
             "GL_Account_No" => $row["gl_account_no"],
