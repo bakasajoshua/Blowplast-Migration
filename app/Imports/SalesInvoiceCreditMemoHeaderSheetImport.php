@@ -17,11 +17,12 @@ class SalesInvoiceCreditMemoHeaderSheetImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        // dd($row);
-        $date = '2019-01-13';
+        $posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
+        $due_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['due_date']))->format('Y-m-d');
+        $order_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['order_date']))->format('Y-m-d');
         return new SalesInvoiceCreditMemoHeader([
                 "Invoice_Credit_Memo_No" => $row["invoice_credit_memo_no"],
-                "Document_No" => $row["document_no"],
+                "SI_Document_No" => $row["document_no"],
                 "Sell-To-Customer-No" => $row["sell_to_cust_no"],
                 "Sell-To-Customer-Name" => $row["sell_to_cust_name"],
                 "Bill-To-Customer-No" => $row["bill_to_cust_no"],
@@ -29,9 +30,9 @@ class SalesInvoiceCreditMemoHeaderSheetImport implements ToModel, WithHeadingRow
                 // "Posting_Date" => $row["posting_date"],
                 // "Due_Date" => $row["order_date"],
                 // "Order_Date" => $row["due_date"],
-                "Posting_Date" => $date,
-                "Due_Date" => date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " + 1 year")),
-                "Order_Date" => $date,
+                "SI_Posting_Date" => $posting_date,
+                "SI_Due_Date" => $due_date,
+                "SI_Order_Date" => $order_date ?? NULL,
                 "Company_Code" => $row["company_code"],
                 "Type" => $row["type"],
                 "Total_Amount_Excluding_Tax" => $row["total_amount_excluding_tax"],

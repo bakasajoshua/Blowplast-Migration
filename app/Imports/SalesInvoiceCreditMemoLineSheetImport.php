@@ -15,11 +15,11 @@ class SalesInvoiceCreditMemoLineSheetImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        $date = '2019-01-13';
+       $date = '2019-01-13';
         return new SalesInvoiceCreditMemoLine([
-            "Line_No" => $row["line_no"],
+            "SI_Li_Line_No" => $row["line_no"],
             "Invoice_Credit_Memo_No" => $row["invoice_credit_memo_no"],
-            "Document_No" => $row["document_no"],
+            "SI_Li_Document_No" => $row["document_no"],
             "Item_No" => $row["item_no"],
             "Item_Weight_kg" => $row["item_weight_in_kg"],
             "Item_Price_kg" => $row["item_price_in_kg"],
@@ -36,9 +36,9 @@ class SalesInvoiceCreditMemoLineSheetImport implements ToModel, WithHeadingRow
             // "Posting_Date" => $row["posting_date"],
             // "Due_Date" => $row["order_date"],
             // "Order_Date" => $row["due_date"],
-            "Posting_Date" => $date,
-            "Due_Date" => date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " + 1 year")),
-            "Order_Date" => $date,
+            "SI_Li_Posting_Date" => $date,
+            "SI_Li_Due_Date" => date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " + 1 year")),
+            "SI_Li_Order_Date" => $date,
         ]);
     }
 }

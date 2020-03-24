@@ -8,7 +8,7 @@ class GLEntries extends Model
 {
     protected $table = 'GL Entries';
 
-    protected $primaryKey = 'Entry_No';
+    protected $primaryKey = 'GL_Entry_No';
 
     protected $keyType = 'string';
 
@@ -20,7 +20,7 @@ class GLEntries extends Model
     {
         parent::boot();
         static::creating(function (Model $model) {
-            $model->Entry_No = $model->count() + 1;
+            $model->GL_Entry_No = $model->count() + 1;
         });
     }
 }

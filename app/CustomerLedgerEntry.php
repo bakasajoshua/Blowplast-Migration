@@ -8,7 +8,7 @@ class CustomerLedgerEntry extends Model
 {
     protected $table = 'Customer Ledger Entries';
 
-    protected $primaryKey = 'Entry_No';
+    protected $primaryKey = 'CU_Leg_Entry_No';
 
     protected $keyType = 'string';
 
@@ -20,7 +20,7 @@ class CustomerLedgerEntry extends Model
     {
         parent::boot();
         static::creating(function (Model $model) {
-            $model->Entry_No = $model->count() + 1;
+            $model->CU_Leg_Entry_No = $model->count() + 1;
         });
     }
 }

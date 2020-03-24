@@ -12,8 +12,20 @@ class Random extends Model
 {
     public static function import()
     {
-    	// Excel::import(new BlowplastImport, public_path('import/blowplast.xlsx'));
-    	// Excel::import(new GLEntriesSheetImport, public_path('import/glentries.csv'));
-    	Excel::import(new GLEntriesUpdateSheetImport, public_path('import/postingdates2.xlsx'));
+    	echo "==> Truncating tables\n";
+    	SalesInvoiceCreditMemoHeader::truncate();
+    	SalesInvoiceCreditMemoLine::truncate();
+    	CustomerLedgerEntry::truncate();
+    	GLAccounts::truncate();
+    	GLEntries::truncate();
+
+    	echo "==> Inserting the general data\n";
+    	Excel::import(new BlowplastImport, public_path('import/blowplast.xlsx'));
+
+    	echo "==> Inserting the GL entries data\n";
+    	Excel::import(new GLEntriesSheetImport, public_path('import/glentries.csv'));
+    	// Excel::import(new GLEntriesUpdateSheetImport, public_path('import/postingdates2.xlsx'));
+
+    	echo "==> Data import complete\n";
     }
 }
