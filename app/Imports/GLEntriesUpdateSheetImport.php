@@ -20,7 +20,7 @@ class GLEntriesUpdateSheetImport implements ToModel, WithHeadingRow, WithChunkRe
     	$posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
     	$gl_entries = GLEntries::where('GL_Account_No', $row['gl_account_no'])->first();
     	if (null !== $gl_entries) {
-    		$gl_entries->Posting_Date = $posting_date;
+    		$gl_entries->GL_Posting_Date = $posting_date;
 	    	$gl_entries->save();
     	}
 	    return $gl_entries;
