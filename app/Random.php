@@ -7,6 +7,7 @@ use App\Imports\BlowplastImport;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\GLEntriesUpdateSheetImport;
 use Maatwebsite\Excel\Facades\Excel;
+use DB;
 
 class Random extends Model
 {
