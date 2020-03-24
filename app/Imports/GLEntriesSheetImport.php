@@ -19,6 +19,7 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     {
         // dd($row);
         $posting_date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['posting_date']))->format('Y-m-d');
+        dd($posting_date);
         return new GLEntries([
             // "Entry_No" => $row["entry_no"],
             "GL_Account_No" => $row["gl_account_no"],
