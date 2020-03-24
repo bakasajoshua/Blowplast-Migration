@@ -3,13 +3,17 @@
 namespace App\Imports;
 
 use App\GLEntries;
+
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Carbon\Carbon;
 
-class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
+class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading, WithProgressBar
 {
+    use Importable;
     /**
     * @param array $row
     *
@@ -19,6 +23,7 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
     {
         $posting_date = null;
         $csv_date = explode("/", $row['posting_date']);
+        // dd($csv_date);
         if (sizeof($csv_date) == 3)
             $posting_date = $csv_date[2] . '-' . $csv_date[1] . '-' . $csv_date[0];
         // dd($row);
@@ -30,7 +35,7 @@ class GLEntriesSheetImport implements ToModel, WithHeadingRow, WithChunkReading
             "Balancing_GL_Account_No" => $row["balancing_gl_account_no"],
             "Amounts" => $row["amounts"],
             "Currency_Code" => $row["currency_code"],
-            "GL_Posting_Date" => $row['posting_date'],
+            "GL_Posting_Date" => $posting_date,
             "GL_Document_No" => $row["document_no"],
             "GL_Document_Type" => $row["document_type"],
             "Description" => $row["description"],

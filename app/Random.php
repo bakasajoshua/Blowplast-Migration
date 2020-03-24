@@ -28,11 +28,12 @@ class Random extends Model
 	    	// GLEntries::truncate();
 
 	    	echo "==> Inserting the general data\n";
-	    	Excel::import(new BlowplastImport, public_path('import/blowplast.xlsx'));
-	    	ini_set("memory_limit", "-1");
-	    	echo "==> Inserting the GL entries data\n";
-	    	Excel::import(new GLEntriesSheetImport, public_path('import/glentries.csv'));
-	    	// Excel::import(new GLEntriesUpdateSheetImport, public_path('import/postingdates2.xlsx'));
+	    	(new BlowplastImport)->import(public_path('import/blowplast.xlsx'));
+	    	
+	    	// ini_set("memory_limit", "-1");
+	    	// echo "==> Inserting the GL entries data\n";
+	    	// Excel::import(new GLEntriesSheetImport, public_path('import/glentries.csv'));
+	    	// // Excel::import(new GLEntriesUpdateSheetImport, public_path('import/postingdates2.xlsx'));
 
 	    	echo "==> Data import complete\n";
 

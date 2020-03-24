@@ -3,9 +3,12 @@
 namespace App\Imports;
 
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\WithProgressBar;
 
-class BlowplastImport implements WithMultipleSheets 
+class BlowplastImport implements WithMultipleSheets, WithProgressBar 
 {
+    use Importable;
     /**
     * 
     */
