@@ -61,7 +61,7 @@ class Random extends Model
     	echo "==> Test hello world";
     	print_r(SoapCli::call("HelloWorld"));
     	
-    	$class = "/App/" . $class;
+    	// $class = "/App/" . $class;
     	echo "==> Get the {$class}\n";
     	$model = new $class;
     	print_r($model->getFromApi());
