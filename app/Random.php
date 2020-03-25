@@ -54,7 +54,7 @@ class Random extends Model
 
     	$error = 0;
         try {
-            $info = $soapClient->__call("GetCustomers");
+            $info = $soapClient->__call("GetCustomers", []);
             print_r($info);
         } catch (\SoapFault $fault) {
             $error = 1;
