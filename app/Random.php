@@ -47,4 +47,21 @@ class Random extends Model
 		    throw $e;
 		}
     }
+
+    public static function soap()
+    {
+    	$soapClient = new SoapClient("tp://192.168.170.11/BLService/Service.asmx?wsdl");
+
+    	$error = 0;
+        try {
+            $info = $soapClient->__call("GetCustomers");
+            print_r($info);
+        } catch (SoapFault $fault) {
+            $error = 1;
+            print("
+            alert('Sorry, blah returned the following ERROR: ".$fault->faultcode."-".$fault->faultstring.". We will now take you back to our home page.');
+            window.location = 'main.php';
+            ");
+        }
+    }
 }
