@@ -11,4 +11,11 @@ class Inventory extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    private $functionCall = "GetInventory";
+
+    public function getFromApi()
+    {
+        return SoapCli::call($this->functionCall);
+    }
 }

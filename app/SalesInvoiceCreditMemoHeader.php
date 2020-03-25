@@ -11,4 +11,12 @@ class SalesInvoiceCreditMemoHeader extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    private $functionCall = "GetInvoiceCreditHeader";
+
+
+    public function getFromApi()
+    {
+        return SoapCli::call($this->functionCall);
+    }
 }

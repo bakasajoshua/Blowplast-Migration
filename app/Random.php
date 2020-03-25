@@ -50,8 +50,16 @@ class Random extends Model
 
     public static function soap()
     {
-    	$gl = new GLAccounts;
-    	echo "==> Get the GL Accounts\n";
-    	print_r($gl->getFromApi());
+    	$models = ['Customer','CustomerLedgerEntry','GLAccounts','GLEntries','Inventory','SalesInvoiceCreditMemoHeader','SalesInvoiceCreditMemoLine'];
+    	foreach ($models as $key => $model) {
+    		self::make_soap_call($model);
+    	}
+    }
+
+    private static function make_soap_call($class)
+    {
+    	echo "==> Get the {$class}\n";
+    	$model = new $class;
+    	print_r($inv->getFromApi());
     }
 }

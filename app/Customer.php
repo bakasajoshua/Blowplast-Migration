@@ -11,4 +11,11 @@ class Customer extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    private $functionCall = "GetCustomers";
+
+    public function getFromApi()
+    {
+        return SoapCli::call($this->functionCall);
+    }
 }

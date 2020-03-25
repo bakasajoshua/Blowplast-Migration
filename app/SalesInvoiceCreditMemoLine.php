@@ -11,4 +11,12 @@ class SalesInvoiceCreditMemoLine extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    private $functionCall = "GetInvoiceCreditLine";
+
+
+    public function getFromApi()
+    {
+        return SoapCli::call($this->functionCall);
+    }
 }
