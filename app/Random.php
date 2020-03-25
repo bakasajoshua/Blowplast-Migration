@@ -58,6 +58,7 @@ class Random extends Model
 
     private static function make_soap_call($class)
     {
+    	$class = "/App/" . $class;
     	echo "==> Get the {$class}\n";
     	$model = new $class;
     	print_r($inv->getFromApi());
