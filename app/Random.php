@@ -50,6 +50,9 @@ class Random extends Model
 
     public static function soap()
     {
+    	echo "==> Test hello world";
+    	print_r(SoapCli::call("HelloWorld"));
+    	
     	$models = ['Customer','CustomerLedgerEntry','GLAccounts','GLEntries','Inventory','SalesInvoiceCreditMemoHeader','SalesInvoiceCreditMemoLine'];
     	foreach ($models as $key => $model) {
     		self::make_soap_call($model);
@@ -58,10 +61,6 @@ class Random extends Model
 
     private static function make_soap_call($class)
     {
-    	echo "==> Test hello world";
-    	print_r(SoapCli::call("HelloWorld"));
-    	
-    	// $class = "/App/" . $class;
     	echo "==> Get the {$class}\n";
     	$model = new $class;
     	print_r($model->getFromApi());
