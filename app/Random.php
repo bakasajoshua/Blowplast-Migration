@@ -50,7 +50,8 @@ class Random extends Model
 
     public static function soap()
     {
+    	$gl = new GLAccounts;
     	echo "==> Get the GL Accounts\n";
-    	print_r(SoapCli::call("GetGLAccount"));
+    	print_r($gl->getFromApi());
     }
 }
