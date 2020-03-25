@@ -50,7 +50,7 @@ class Random extends Model
 
     public static function soap()
     {
-    	$soapClient = new \SoapClient("http://192.168.170.11/BLService/Service.asmx?wsdl");
+    	$soapClient = new \SoapClient(env('SOAP_URL'));
 
     	$error = 0;
         try {
