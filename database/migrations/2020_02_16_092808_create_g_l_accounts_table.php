@@ -22,6 +22,9 @@ class CreateGLAccountsTable extends Migration
             $table->string('COA_Group_Name')->nullable();
             $table->tinyInteger('Blocked')->nullable();
             $table->string('Company_Code', 10)->nullable();
+            $table->integer('GL_Account_Level_1')->nullable();
+            $table->string('GL_Account_Level_2')->nullable();
+            $table->string('GL_Account_Level_3')->nullable();
 
             // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
         });
