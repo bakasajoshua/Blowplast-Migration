@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccountType extends Model
 {
-    protected $table = 'LU_GL_Accounts_Level_1';
+    protected $table = 'GL_Accounts_Level_1';
 
     protected $guarded = [];
 
