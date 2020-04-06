@@ -13,14 +13,14 @@ class AlterGlaccountAddLevelColumns extends Migration
      */
     public function up()
     {
-        Schema::table('GL Accounts', function (Blueprint $table) {
-            $table->dropColumn('COA_Group');
-            $table->dropColumn('COA_Group_Name');
-            $table->dropColumn('GL_Account_Type');
-            
+        Schema::table('GL Accounts', function (Blueprint $table) {            
             $table->integer('GL_Account_Level_1')->nullable()->after('GL_Account_Name');
-            $table->bigInteger('GL_Account_Level_2')->nullable()->after('GL_Account_Level_1');
-            $table->bigInteger('GL_Account_Level_3')->nullable()->after('GL_Account_Level_2');
+            $table->string('GL_Account_Level_2')->nullable()->after('GL_Account_Level_1');
+            $table->string('GL_Account_Level_3')->nullable()->after('GL_Account_Level_2');
+
+            // $table->dropColumn('COA_Group');
+            // $table->dropColumn('COA_Group_Name');
+            // $table->dropColumn('GL_Account_Type');
 
             // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
         });
