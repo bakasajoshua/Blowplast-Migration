@@ -13,7 +13,7 @@ class AlterGlaccountsConvertLevelColumnsToString extends Migration
      */
     public function up()
     {
-        Schema::table('GL Accounts', function (Blueprint $table) {
+        Schema::table('[GL Accounts]', function (Blueprint $table) {
             $table->string('GL_Account_Level_2')->change();
             $table->string('GL_Account_Level_3')->change();
         });
@@ -26,7 +26,7 @@ class AlterGlaccountsConvertLevelColumnsToString extends Migration
      */
     public function down()
     {
-        Schema::table('string', function (Blueprint $table) {
+        Schema::table('[GL Accounts]', function (Blueprint $table) {
             //
         });
     }
