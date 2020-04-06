@@ -14,8 +14,9 @@ class CreateChartOfAccountsBreakdownsTable extends Migration
     public function up()
     {
         Schema::create('LU_GL_Accounts_Level_3', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+            $table->string('Account')->primary();
+            $table->string('Account_Name');
+            $table->string('LU_GL_Accounts_Level_2');
         });
     }
 
