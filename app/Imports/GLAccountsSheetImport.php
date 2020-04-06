@@ -28,7 +28,7 @@ class GLAccountsSheetImport implements ToModel, WithHeadingRow, WithChunkReading
             $row['gl_account_level_1'] = $level_1->first()->Level_1_ID;
 
         // Adding the level 2
-        $level_2 = ChartOfAccounts::where('Level_2_ID', "'" . $row["chart_of_account_group"] . "'")->get();
+        $level_2 = ChartOfAccounts::where('Level_2_Description', $row["chart_of_account_group_name"])->get();
         if (!$level_2->isEmpty())
             $row['gl_account_level_2'] = $level_2->first()->Level_2_ID;
 
