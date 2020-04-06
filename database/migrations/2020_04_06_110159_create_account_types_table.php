@@ -13,9 +13,9 @@ class CreateAccountTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('LU_GL_Accounts_Level_1', function (Blueprint $table) {
-            $table->increments('Account_Type_No');
-            $table->string('Account_Type');
+        Schema::create('GL_Accounts_Level_1', function (Blueprint $table) {
+            $table->increments('Level_1_ID');
+            $table->string('Level_1_Description');
         });
     }
 
@@ -26,6 +26,6 @@ class CreateAccountTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('LU_GL_Accounts_Level_1');
+        Schema::dropIfExists('GL_Accounts_Level_1');
     }
 }

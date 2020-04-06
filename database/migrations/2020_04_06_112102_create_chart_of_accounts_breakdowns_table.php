@@ -13,10 +13,10 @@ class CreateChartOfAccountsBreakdownsTable extends Migration
      */
     public function up()
     {
-        Schema::create('LU_GL_Accounts_Level_3', function (Blueprint $table) {
-            $table->string('Account')->primary();
-            $table->string('Account_Name');
-            $table->string('LU_GL_Accounts_Level_2');
+        Schema::create('GL_Accounts_Level_3', function (Blueprint $table) {
+            $table->string('Level_3_ID')->primary();
+            $table->string('Level_3_Description');
+            $table->string('Level_2_ID');
         });
     }
 
@@ -27,6 +27,6 @@ class CreateChartOfAccountsBreakdownsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('LU_GL_Accounts_Level_3');
+        Schema::dropIfExists('GL_Accounts_Level_3');
     }
 }
