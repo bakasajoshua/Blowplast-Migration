@@ -39,9 +39,9 @@ class ImportExcel extends Command
      */
     public function handle()
     {
-        $this->output->title('Starting Importing GL Entries');
-        (new GLEntriesSheetImport)->withOutput($this->output)->import(public_path('import/glentries.csv'));
-        $this->output->success('Import of GL Entries successful');
+        // $this->output->title('Starting Importing GL Entries');
+        // (new GLEntriesSheetImport)->withOutput($this->output)->import(public_path('import/glentries.csv'));
+        // $this->output->success('Import of GL Entries successful');
 
         $this->output->title('Starting Importing general data');
         (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
