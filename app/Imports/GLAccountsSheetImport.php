@@ -32,7 +32,7 @@ class GLAccountsSheetImport implements ToModel, WithHeadingRow, WithChunkReading
         if (!$level_2->isEmpty())
             $row['gl_account_level_2'] = $level_2->first()->Chart_of_Account_Group;
 
-        dd($row);
+        // dd($row);.
         return new GLAccounts([
             "GL_Account_No" => $row["gl_account_no"],
             "GL_Account_Name" => $row["gl_account_name"],
