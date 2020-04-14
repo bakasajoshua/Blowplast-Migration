@@ -26,7 +26,7 @@ class GLAccounts extends Model
 		  	//do something with desired node type
 		  	print_r($reader);
 		}﻿
-		die();
+		dd("ENd");
     	return SoapCli::call($this->functionCall);
     }
 
