@@ -18,14 +18,14 @@ class GLAccounts extends Model
     {
     	$reader = new \XMLReader();
 		$reader->open(SoapCli::call($this->functionCall));
-		while ($reader->read()) {
-		  	if ($reader->nodeType == XMLReader::END_ELEMENT) {
-		    	continue;
-		  	}
+		// while ($reader->read()) {
+		//   	if ($reader->nodeType == XMLReader::END_ELEMENT) {
+		//     	continue;
+		//   	}
 
-		  	//do something with desired node type
-		  	print_r($reader);
-		}﻿
+		//   	//do something with desired node type
+		//   	print_r($reader);
+		// }﻿
 		// dd("ENd");
   //   	return SoapCli::call($this->functionCall);
     }
