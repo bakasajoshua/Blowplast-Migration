@@ -21,7 +21,7 @@ class GLAccounts extends Model
 
     public function parse_xml($xml)
     {
-    	$oXml = new XMLReader();
+    	$oXml = new \XMLReader();
         try {
             return $this->parseXml($xml);
         } catch (Exception $e) {
