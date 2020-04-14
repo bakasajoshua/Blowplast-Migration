@@ -15,7 +15,8 @@
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
         "maatwebsite/excel": "^3.1",
-        "ramsey/uuid": "^3.9"
+        "ramsey/uuid": "^3.9",
+        "rodenastyle/stream-parser": "^1.2"
     },
     "require-dev": {
         "beyondcode/laravel-er-diagram-generator": "^1.4",
