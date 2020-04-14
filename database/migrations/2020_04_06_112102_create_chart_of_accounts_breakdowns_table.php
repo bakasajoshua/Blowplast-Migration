@@ -17,6 +17,8 @@ class CreateChartOfAccountsBreakdownsTable extends Migration
             $table->string('Level_3_ID')->primary();
             $table->string('Level_3_Description');
             $table->string('Level_2_ID');
+
+            // $table->foreign('Level_2_ID')->references('Level_2_ID')->on('GL_Accounts_Level_2');
         });
     }
 

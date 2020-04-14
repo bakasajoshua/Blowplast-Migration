@@ -36,13 +36,13 @@ class GLAccountsSheetImport implements ToModel, WithHeadingRow, WithChunkReading
         return new GLAccounts([
             "GL_Account_No" => $row["gl_account_no"],
             "GL_Account_Name" => $row["gl_account_name"],
-            "GL_Account_Type" => $row["gl_account_type"],
+            // "GL_Account_Type" => $row["gl_account_type"],
             "GL_Account_Level_1" => $row['gl_account_level_1'],
             "GL_Account_Level_2" => $row['gl_account_level_2'],
             "GL_Account_Level_3" => $row['gl_account_level_3'],
             "Income_Balance" => $row["income_balance"],
-            "COA_Group" => $row["chart_of_account_group"],
-            "COA_Group_Name" => $row["chart_of_account_group_name"],
+            // "COA_Group" => $row["chart_of_account_group"],
+            // "COA_Group_Name" => $row["chart_of_account_group_name"],
             "Blocked" => $row["blocked"],
             "Company_Code" => $row["company_code"],
         ]);

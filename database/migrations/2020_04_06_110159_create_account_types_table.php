@@ -15,7 +15,7 @@ class CreateAccountTypesTable extends Migration
     {
         Schema::create('GL_Accounts_Level_1', function (Blueprint $table) {
             $table->increments('Level_1_ID');
-            $table->string('Level_1_Description');
+            $table->string('Level_1_Description', 100);
         });
     }
 

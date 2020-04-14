@@ -17,6 +17,8 @@ class CreateChartOfAccountsTable extends Migration
             $table->string('Level_2_ID')->primary();
             $table->string('Level_2_Description');
             $table->integer('Level_1_ID');
+
+            // $table->foreign('Level_1_ID')->references('Level_1_ID')->on('GL_Accounts_Level_1');
         });
     }
 
