@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Tightenco\Collect\Support\Collection;
 
 class GLAccounts extends Model
 {
@@ -16,8 +17,12 @@ class GLAccounts extends Model
 
     public function getFromApi()
     {
-    	$reader = new \XMLReader();
-		$reader->open(SoapCli::call($this->functionCall));
+    	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
+			    // dispatch(new App\Jobs\SendEmail($user));
+    			var_dump($glaccouts);
+			});
+  //   	$reader = new \XMLReader();
+		// $reader->open(SoapCli::call($this->functionCall));
 		// while ($reader->read()) {
 		//   	if ($reader->nodeType == XMLReader::END_ELEMENT) {
 		//     	continue;
