@@ -17,7 +17,7 @@ class GLAccounts extends Model
 
     public function getFromApi()
     {
-    	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
+    	\StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
 			    // dispatch(new App\Jobs\SendEmail($user));
     			var_dump($glaccouts);
 			});
