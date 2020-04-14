@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Tightenco\Collect\Support\Collection;
+use Rodenastyle\StreamParser\StreamParser;
 
 class GLAccounts extends Model
 {
@@ -17,7 +18,7 @@ class GLAccounts extends Model
 
     public function getFromApi()
     {
-    	\StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
+    	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
 			    // dispatch(new App\Jobs\SendEmail($user));
     			var_dump($glaccouts);
 			});
