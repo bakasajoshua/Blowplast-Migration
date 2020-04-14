@@ -16,7 +16,18 @@ class GLAccounts extends Model
 
     public function getFromApi()
     {
-    	return $this->parse_xml(SoapCli::call($this->functionCall));
+    	$reader = new \XMLReader();
+		$reader->open(SoapCli::call($this->functionCall));
+		while ($reader->read()) {
+		  	if ($reader->nodeType == XMLReader::END_ELEMENT) {
+		    	continue;
+		  	}
+
+		  	//do something with desired node type
+		  	print_r($reader);
+		}﻿
+		die();
+    	return SoapCli::call($this->functionCall);
     }
 
     public function parse_xml($xml)
