@@ -11,7 +11,7 @@ class SoapCli
 
     	try {
             $response = $soapClient->__call($endpoint, $params);
-            return $response->$resultBody;
+            return $response->$resultBody->any;
         } catch (\SoapFault $fault) {
             return (object)[
                 'error' => true,
