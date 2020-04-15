@@ -14,7 +14,7 @@ class CreateMonthOfYearsTable extends Migration
     public function up()
     {
         Schema::create('LU_Month_Of_Year', function (Blueprint $table) {
-            $table->integer('motnh_of_year_id')->primary();
+            $table->integer('month_of_year_id')->primary();
             $table->string('month_description');
         });
     }

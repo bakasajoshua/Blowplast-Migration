@@ -18,6 +18,9 @@ class CreateDaysTable extends Migration
             $table->integer('day');
             $table->integer('week');
             $table->integer('month');
+
+            // $table->foreign('month')->references('month_id')->on('LU_Month');
+            // $table->foreign('week')->references('week_id')->on('LU_Week');
         });
     }
 

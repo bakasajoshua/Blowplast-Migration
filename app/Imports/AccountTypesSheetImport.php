@@ -13,7 +13,7 @@ class AccountTypesSheetImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        return new AccountType([
+    	return new AccountType([
             "Level_1_Description" => $row["gl_account_type"],
         ]);
     }
