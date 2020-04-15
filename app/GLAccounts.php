@@ -18,10 +18,10 @@ class GLAccounts extends Model
 
     public function getFromApi()
     {
-    	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
-			    // dispatch(new App\Jobs\SendEmail($user));
-    			var_dump($glaccouts);
-			});
+   //  	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
+			//     // dispatch(new App\Jobs\SendEmail($user));
+   //  			var_dump($glaccouts);
+			// });
   //   	$reader = new \XMLReader();
 		// $reader->open(SoapCli::call($this->functionCall));
 		// while ($reader->read()) {
@@ -33,7 +33,7 @@ class GLAccounts extends Model
 		//   	print_r($reader);
 		// }﻿
 		// dd("ENd");
-  //   	return SoapCli::call($this->functionCall);
+    	return SoapCli::call($this->functionCall);
     }
 
     public function parse_xml($xml)
