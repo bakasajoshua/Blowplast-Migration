@@ -5,8 +5,9 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Tightenco\Collect\Support\Collection;
 use Rodenastyle\StreamParser\StreamParser;
+use Illuminate\Support\Facades\Redis;
 
-class GLAccounts extends Model
+class GLAccounts extends BaseModel
 {
     protected $table = 'GL Accounts';
 
@@ -15,9 +16,13 @@ class GLAccounts extends Model
     public $timestamps = false;
 
     private $functionCall = "GetGLAccount";
+    // private $functionCall = "HelloWorld";
 
     public function getFromApi()
     {
+        return SoapCli::call($this->functionCall);
+        // Redis::put('', );
+        // dd();
    //  	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
 			//     // dispatch(new App\Jobs\SendEmail($user));
    //  			var_dump($glaccouts);
