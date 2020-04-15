@@ -10,7 +10,7 @@ class SoapCli
         $resultBody = $endpoint . "Result";
 
     	try {
-            $response = $soapClient->__call($endpoint, $params);
+            $response = $soapClient->__soapCall($endpoint, $params);
             return $response->$resultBody->any;
         } catch (\SoapFault $fault) {
             return (object)[
