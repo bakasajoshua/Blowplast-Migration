@@ -38,7 +38,7 @@ class GLAccounts extends BaseModel
 		//   	print_r($reader);
 		// }﻿
 		// dd("ENd");
-    	return SoapCli::call($this->functionCall);
+    	// return SoapCli::call($this->functionCall);
     }
 
     public function parse_xml($xml)
