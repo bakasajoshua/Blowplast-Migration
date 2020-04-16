@@ -16,9 +16,9 @@ class BlowplastImport implements WithMultipleSheets, WithProgressBar
     public function sheets(): array
     {
         return [
-            // 'Country' => new CountrySheetImport(),
-            // 'Company' => new CompanySheetImport(),
-            // 'Currency' => new CurrencySheetImport(),
+            'Country' => new CountrySheetImport(),
+            'Company' => new CompanySheetImport(),
+            'Currency' => new CurrencySheetImport(),
             // 'Customers' => new CustomerSheetImport(),
             'Account Types' => new AccountTypesSheetImport(),
             'COA' => new ChartOfAccountsSheetImport(),
@@ -26,7 +26,7 @@ class BlowplastImport implements WithMultipleSheets, WithProgressBar
             // 'sales invoicecredit memo header' => new SalesInvoiceCreditMemoHeaderSheetImport(),
             // 'sales line' => new SalesInvoiceCreditMemoLineSheetImport(),
             // 'Customer Ledger Entries' => new CustomerLedgerEntriesSheetImport(),
-            'GL Accounts' =>  new GLAccountsSheetImport(),
+            // 'GL Accounts' =>  new GLAccountsSheetImport(),
         ];
     }
 }
