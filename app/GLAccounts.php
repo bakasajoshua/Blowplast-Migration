@@ -17,37 +17,27 @@ class GLAccounts extends BaseModel
 
     private $functionCall = "GetGLAccount";
     // private $functionCall = "HelloWorld";
+    private $endpointColumns = [
+                    'GL_Account_No' => 'GL_x0020_Account_x0020_No',
+                    'GL_Account_Name' => 'GL_x0020_Account_x0020_Name',
+                    'Income_Balance' => 'Income_x002F__x0020_Balance',
+                    'Blocked' => 'Status',
+                    'Company_Code' => 'Company_x0020_Code',
+                    'GL_Account_Level_1' => 'GL_x0020_Account_x0020_Type',
+                    'GL_Account_Level_2' => 'Chart_x0020_of_x0020_Account_x0020_Group',
+                    'GL_Account_Level_3' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
+                ];
+    private $chunkQty = 500;
 
-    public function getFromApi()
+    public function synchAccounts()
     {
-        return SoapCli::call($this->functionCall);
-        // Redis::put('', );
-        // dd();
-   //  	StreamParser::xml(SoapCli::call($this->functionCall))->each(function(Collection $glaccouts){
-			//     // dispatch(new App\Jobs\SendEmail($user));
-   //  			var_dump($glaccouts);
-			// });
-  //   	$reader = new \XMLReader();
-		// $reader->open(SoapCli::call($this->functionCall));
-		// while ($reader->read()) {
-		//   	if ($reader->nodeType == XMLReader::END_ELEMENT) {
-		//     	continue;
-		//   	}
-
-		//   	//do something with desired node type
-		//   	print_r($reader);
-		// }﻿
-		// dd("ENd");
-    	// return SoapCli::call($this->functionCall);
+        $synchData = $this->synch($this->functionCall, $this->endpointColumns);
+        
+        return $synchData;
+        // foreach ($chunks as $key => $data) {
+        //     GLAccounts::insert($data->toArray());
+        // }
+        // return true;
     }
 
-    public function parse_xml($xml)
-    {
-    	$oXml = new \XMLReader();
-        try {
-            return $this->parseXml($xml);
-        } catch (Exception $e) {
-            echo $e->getMessage(). ' | Try open file: '.$sXmlFilePath;
-        }
-    }
 }
