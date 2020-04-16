@@ -33,6 +33,7 @@ class GLEntries extends BaseModel
 
     public function synchEntries()
     {
+        ini_set("memory_limit", "-1");
         $chunks = $this->synch($this->functionCall, $this->endpointColumns)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
             GLEntries::insert($data->toArray());
