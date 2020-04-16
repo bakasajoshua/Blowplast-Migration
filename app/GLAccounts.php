@@ -36,11 +36,18 @@ class GLAccounts extends BaseModel
         $synchData = $this->synch($this->functionCall, $this->endpointColumns);
         $accounts = [];
         foreach ($synchData as $key => $account) {
+            if ($account['Blocked'] == 'N')
+                $account['Blocked'] = 0;
+            if ($account['Blocked'] == 'Y')
+                $account['Blocked'] = 1;
+            
             $level_1 = $level_1_Data->where('Level_1_Description', $account['GL_Account_Level_1']);
             if (!$level_1->isEmpty()){
                 $account['GL_Account_Level_1'] = $level_1->first()->Level_1_ID;
+                $account['Income_Balance'] = $level_1->first()->bs_is;
             } else {
                 unset($account['GL_Account_Level_1']);
+                unset($account['Income_Balance']);
             }
 
             $level_2 = $level_2_Data->where('Level_2_ID', $account['GL_Account_Level_2']);
