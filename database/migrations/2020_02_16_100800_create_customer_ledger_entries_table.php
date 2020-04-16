@@ -14,7 +14,7 @@ class CreateCustomerLedgerEntriesTable extends Migration
     public function up()
     {
         Schema::create('Customer Ledger Entries', function (Blueprint $table) {
-            $table->bigIncrements();
+            $table->bigIncrements('id');
             $table->string('CL_Entry_No')->nullable();
             $table->string('Document_No')->nullable();
             $table->string('Customer_No')->nullable();
