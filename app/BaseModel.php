@@ -6,6 +6,86 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
+    public function synch($functionCall, $endpointColumns)
+    {
+    	$write_to_disk = $this->getFromApi($functionCall);
+    	
+    	if ($write_to_disk)
+    		return $this->getData($functionCall, $endpointColumns);
+
+    	return false;
+    }
+
+    public function getFromApi($functionCall)
+    {
+        if(!is_dir(storage_path('app/endpoints/'))) mkdir(storage_path('app/endpoints/'), 0777);
+
+        $file = fopen(storage_path('app/endpoints/' . $functionCall .'.xml'), "a");
+
+        $writeString = (string)($this->xml_header($functionCall) .
+        				SoapCli::call($functionCall)->any . 
+        				$this->xml_footer($functionCall));
+
+		if (fwrite($file, $writeString) === FALSE)
+			fwrite("Error: no data written");
+
+		fwrite($file, "\r\n");
+		fclose($file);
+
+		return true;
+    }
+
+    public function getData($functionCall, $endpointColumns)
+    {
+    	$file_path = storage_path('app/endpoints/' . $functionCall .'.xml');
+    	$z = new \XMLReader;
+		$z->open(storage_path('app/endpoints/' . $functionCall .'.xml'));
+
+		$doc = new \DOMDocument;
+		$data = [];
+		$count = 0;
+		
+		while ($z->read())
+		{
+			while ($z->name == "Table") {
+				$node = simplexml_import_dom($doc->importNode($z->expand(), true));
+				foreach ($endpointColumns as $key => $value) {
+					$data[$count][$key] = ($key == 'Company_Code' && 
+												NULL === collect((array)$node->$value)->first()) ?
+											'BUL' :
+											collect((array)$node->$value)->first() ?? '';
+				}
+		    	$z->next('Table');
+		    	$count++;
+			}
+		}
+		if (!unlink($file_path)) {  
+		    echo ("$file_path cannot be deleted due to an error");  
+		}
+
+		return collect($data);
+    }
+
+    private function xml_header($functionCall)
+    {
+    	return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><' . $functionCall . 'Response xmlns="http://tempuri.org/"><' . $functionCall . 'Result>';
+    }
+
+    private function xml_footer($functionCall)
+    {
+    	return '</' . $functionCall . 'Result></' . $functionCall . 'Response></soap:Body></soap:Envelope>';
+    }
+
+
+
+
+
+
+
+
+
+
+
     public function dump_log($name, $writedata=null)
     {
     	if(!is_dir(storage_path('endpoints/logs/'))) mkdir(storage_path('endpoints/logs/'), 0777);

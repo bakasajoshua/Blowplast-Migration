@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Customer extends BaseModel
 {
     protected $table = 'Customer Master';
 
@@ -14,31 +14,19 @@ class Customer extends Model
 
     private $functionCall = "GetCustomers";
 
-    public function getFromApi()
-    {
-        return SoapCli::call($this->functionCall);
-    }
+    private $endpointColumns = [
+    				'Customer_No' => 'Customer_x0020_No',
+    				'Customer_Name' => 'Customer_x0020_Name',
+    				'Company_Code' => 'Company_x0020_Code'
+    			];
+    private $chunkQty = 100;
 
-    public function getData()
+    public function synchCustomer()
     {
-    	$z = new \XMLReader;
-		$z->open(public_path('data/customer.xml'));
-		$doc = new \DOMDocument;
-		$data = [];
-		$count = 0;
-		// move to the first <product /> node
-		while ($z->read())
-		{
-			while ($z->name == "Table") {
-				$node = simplexml_import_dom($doc->importNode($z->expand(), true));
-				$data[] = [
-						'Customer_No' => collect((array)$node->Customer_x0020_No)->first(),
-						'Customer_Name' => collect((array)$node->Customer_x0020_Name)->first() ?? '',
-						'Company_Code' => collect((array)$node->Company_x0020_Code)->first() ?? 'BUL'
-					];
-		    	$z->next('Table');
-			}
+    	$chunks = $this->synch($this->functionCall, $this->endpointColumns)->chunk($this->chunkQty);
+		foreach ($chunks as $key => $data) {
+			Customer::insert($data->toArray());
 		}
-		dd(collect($data));
+    	return true;
     }
 }
