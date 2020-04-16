@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GLEntries extends Model
+class GLEntries extends BaseModel
 {
     protected $table = 'GL Entries';
 
-    protected $primaryKey = 'GL_Entry_No';
+    // protected $primaryKey = 'GL_Entry_No';
 
-    protected $keyType = 'string';
+    // protected $keyType = 'string';
 
     protected $guarded = [];
 
@@ -28,18 +28,15 @@ class GLEntries extends Model
         'GL_Document_Type' => 'Document_x0020_Type'
         'Description' => 'Description'
         'Company_Code' => 'Company_x0020_Code'
-    ]
+    ];
+    private $chunkQty = 100;
 
-	public static function boot()
+    public function synchEntries()
     {
-        parent::boot();
-        static::creating(function (Model $model) {
-            $model->GL_Entry_No = $model->count() + 1;
-        });
-    }
-
-    public function getFromApi()
-    {
-        return SoapCli::call($this->functionCall);
+        $chunks = $this->synch($this->functionCall, $this->endpointColumns)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $data) {
+            GLEntries::insert($data->toArray());
+        }
+        return true;
     }
 }
