@@ -43,24 +43,28 @@ class GLEntries extends BaseModel
 
     public function call()
     {
-        // $soapClient = new \SoapClient(env('SOAP_URL'));
-        // $resultBody = $endpoint . "Result";
+        $soapClient = new \SoapClient(env('SOAP_URL'));
+        $resultBody = $this->functionCall . "Result";
+        $endpoint = $this->functionCall;
 
-        // try {
+        try {
             if(!is_dir(storage_path('app/endpoints/'))) mkdir(storage_path('app/endpoints/'), 0777);
             $file = fopen(storage_path('app/endpoints/' . $this->functionCall .'.xml'), "a");
             fwrite($file, $this->xml_header());
-            fwrite($file, "\r\n");
+            fwrite($file, $soapClient->$endpoint()->any);
             fwrite($file, $this->xml_footer());
-            // $response = $soapClient->__call($endpoint, $params);
-        //     $response = $soapClient->$endpoint();
-        // } catch (\SoapFault $fault) {
-        //     return (object)[
-        //         'error' => true,
-        //         'code' => $fault->faultcode,
-        //         'mesage' => $fault->faultstring,
-        //     ];
-        // }
+            
+            fwrite($file, "\r\n");
+            fclose($file);
+
+            return true;
+        } catch (\SoapFault $fault) {
+            return (object)[
+                'error' => true,
+                'code' => $fault->faultcode,
+                'mesage' => $fault->faultstring,
+            ];
+        }
         // return $response->$resultBody;
     }
 
