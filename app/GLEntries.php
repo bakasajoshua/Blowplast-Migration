@@ -41,7 +41,7 @@ class GLEntries extends BaseModel
         return true;
     }
 
-    public static function call()
+    public function call()
     {
         // $soapClient = new \SoapClient(env('SOAP_URL'));
         // $resultBody = $endpoint . "Result";
