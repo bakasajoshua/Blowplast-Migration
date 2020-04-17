@@ -40,4 +40,56 @@ class GLEntries extends BaseModel
         }
         return true;
     }
+
+    public static function call()
+    {
+        // $soapClient = new \SoapClient(env('SOAP_URL'));
+        // $resultBody = $endpoint . "Result";
+
+        // try {
+            if(!is_dir(storage_path('app/endpoints/'))) mkdir(storage_path('app/endpoints/'), 0777);
+            $file = fopen(storage_path('app/endpoints/' . $this->functionCall .'.xml'), "a");
+            fwrite($file, $this->xml_header());
+            fwrite($file, "\r\n");
+            fwrite($file, $this->xml_footer());
+            // $response = $soapClient->__call($endpoint, $params);
+        //     $response = $soapClient->$endpoint();
+        // } catch (\SoapFault $fault) {
+        //     return (object)[
+        //         'error' => true,
+        //         'code' => $fault->faultcode,
+        //         'mesage' => $fault->faultstring,
+        //     ];
+        // }
+        // return $response->$resultBody;
+    }
+
+    // public function getFromApi($functionCall)
+    // {
+    //     if(!is_dir(storage_path('app/endpoints/'))) mkdir(storage_path('app/endpoints/'), 0777);
+
+    //     $file = fopen(storage_path('app/endpoints/' . $functionCall .'.xml'), "a");
+
+    //     $writeString = (string)($this->xml_header($functionCall) .
+    //                     SoapCli::call($functionCall)->any . 
+    //                     $this->xml_footer($functionCall));
+
+    //     if (fwrite($file, $writeString) === FALSE)
+    //         fwrite("Error: no data written");
+
+    //     fwrite($file, "\r\n");
+    //     fclose($file);
+
+    //     return true;
+    // }
+
+    private function xml_header()
+    {
+        return '<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><' . $this->functionCall . 'Response xmlns="http://tempuri.org/"><' . $this->functionCall . 'Result>';
+    }
+
+    private function xml_footer()
+    {
+        return '</' . $this->functionCall . 'Result></' . $this->functionCall . 'Response></soap:Body></soap:Envelope>';
+    }
 }
