@@ -14,7 +14,8 @@ class CreateGLEntriesTable extends Migration
     public function up()
     {
         Schema::create('GL Entries', function (Blueprint $table) {
-            $table->string('GL_Entry_No', 50)->primary();
+            $table->bigIncrements('id');
+            $table->string('GL_Entry_No', 50);
             $table->string('GL_Account_No', 50)->nullable();
             $table->string('Balancing_GL_Account_No', 50)->nullable();
             $table->float('Amounts', 24, 2)->nullable();

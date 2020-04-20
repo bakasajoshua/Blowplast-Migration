@@ -13,7 +13,7 @@ class ImportExcel extends Command
      *
      * @var string
      */
-    protected $signature = 'import';
+    protected $signature = 'import:data';
 
     /**
      * The console command description.

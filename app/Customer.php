@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Customer extends BaseModel
 {
     protected $table = 'Customer Master';
 
@@ -14,8 +14,19 @@ class Customer extends Model
 
     private $functionCall = "GetCustomers";
 
-    public function getFromApi()
+    private $endpointColumns = [
+    				'Customer_No' => 'Customer_x0020_No',
+    				'Customer_Name' => 'Customer_x0020_Name',
+    				'Company_Code' => 'Company_x0020_Code'
+    			];
+    private $chunkQty = 100;
+
+    public function synchCustomer()
     {
-        return SoapCli::call($this->functionCall);
+    	$chunks = $this->synch($this->functionCall, $this->endpointColumns)->chunk($this->chunkQty);
+		foreach ($chunks as $key => $data) {
+			Customer::insert($data->toArray());
+		}
+    	return true;
     }
 }
