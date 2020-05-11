@@ -7,6 +7,7 @@ use App\Day;
 use App\Month;
 use App\MonthOfYear;
 use App\Quarter;
+use App\Week;
 use App\Year;
 
 class ImportTime extends Command
@@ -62,6 +63,7 @@ class ImportTime extends Command
         Quarter::truncate();
         MonthOfYear::truncate();
         Month::truncate();
+        Week::truncate();
         Day::truncate();
         // dd('truncate');
         // Truncate the time data
@@ -75,6 +77,8 @@ class ImportTime extends Command
         $current_year_data = NULL;
         $current_month = NULL;
         $current_month_data = NULL;
+        $current_week = NULL;
+        $current_week_data = NULL;
         $days = collect([]);
         $loop_date = env('START_DATE');
         while (strtotime($loop_date) < strtotime(env('END_DATE'))) {
@@ -102,10 +106,18 @@ class ImportTime extends Command
             }
             // Get and create the month
 
+            // Create weeks
+            $current_week = $this->getCurrentWeek($loop_date);
+            // dd($current_week);
+            if (Week::find($current_week['week']) == null) {
+                $this->createWeekData($current_week);
+            }
+            // Create weeks
+
             // Create the day
             $days->push([
                             'day_id' => $loop_date,
-                            'week' => 0,
+                            'week' => $current_week['week'],
                             'month' => $current_month
                         ]);
             $loop_date = date('Y-m-d', strtotime("+1 day", strtotime($loop_date)));
@@ -179,5 +191,26 @@ class ImportTime extends Command
             if (in_array($month, $quarter))
                 return Quarter::where('quarter_description', $key)->first();
         }
+    }
+
+    private function createWeekData($week)
+    {
+        return Week::create($week);
+    }
+
+    private function getCurrentWeek($date)
+    {
+        $date = strtotime($date);
+        $ret['year'] = date('Y', $date);
+        $week = date('W', $date);
+
+        $dto = new \DateTime();
+        $dto->setISODate($ret['year'], $week);
+        $ret['start'] = date('Y-m-d', strtotime("-1 day", strtotime($dto->format('Y-m-d'))));
+        $ret['end'] = date('Y-m-d', strtotime("+6 day", strtotime($ret['start'])));
+        $ret['last_week'] = date('o/W', strtotime($ret['start']));
+        $ret['next_week'] = date('o/W', strtotime("+2 days", strtotime($ret['end'])));
+        $ret['week'] = date('o/W', strtotime($ret['end']));
+        return $ret;
     }
 }

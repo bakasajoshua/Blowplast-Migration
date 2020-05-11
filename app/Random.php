@@ -47,4 +47,16 @@ class Random extends Model
 		//     throw $e;
 		// }
     }
+
+    public static function test()
+    {
+    	$date = strtotime('2020-01-01');
+    	$dto = new \DateTime();
+    	return [
+    			'Year' => date('o', $date),
+    			'Week' => date('W', $date),
+    			'start_date' => $dto->setISODate(date('o', $date), date('W', $date))->format('Y-m-d'),
+    			'dis' => date('o/w', $date)
+    		];
+    }
 }

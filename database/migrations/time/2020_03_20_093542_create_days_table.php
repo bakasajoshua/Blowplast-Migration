@@ -15,7 +15,7 @@ class CreateDaysTable extends Migration
     {
         Schema::create('LU_Day', function (Blueprint $table) {
             $table->date('day_id')->primary();
-            $table->integer('week');
+            $table->string('week');
             $table->string('month');
  
             // $table->foreign('month')->references('month_id')->on('LU_Month');
