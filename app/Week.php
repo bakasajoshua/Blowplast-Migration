@@ -11,4 +11,8 @@ class Week extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $keyType = 'string';
+
+    protected $primaryKey = 'week';
 }

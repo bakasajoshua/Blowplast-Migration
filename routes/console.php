@@ -17,7 +17,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->describe('Display an inspiring quote');
 
-// Artisan::command('import', function () {
-// 	$str = \App\Random::import();
-//     $this->info($str);
-// })->describe('Import Data from Excel to DB');
+Artisan::command('vehicles', function () {
+	$str = \App\Random::import();
+    $this->info($str);
+})->describe('Import Data from Excel to DB');
