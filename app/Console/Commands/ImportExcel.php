@@ -44,19 +44,19 @@ class ImportExcel extends Command
     public function handle()
     {
         $this->output->title('Starting on Data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
-        (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
-        $item = new Inventory;
-        $synch = $item->synchItems();
-        $customer = new Customer;
-        $synch = $customer->synchCustomer();
-        $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
+        // $item = new Inventory;
+        // $synch = $item->synchItems();
+        // $customer = new Customer;
+        // $synch = $customer->synchCustomer();
+        // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
-        $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
-        $gl = new GLAccounts;
-        $accounts = $gl->synchAccounts();
-        $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
+        // $gl = new GLAccounts;
+        // $accounts = $gl->synchAccounts();
+        // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
         $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
         $entries = $this->processGLEntries();
         $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
@@ -66,8 +66,9 @@ class ImportExcel extends Command
 
     private function processGLEntries()
     {
-        $start_date = '2020-01-01';
-        while (strtotime(date('Y-m-d')) > strtotime($start_date)) {
+        $start_date = '2019-01-01';
+        $final_date = '2019-12-31';
+        while (strtotime($final_date) >= strtotime($start_date)) {
             $end_date = date('Y-m-d', strtotime('+5 days', strtotime($start_date)));
             $date_range = [
                         'SDate' => $start_date,
