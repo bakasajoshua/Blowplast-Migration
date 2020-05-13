@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SalesInvoiceCreditMemoLine extends Model
+class SalesInvoiceCreditMemoLine extends BaseModel
 {
     protected $table = 'Sales Invoice Credit Memo Lines';
 
