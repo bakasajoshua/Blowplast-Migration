@@ -9,6 +9,7 @@ use App\Customer;
 use App\Inventory;
 use App\GLAccounts;
 use App\GLEntries;
+use App\SalesInvoiceCreditMemoLine;
 
 class ImportExcel extends Command
 {
@@ -57,17 +58,24 @@ class ImportExcel extends Command
         // $gl = new GLAccounts;
         // $accounts = $gl->synchAccounts();
         // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
-        $entries = $this->processGLEntries();
-        $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
+        // $entries = $this->processGLEntries();
+        // $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
+
+        $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processSalesLines();
+        $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
+
         $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
 
     private function processGLEntries()
     {
-        $start_date = '2019-01-01';
-        $final_date = '2019-12-31';
+        $start_date = '2018-01-01';
+        $final_date = '2020-05-10';
         while (strtotime($final_date) >= strtotime($start_date)) {
             $end_date = date('Y-m-d', strtotime('+5 days', strtotime($start_date)));
             $date_range = [
@@ -76,6 +84,23 @@ class ImportExcel extends Command
                     ];
             $gl = new GLEntries;
             $synch = $gl->synchEntries($date_range);
+            $start_date = $end_date;
+        }
+        return true;
+    }
+
+    private function processSalesLines()
+    {
+        $start_date = '2018-01-01';
+        $final_date = '2020-05-10';
+        while (strtotime($final_date) >= strtotime($start_date)) {
+            $end_date = date('Y-m-d', strtotime('+10 days', strtotime($start_date)));
+            $date_range = [
+                        'SDate' => $start_date,
+                        'EDate' => $end_date
+                    ];
+            $lines = new SalesInvoiceCreditMemoLine;
+            $synch = $lines->synchLines($date_range);
             $start_date = $end_date;
         }
         return true;
