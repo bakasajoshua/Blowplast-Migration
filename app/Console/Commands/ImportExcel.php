@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
 use Illuminate\Console\Command;
+use App\Customer;
 use App\Inventory;
 use App\GLAccounts;
 use App\GLEntries;
@@ -42,38 +43,35 @@ class ImportExcel extends Command
      */
     public function handle()
     {
-        $this->output->title('Starting on Data import');
-        $this->output->title('Starting master data import');
+        $this->output->title('Starting on Data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
         (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
         $item = new Inventory;
         $synch = $item->synchItems();
-        $this->output->success('Master data import successful');
-        $this->output->title('Starting finance data import');
-        $this->output->title('Starting GL Accounts data import');
+        $customer = new Customer;
+        $synch = $customer->synchCustomer();
+        $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
+
+        $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
         $gl = new GLAccounts;
         $accounts = $gl->synchAccounts();
-        $this->output->success('GL Accounts data import successful');
-        $this->output->title('Starting GL Entries data import');
+        $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
         $entries = $this->processGLEntries();
-        $this->output->success('GL Entries data import successful');
-        $this->output->success('Finance data import successful');
-        // $this->output->title('Starting Importing GL Entries');
-        // (new GLEntriesSheetImport)->withOutput($this->output)->import(public_path('import/glentries.csv'));
-        // $this->output->success('Import of GL Entries successful');
-
-        // $this->output->title('Starting Importing general data');
-        // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
-        // $this->output->success('Import of general data successful');
+        $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
 
     private function processGLEntries()
     {
-        $start_date = '2018-01-01';
-        while (strtotime(date('Y-m-d') > strtotime($start_date))) {
+        $start_date = '2020-01-01';
+        while (strtotime(date('Y-m-d')) > strtotime($start_date)) {
             $end_date = date('Y-m-d', strtotime('+5 days', strtotime($start_date)));
             $date_range = [
                         'SDate' => $start_date,
-                        'EDate' => $end_date;
+                        'EDate' => $end_date
                     ];
             $gl = new GLEntries;
             $synch = $gl->synchEntries($date_range);
