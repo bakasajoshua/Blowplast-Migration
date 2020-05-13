@@ -8,10 +8,9 @@ class SoapCli
     {
     	$soapClient = new \SoapClient(env('SOAP_URL'));
         $resultBody = $endpoint . "Result";
-
     	try {
             // $response = $soapClient->__call($endpoint, $params);
-            $response = $soapClient->$endpoint();
+            $response = $soapClient->$endpoint($params);
         } catch (\SoapFault $fault) {
             return (object)[
                 'error' => true,
@@ -21,4 +20,6 @@ class SoapCli
         }
         return $response->$resultBody;
     }
+
+    // public static function callFunction
 }
