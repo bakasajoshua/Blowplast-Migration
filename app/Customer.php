@@ -23,10 +23,18 @@ class Customer extends BaseModel
 
     public function synchCustomer()
     {
-    	$chunks = $this->synch($this->functionCall, $this->endpointColumns)->chunk($this->chunkQty);
-		foreach ($chunks as $key => $data) {
-			Customer::insert($data->toArray());
-		}
+    	$synchData = $this->synch($this->functionCall, $this->endpointColumns);
+        $customers = [];
+
+        foreach ($synchData as $key => $customer) {
+            $customer['Company_Code'] = 'BUL';
+            $customers[] = $customer;
+        }
+
+        $chunks = collect($customers);
+        foreach($chunks as $key => $chunk){
+            Customer::insert($chunk);
+        }
     	return true;
     }
 }

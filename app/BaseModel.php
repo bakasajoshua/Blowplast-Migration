@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
-    public function synch($functionCall, $endpointColumns)
+    public function synch($functionCall, $endpointColumns, $params = [])
     {
-    	$write_to_disk = $this->getFromApi($functionCall);
+    	$write_to_disk = $this->getFromApi($functionCall, $params);
     	
     	if ($write_to_disk)
     		return $this->getData($functionCall, $endpointColumns);
@@ -16,19 +16,21 @@ class BaseModel extends Model
     	return false;
     }
 
-    public function getFromApi($functionCall)
+    public function getFromApi($functionCall, $params)
     {
         if(!is_dir(storage_path('app/endpoints/'))) mkdir(storage_path('app/endpoints/'), 0777);
 
         $file = fopen(storage_path('app/endpoints/' . $functionCall .'.xml'), "a");
 
-        $writeString = (string)($this->xml_header($functionCall) .
-        				SoapCli::call($functionCall)->any . 
+        if (null !== SoapCli::call($functionCall, $params)->any){
+        	$writeString = (string)($this->xml_header($functionCall) .
+        				SoapCli::call($functionCall, $params)->any . 
         				$this->xml_footer($functionCall));
 
-		if (fwrite($file, $writeString) === FALSE)
-			fwrite("Error: no data written");
-
+			if (fwrite($file, $writeString) === FALSE)
+				fwrite("Error: no data written");
+        }
+        
 		fwrite($file, "\r\n");
 		fclose($file);
 
