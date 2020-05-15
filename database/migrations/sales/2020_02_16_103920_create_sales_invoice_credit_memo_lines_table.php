@@ -14,7 +14,8 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
     public function up()
     {
         Schema::create('Sales Invoice Credit Memo Lines', function (Blueprint $table) {
-            $table->string('SI_Li_Line_No')->primary();
+            $table->bigIncrements('id');
+            $table->string('SI_Li_Line_No');
             $table->string('Invoice_Credit_Memo_No')->nullable();
             $table->string('SI_Li_Document_No')->nullable();
             $table->string('Item_No', 50)->nullable();

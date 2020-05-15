@@ -9,6 +9,7 @@ use App\Customer;
 use App\Inventory;
 use App\GLAccounts;
 use App\GLEntries;
+use App\SalesInvoiceCreditMemoHeader;
 use App\SalesInvoiceCreditMemoLine;
 
 class ImportExcel extends Command
@@ -64,10 +65,13 @@ class ImportExcel extends Command
         // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesLines();
-        $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processSalesHeaders();
+        $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesLines();
+        // $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
@@ -89,6 +93,15 @@ class ImportExcel extends Command
         return true;
     }
 
+    private function processSalesHeaders()
+    {
+        $start_date = '2018-01-01';
+        $final_date = '2020-05-15'; // 2020-05-15
+        return $this->processImportData(SalesInvoiceCreditMemoHeader::class,
+                                    'synchHeaders', $start_date,
+                                    $final_date, 20);
+    }
+
     private function processSalesLines()
     {
         $start_date = '2018-01-01';
@@ -101,6 +114,22 @@ class ImportExcel extends Command
                     ];
             $lines = new SalesInvoiceCreditMemoLine;
             $synch = $lines->synchLines($date_range);
+            $start_date = $end_date;
+        }
+        return true;
+    }
+
+    private function processImportData($model, $function, $start_date, $final_date, $incremental)
+    {
+        $model = new $model;
+        while (strtotime($final_date) >= strtotime($start_date)) {
+            $end_date = date('Y-m-d', strtotime('+'.$incremental.' days', strtotime($start_date)));
+            $date_range = [
+                        'SDate' => $start_date,
+                        'EDate' => $end_date
+                    ];           
+            
+            $synch = $model->$function($date_range);
             $start_date = $end_date;
         }
         return true;
