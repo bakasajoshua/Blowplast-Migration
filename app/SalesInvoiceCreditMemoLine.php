@@ -16,6 +16,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
     private $endpointColumns = [
         'SI_Li_Line_No' => 'LineNum',
+        'Invoice_Credit_Memo_No' => 'Document_x0020_No',
 		'SI_Li_Document_No' => 'Document_x0020_No',
 		'Item_No' => 'ItemCode',
 		'Item_Weight_kg' => 'Item_x0020_Weight_x0020_in_x0020_kg',

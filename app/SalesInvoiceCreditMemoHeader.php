@@ -15,7 +15,7 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
     private $functionCall = "GetInvoiceCreditHeader";
 
     private $endpointColumns = [
-			'Invoice_Credit_Memo_No' => 'Entry_x0020_No',
+			'Invoice_Credit_Memo_No' => 'Document_x0020_No',
 			'SI_Document_No' => 'Document_x0020_No',
 			'Sell-To-Customer-No' => 'Customer_x0020_No.',
 			'Sell-To-Customer-Name' => 'Customer_x0020_Name',

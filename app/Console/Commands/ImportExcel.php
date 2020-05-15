@@ -66,16 +66,16 @@ class ImportExcel extends Command
         // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processCustomerLedgEntries();
-        $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
-        // $lines = $this->processSalesHeaders();
-        // $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
-        // $lines = $this->processSalesLines();
-        // $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processCustomerLedgEntries();
+        // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processSalesHeaders();
+        $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processSalesLines();
+        $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
