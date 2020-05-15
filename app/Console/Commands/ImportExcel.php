@@ -6,6 +6,7 @@ use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
 use Illuminate\Console\Command;
 use App\Customer;
+use App\CustomerLedgerEntry;
 use App\Inventory;
 use App\GLAccounts;
 use App\GLEntries;
@@ -65,9 +66,12 @@ class ImportExcel extends Command
         // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesHeaders();
-        $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processCustomerLedgEntries();
+        $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesHeaders();
+        // $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
         // $lines = $this->processSalesLines();
         // $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
@@ -100,6 +104,15 @@ class ImportExcel extends Command
         return $this->processImportData(SalesInvoiceCreditMemoHeader::class,
                                     'synchHeaders', $start_date,
                                     $final_date, 20);
+    }
+
+    private function processCustomerLedgEntries()
+    {
+        $start_date = '2018-01-01';
+        $final_date = '2020-05-15';
+        return $this->processImportData(CustomerLedgerEntry::class,
+                                    'synchEntries', $start_date,
+                                    $final_date, 30);
     }
 
     private function processSalesLines()

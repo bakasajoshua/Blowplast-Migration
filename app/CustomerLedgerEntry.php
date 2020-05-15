@@ -46,12 +46,12 @@ class CustomerLedgerEntry extends BaseModel
     //     });
     // }
 
-    public function synchEntries()
+
+
+    public function synchEntries($params = [])
     {
         ini_set("memory_limit", "-1");
-        $chunks = $this->synch($this->functionCall, $this->endpointColumns)
-                        ->chunk($this->chunkQty);
-        
+        $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
             CustomerLedgerEntry::insert($data->toArray());
         }
