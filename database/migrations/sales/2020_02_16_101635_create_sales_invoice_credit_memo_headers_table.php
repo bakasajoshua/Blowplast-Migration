@@ -14,7 +14,8 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
     public function up()
     {
         Schema::create('Sales Invoice Credit Memo Headers', function (Blueprint $table) {
-            $table->string('Invoice_Credit_Memo_No')->primary();
+            $table->bigIncrements('id');
+            $table->string('Invoice_Credit_Memo_No');
             $table->string('SI_Document_No')->nullable();
             $table->string('Sell-To-Customer-No')->nullable();
             $table->string('Sell-To-Customer-Name')->nullable();

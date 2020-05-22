@@ -22,6 +22,8 @@ class GLEntries extends BaseModel
         'GL_Entry_No' => 'Entry_x0020_No',
         'GL_Account_No' => 'GL_x0020_Account_x0020_Number',
         'Balancing_GL_Account_No' => 'Balancing_x0020_GL_x0020_Account_x0020_No',
+        'Debit' => 'Debit',
+        'Credit' => 'Credit',
         'Amounts' => 'Amount',
         'GL_Posting_Date' => 'Posting_x0020_Date',
         'GL_Document_No' => 'Document_x0020_Number',

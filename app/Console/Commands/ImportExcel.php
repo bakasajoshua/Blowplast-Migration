@@ -55,27 +55,27 @@ class ImportExcel extends Command
         // $synch = $customer->synchCustomer();
         // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
-        // $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
         // $gl = new GLAccounts;
         // $accounts = $gl->synchAccounts();
         // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
-        // $entries = $this->processGLEntries();
-        // $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
+        $entries = $this->processGLEntries();
+        $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
-        $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
         // $lines = $this->processCustomerLedgEntries();
         // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesHeaders();
-        $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesLines();
-        $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesHeaders();
+        // $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesLines();
+        // $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
@@ -83,7 +83,7 @@ class ImportExcel extends Command
     private function processGLEntries()
     {
         $start_date = '2018-01-01';
-        $final_date = '2020-05-10';
+        $final_date = date('Y-m-d'); //'2020-05-17';
         while (strtotime($final_date) >= strtotime($start_date)) {
             $end_date = date('Y-m-d', strtotime('+5 days', strtotime($start_date)));
             $date_range = [
