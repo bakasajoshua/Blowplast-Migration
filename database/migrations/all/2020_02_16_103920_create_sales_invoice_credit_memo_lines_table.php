@@ -14,21 +14,22 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
     public function up()
     {
         Schema::create('Sales Invoice Credit Memo Lines', function (Blueprint $table) {
-            $table->string('SI_Li_Line_No')->primary();
+            $table->bigIncrements('id');
+            $table->string('SI_Li_Line_No');
             $table->string('Invoice_Credit_Memo_No')->nullable();
             $table->string('SI_Li_Document_No')->nullable();
             $table->string('Item_No', 50)->nullable();
-            $table->decimal('Item_Weight_kg', 12, 2)->nullable();
-            $table->decimal('Item_Price_kg', 12, 2)->nullable();
+            $table->float('Item_Weight_kg', 12, 2)->nullable();
+            $table->float('Item_Price_kg', 12, 2)->nullable();
             $table->text('Item_Description')->nullable();
-            $table->integer('Quantity')->nullable();
-            $table->decimal('Unit_Price', 12, 2)->nullable();
-            $table->decimal('Unit_Cost', 12, 2)->nullable();
+            $table->float('Quantity')->nullable();
+            $table->float('Unit_Price', 12, 2)->nullable();
+            $table->float('Unit_Cost', 12, 2)->nullable();
             $table->string('Company_Code')->nullable();
             $table->string('Currency_Code')->nullable();
             $table->enum('Type', ['Invoice', 'Credit Memo', 'Credit Note'])->nullable();
-            $table->decimal('Total_Amount_Excluding_Tax', 12, 2)->nullable();
-            $table->decimal('Total_Amount_Including_Tax', 12, 2)->nullable();
+            $table->float('Total_Amount_Excluding_Tax', 12, 2)->nullable();
+            $table->float('Total_Amount_Including_Tax', 12, 2)->nullable();
             $table->string('Sales_Unit_of_Measure')->nullable();
             $table->date('SI_Li_Posting_Date')->nullable();
             $table->date('SI_Li_Order_Date')->nullable();
