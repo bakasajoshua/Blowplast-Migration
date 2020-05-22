@@ -47,13 +47,13 @@ class ImportExcel extends Command
     public function handle()
     {
         $this->output->title('Starting on Data import ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
-        // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
         // $item = new Inventory;
         // $synch = $item->synchItems();
         // $customer = new Customer;
         // $synch = $customer->synchCustomer();
-        // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
