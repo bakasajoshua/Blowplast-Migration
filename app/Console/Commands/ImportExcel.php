@@ -47,13 +47,13 @@ class ImportExcel extends Command
     public function handle()
     {
         $this->output->title('Starting on Data import ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
-        // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
         // $item = new Inventory;
         // $synch = $item->synchItems();
         // $customer = new Customer;
         // $synch = $customer->synchCustomer();
-        // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
         // $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
@@ -65,17 +65,17 @@ class ImportExcel extends Command
         // $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
         // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
-        $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
         // $lines = $this->processCustomerLedgEntries();
         // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesHeaders();
-        $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesLines();
-        $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesHeaders();
+        // $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesLines();
+        // $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
