@@ -16,7 +16,8 @@
         "laravel/tinker": "^2.0",
         "maatwebsite/excel": "^3.1",
         "predis/predis": "^1.1",
-        "ramsey/uuid": "^3.9"
+        "ramsey/uuid": "^3.9",
+        "yajra/laravel-oci8": "^6"
     },
     "require-dev": {
         "beyondcode/laravel-er-diagram-generator": "^1.4",

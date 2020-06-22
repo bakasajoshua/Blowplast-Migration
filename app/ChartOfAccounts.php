@@ -11,4 +11,8 @@ class ChartOfAccounts extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $keyType = 'string';
+
+    protected $primaryKey = 'Level_2_ID';
 }

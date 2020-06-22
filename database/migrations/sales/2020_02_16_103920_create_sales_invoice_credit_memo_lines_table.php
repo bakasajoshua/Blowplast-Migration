@@ -22,7 +22,7 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
             $table->float('Item_Weight_kg', 12, 2)->nullable();
             $table->float('Item_Price_kg', 12, 2)->nullable();
             $table->text('Item_Description')->nullable();
-            $table->integer('Quantity')->nullable();
+            $table->float('Quantity')->nullable();
             $table->float('Unit_Price', 12, 2)->nullable();
             $table->float('Unit_Cost', 12, 2)->nullable();
             $table->string('Company_Code')->nullable();

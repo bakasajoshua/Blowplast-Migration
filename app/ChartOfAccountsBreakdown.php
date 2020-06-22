@@ -11,4 +11,8 @@ class ChartOfAccountsBreakdown extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $keyType = 'string';
+
+    protected $primaryKey = 'Level_3_ID';
 }

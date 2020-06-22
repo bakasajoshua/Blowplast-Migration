@@ -7,6 +7,7 @@ use Tightenco\Collect\Support\Collection;
 use Rodenastyle\StreamParser\StreamParser;
 use Illuminate\Support\Facades\Redis;
 
+use DB;
 class GLAccounts extends BaseModel
 {
     protected $table = 'GL Accounts';
@@ -16,17 +17,17 @@ class GLAccounts extends BaseModel
     public $timestamps = false;
 
     private $functionCall = "GetGLAccount";
-    // private $functionCall = "HelloWorld";
+    
     private $endpointColumns = [
                     'GL_Account_No' => 'GL_x0020_Account_x0020_No',
                     'GL_Account_Name' => 'GL_x0020_Account_x0020_Name',
-                    'Income_Balance' => 'Income_x002F__x0020_Balance',
                     'Blocked' => 'Status',
                     'Company_Code' => 'Company_x0020_Code',
-                    'GL_Account_Level_1' => 'GL_x0020_Account_x0020_Type',
-                    'GL_Account_Level_2' => 'Chart_x0020_of_x0020_Account_x0020_Group',
-                    //'GL_Account_Level_3' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
+                    'GL_Account_Type' => 'GL_x0020_Account_x0020_Type',
+                    'Chart_of_Account_Group' => 'Chart_x0020_of_x0020_Account_x0020_Group',
+                    'Chart_ofAccount_Group_Name' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
                 ];
+
     private $chunkQty = 10;
 
     public function synchAccounts()
@@ -68,4 +69,24 @@ class GLAccounts extends BaseModel
         return true;
     }
 
+    public function fetchData()
+    {
+        return $this->synch($this->functionCall, $this->endpointColumns);
+    }
+
+    public static function synchKEData()
+    {
+
+        $data = DB::connection('oracle')->select('select * from fin.fin_gl_vw');
+        foreach ($data as $key => $value) {
+            $account = (array) $value;
+            $accounts = explode('->', $account['chart of group']);
+            dd($accounts);
+        }
+    }
+
+    
+
 }
+
+
