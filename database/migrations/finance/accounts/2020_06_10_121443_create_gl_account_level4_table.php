@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterGLAccountsLevel3 extends Migration
+class CreateGlAccountLevel4Table extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,10 @@ class AlterGLAccountsLevel3 extends Migration
      */
     public function up()
     {
-        Schema::table('GL_Accounts_Level_3', function (Blueprint $table) {
+        Schema::create('GL_Accounts_Level_4', function (Blueprint $table) {
+            $table->string('Level_4_ID')->primary();
+            $table->string('Level_4_Description');
+            $table->string('Level_3_ID');
             $table->string('Company_Code')->nullable();
         });
     }
@@ -25,6 +28,6 @@ class AlterGLAccountsLevel3 extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('GL_Accounts_Level_4');
     }
 }

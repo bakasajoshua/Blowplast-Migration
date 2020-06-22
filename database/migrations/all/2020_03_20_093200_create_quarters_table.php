@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterGLAccountsLevel1 extends Migration
+class CreateQuartersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AlterGLAccountsLevel1 extends Migration
      */
     public function up()
     {
-        Schema::table('GL_Accounts_Level_1', function (Blueprint $table) {
-            $table->string('Company_Code')->nullable();
+        Schema::create('LU_Quarter', function (Blueprint $table) {
+            $table->tinyInteger('quarter')->primary();
+            $table->string('quarter_description');
         });
     }
 
@@ -25,6 +26,6 @@ class AlterGLAccountsLevel1 extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('LU_Quarter');
     }
 }

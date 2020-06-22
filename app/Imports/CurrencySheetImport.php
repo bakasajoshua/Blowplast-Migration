@@ -16,8 +16,8 @@ class CurrencySheetImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Currency([
-            "Currency_Code" => $row["country_code"],
-            "Country_Code" => $row["currency_code"],
+            "Currency_Code" => $row["currency_code"],
+            "Country_Code" => $row["country_code"],
             "Exchange_Rate" => $row["exchange_rate"],
         ]);
     }

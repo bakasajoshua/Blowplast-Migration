@@ -12,6 +12,8 @@ class AccountType extends Model
 
     protected $guarded = [];
 
+    protected $primaryKey = 'Level_1_ID';
+
     public $timestamps = false;
 
     protected $primaryKey = 'Level_1_ID';
