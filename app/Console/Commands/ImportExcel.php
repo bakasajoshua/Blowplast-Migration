@@ -68,17 +68,6 @@ class ImportExcel extends Command
         // $gl = new GLAccounts;
         // $accounts = $gl->synchAccounts();
         // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
-<<<<<<< HEAD
-        // $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
-        $entries = $this->processGLEntries();
-        // $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
-
-        // $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
-        // // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
-        // // $lines = $this->processCustomerLedgEntries();
-        // // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-=======
         $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
         $entries = $this->processGLEntries();
         $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
@@ -88,7 +77,6 @@ class ImportExcel extends Command
         // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
         // $lines = $this->processCustomerLedgEntries();
         // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
->>>>>>> 7915e832246f33f7717226463075d4e9e2f26171
         // $this->output->title('Starting Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
         // $lines = $this->processSalesHeaders();
         // $this->output->success('Sales invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
@@ -102,25 +90,8 @@ class ImportExcel extends Command
 
     private function processGLEntries()
     {
-<<<<<<< HEAD
-        $start_date = '2018-01-01';
-        $final_date = '2018-01-20';
-        while (strtotime($final_date) >= strtotime($start_date)) {
-            $end_date = date('Y-m-d', strtotime('+5 days', strtotime($start_date)));
-            $date_range = [
-                        'SDate' => $start_date,
-                        'EDate' => $end_date
-                    ];
-            // $gl = new GLEntries;
-            // $synch = $gl->synchEntries($date_range);
-            $start_date = date('Y-m-d', strtotime('+1 day', strtotime($end_date)));
-            print_r($date_range);
-        }
-        return true;
-=======
         return $this->processImportData(GLEntries::class,
                                     'synchEntries', 5);
->>>>>>> 7915e832246f33f7717226463075d4e9e2f26171
     }
 
     private function processSalesHeaders()
