@@ -27,7 +27,6 @@ class GLAccounts extends BaseModel
                     'Chart_of_Account_Group' => 'Chart_x0020_of_x0020_Account_x0020_Group',
 <<<<<<< HEAD
                     'Chart_ofAccount_Group_Name' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
-=======
                     //'GL_Account_Level_3' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
 >>>>>>> 7915e832246f33f7717226463075d4e9e2f26171
                 ];
