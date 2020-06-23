@@ -14,14 +14,10 @@ class ChartOfAccountsBreakdown extends Model
 
     public $timestamps = false;
 
-<<<<<<< HEAD
     protected $keyType = 'string';
 
-    protected $primaryKey = 'Level_3_ID';
-=======
     public function level2()
     {
     	return $this->belongsTo(ChartOfAccounts::class, 'Level_2_ID', 'Level_2_ID');
     }
->>>>>>> 7915e832246f33f7717226463075d4e9e2f26171
 }

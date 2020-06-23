@@ -16,8 +16,6 @@ class AccountType extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = 'Level_1_ID';
-
     public static function syncKELevel1()
     {
     	echo "==> Pulling in the DB data " . date('Y-m-d H:i:s') . "\n";
