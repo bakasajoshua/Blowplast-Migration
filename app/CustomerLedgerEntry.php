@@ -55,6 +55,10 @@ class CustomerLedgerEntry extends BaseModel
         foreach ($chunks as $key => $data) {
             CustomerLedgerEntry::insert($data->toArray());
         }
+        foreach (CustomerLedgerEntry::get() as $key => $entry) {
+            $entry->Company_Code = 'BUL';
+            $entry->save();
+        }
         return true;
     }
 }

@@ -25,11 +25,8 @@ class GLAccounts extends BaseModel
                     'Company_Code' => 'Company_x0020_Code',
                     'GL_Account_Type' => 'GL_x0020_Account_x0020_Type',
                     'Chart_of_Account_Group' => 'Chart_x0020_of_x0020_Account_x0020_Group',
-<<<<<<< HEAD
                     'Chart_ofAccount_Group_Name' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
-=======
                     //'GL_Account_Level_3' => 'Chart_x0020_of_x0020_Account_x0020_Group_x0020_Name'
->>>>>>> 7915e832246f33f7717226463075d4e9e2f26171
                 ];
 
     private $chunkQty = 10;
@@ -199,17 +196,132 @@ class GLAccounts extends BaseModel
 
     public static function synchKEData()
     {
-
+        // $data = self::dataSource();
         $data = DB::connection('oracle')->select('select * from fin.fin_gl_vw');
         foreach ($data as $key => $value) {
             $account = (array) $value;
-            $accounts = explode('->', $account['chart of group']);
-            dd($accounts);
+            $account_levels = self::saveKEAccountLevels($account['chart of group']);
+            // dd($account);
+            // dd($accounts);
         }
+        dd($account_levels);
     }
 
-    
+    private static function saveKEAccountLevels($account_string)
+    {
+        $accounts = explode('->', $account_string);
+        $return_Level = [];
+        if (array_key_exists(0,$accounts)) {
+            // Save level 1 Account
+            $level_1 = AccountType::where('Level_1_Description', $accounts[0])->first();
+            if (!$level_1){
+                $level_1 = AccountType::create([
+                                        'Level_1_ID' => self::getGenericID(),
+                                        'Level_1_Description' => $accounts[0]
+                                    ]);
+                
+            }
+            if (array_key_exists(1,$accounts)) {
+                $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+                if (!$level_2){
+                    // Save level 2 Account
+                    $level_2 = ChartOfAccounts::create([
+                                        'Level_2_ID' => self::getGenericID(),
+                                        'Level_2_Description' => $accounts[1],
+                                        'Level_1_ID' => $level_1->Level_1_ID
+                                    ]);
+                }
+                if (array_key_exists(2,$accounts)) {
+                    $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+                    if (!$level_3){
+                        // Save level 3 Account
+                        $level_3 = ChartOfAccountsBreakdown::create([
+                                            'Level_3_ID' => self::getGenericID(),
+                                            'Level_3_Description' => $accounts[2],
+                                            'Level_2_ID' => $level_2->Level_2_ID
+                                        ]);
+                    }
+                    if (array_key_exists(3,$accounts)) {
+                        $level_4 = GLAccountLevel4::where('Level_4_Description', $accounts[3])->first();
+                        if (!$level_4){
+                            // Save level 4 Account
+                            $level_4 = GLAccountLevel4::create([
+                                                'Level_4_ID' => self::getGenericID(),
+                                                'Level_4_Description' => $accounts[3],
+                                                'Level_3_ID' => $level_3->Level_3_ID
+                                            ]);
+                        }
+                        return (object)['level1' => $level_1, 'level2' => $level_2, 'level3' => $level_3, 'level4' => $level_4];
+                    }
+                    return (object)['level1' => $level_1, 'level2' => $level_2, 'level3' => $level_3];
+                }
+                return (object)['level1' => $level_1, 'level2' => $level_2];
+            }
+            return (object)['level1' => $level_1];
+        }
+        return false;       
+    }
 
+    public static function getGenericID()
+    {
+        return round(microtime(true) * 1000);
+        return date('YmdHisu');
+    }
+
+    // Delete this function once this works
+    private static function dataSource()
+    {
+        return [[
+                        "chart of group" => "EXPENSES->PURCHASE ACCOUNT->PUR. OF CONSUMABLE-R-M",
+                        "coa name" => "PURCHASE OF PLASTIC GRANULES BLOW",
+                        "opening bal" => "0",
+                        "opening bal type" => "Dr",
+                        "voucher no" => "FIN\PV\000440\2020",
+                        "voucher date" => "2020-01-01 00:00:00",
+                        "narration" => "19MBAIM000605914 - MARINE COVER",
+                        "doc no" => null,
+                        "doc date" => null,
+                        "specific amount" => "19177",
+                        "currency" => "KES",
+                        "booking rate" => "1",
+                        "debit" => "19177",
+                        "credit" => "0",
+                        "running balance" => "19177",
+                    ],[
+                        "chart of group" => "EXPENSES->PURCHASE ACCOUNT->PUR. OF CONSUMABLE-R-M",
+                        "coa name" => "PURCHASE OF PLASTIC GRANULES CUP",
+                        "opening bal" => "0",
+                        "opening bal type" => "Dr",
+                        "voucher no" => "FIN\PV\000441\2020",
+                        "voucher date" => "2020-01-01 00:00:00",
+                        "narration" => "19MBAIM000605915 - MARINE COVER",
+                        "doc no" => null,
+                        "doc date" => null,
+                        "specific amount" => "13177",
+                        "currency" => "KES",
+                        "booking rate" => "1",
+                        "debit" => "13177",
+                        "credit" => "0",
+                        "running balance" => "13177",
+                    ],[
+                        "chart of group" => "EXPENSES->PURCHASE ACCOUNT->PUR. OF Non-CONSUMABLE-R-M",
+                        "coa name" => "PURCHASE OF PLASTIC CUDES BLOW",
+                        "opening bal" => "0",
+                        "opening bal type" => "Cr",
+                        "voucher no" => "FIN\PV\000442\2020",
+                        "voucher date" => "2020-01-01 00:00:00",
+                        "narration" => "19MBAIM000605916 - MARINE COVER",
+                        "doc no" => null,
+                        "doc date" => null,
+                        "specific amount" => "19177",
+                        "currency" => "KES",
+                        "booking rate" => "1",
+                        "debit" => "0",
+                        "credit" => "19177",
+                        "running balance" => "19177",
+                    ]
+                ];
+    }
 }
 
 
