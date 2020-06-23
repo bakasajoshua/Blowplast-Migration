@@ -26,6 +26,7 @@ class GLEntries extends BaseModel
         'Credit' => 'Credit',
         'Amounts' => 'Amount',
         'GL_Posting_Date' => 'Posting_x0020_Date',
+        'Day' => 'Posting_x0020_Date',
         'GL_Document_No' => 'Document_x0020_Number',
         'GL_Document_Type' => 'Document_x0020_Type',
         'Description' => 'Description',
