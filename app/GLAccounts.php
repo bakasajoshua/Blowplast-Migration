@@ -203,10 +203,10 @@ class GLAccounts extends BaseModel
         echo "==> Start Inserting Data " . date('Y-m-d H:i:s') . "\n";
         foreach ($data as $key => $value) {
             $account = (array) $value;
-            // $account_level1 = self::saveKEAccountLevel1($account['chart of group']);
-            // $account_level2 = self::saveKEAccountLevel2($account['chart of group']);
-            // $account_level3 = self::saveKEAccountLevel3($account['chart of group']);
-            // $account_level4 = self::saveKEAccountLevel4($account['chart of group']);
+            $account_level1 = self::saveKEAccountLevel1($account['chart of group']);
+            $account_level2 = self::saveKEAccountLevel2($account['chart of group']);
+            $account_level3 = self::saveKEAccountLevel3($account['chart of group']);
+            $account_level4 = self::saveKEAccountLevel4($account['chart of group']);
             $glaccount = self::saveKEGLAccount($account);
             $glentries =  self::saveKEGLEntries($account);
         }

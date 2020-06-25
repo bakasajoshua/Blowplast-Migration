@@ -48,7 +48,7 @@ class ImportExcel extends Command
     {
         $this->output->title('Starting on Data import ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
-        // // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
+        // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
         // $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
         // Inventory::truncate();
         // $item = new Inventory;
@@ -63,13 +63,15 @@ class ImportExcel extends Command
         // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
         $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
-        // GLAccounts::truncate();
-        // $gl = new GLAccounts;
+        $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
+        GLAccounts::truncate();
+        $gl = new GLAccounts;
+        $accounts = $gl->synchMasterAccounts();
         // $accounts = $gl->synchAccounts();
-        // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
         $this->output->title('Starting GL Entries data import ' . date('Y-m-d H:i:s'));
         $entries = $this->processGLEntries();
+        $alKE = GLAccounts::synchKEData();
         $this->output->success('GL Entries data import successful ' . date('Y-m-d H:i:s'));
         $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
