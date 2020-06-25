@@ -197,22 +197,27 @@ class GLAccounts extends BaseModel
     public static function synchKEData()
     {
         // $data = self::dataSource();
+        echo "==> Start pulling Data " . date('Y-m-d H:i:s') . "\n";
         $data = DB::connection('oracle')->select('select * from fin.fin_gl_vw');
+        echo "==> Finished pulling Data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Start Inserting Data " . date('Y-m-d H:i:s') . "\n";
         foreach ($data as $key => $value) {
             $account = (array) $value;
-            $account_levels = self::saveKEAccountLevels($account['chart of group']);
-            // dd($account);
-            // dd($accounts);
+            $account_level1 = self::saveKEAccountLevel1($account['chart of group']);
+            $account_level2 = self::saveKEAccountLevel2($account['chart of group']);
+            $account_level3 = self::saveKEAccountLevel3($account['chart of group']);
+            $account_level4 = self::saveKEAccountLevel4($account['chart of group']);
+            $glaccount = self::saveKEGLAccount($account);
+            $glentries =  self::saveKEGLEntries($account);
         }
-        dd($account_levels);
+        echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
+        return true;
     }
 
-    private static function saveKEAccountLevels($account_string)
+    private static function saveKEAccountLevel1($account_string)
     {
         $accounts = explode('->', $account_string);
-        $return_Level = [];
         if (array_key_exists(0,$accounts)) {
-            // Save level 1 Account
             $level_1 = AccountType::where('Level_1_Description', $accounts[0])->first();
             if (!$level_1){
                 $level_1 = AccountType::create([
@@ -221,51 +226,139 @@ class GLAccounts extends BaseModel
                                     ]);
                 
             }
-            if (array_key_exists(1,$accounts)) {
-                $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
-                if (!$level_2){
-                    // Save level 2 Account
-                    $level_2 = ChartOfAccounts::create([
-                                        'Level_2_ID' => self::getGenericID(),
-                                        'Level_2_Description' => $accounts[1],
-                                        'Level_1_ID' => $level_1->Level_1_ID
-                                    ]);
-                }
-                if (array_key_exists(2,$accounts)) {
-                    $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
-                    if (!$level_3){
-                        // Save level 3 Account
-                        $level_3 = ChartOfAccountsBreakdown::create([
-                                            'Level_3_ID' => self::getGenericID(),
-                                            'Level_3_Description' => $accounts[2],
-                                            'Level_2_ID' => $level_2->Level_2_ID
-                                        ]);
-                    }
-                    if (array_key_exists(3,$accounts)) {
-                        $level_4 = GLAccountLevel4::where('Level_4_Description', $accounts[3])->first();
-                        if (!$level_4){
-                            // Save level 4 Account
-                            $level_4 = GLAccountLevel4::create([
-                                                'Level_4_ID' => self::getGenericID(),
-                                                'Level_4_Description' => $accounts[3],
-                                                'Level_3_ID' => $level_3->Level_3_ID
-                                            ]);
-                        }
-                        return (object)['level1' => $level_1, 'level2' => $level_2, 'level3' => $level_3, 'level4' => $level_4];
-                    }
-                    return (object)['level1' => $level_1, 'level2' => $level_2, 'level3' => $level_3];
-                }
-                return (object)['level1' => $level_1, 'level2' => $level_2];
-            }
-            return (object)['level1' => $level_1];
         }
-        return false;       
+        return true;       
+    }
+
+    private static function saveKEAccountLevel2($account_string)
+    {
+        $accounts = explode('->', $account_string);
+        if (array_key_exists(1,$accounts)) {
+            $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+            if (!$level_2){
+                // Save level 2 Account
+                $level_1 = AccountType::where('Level_1_Description', $accounts[0])->first();
+                if (!$level_1)
+                    dd($accounts);
+                $level_2 = ChartOfAccounts::create([
+                                    'Level_2_ID' => self::getGenericID(),
+                                    'Level_2_Description' => $accounts[1],
+                                    'Level_1_ID' => $level_1->Level_1_ID
+                                ]);
+            }
+        }
+        return true;
+    }
+
+    private static function saveKEAccountLevel3($account_string)
+    {
+        $accounts = explode('->', $account_string);
+        if (array_key_exists(2,$accounts)) {
+            $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+            if (!$level_3){
+                // Save level 3 Account
+                $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+                if (!$level_2)
+                    dd($accounts);
+                $level_3 = ChartOfAccountsBreakdown::create([
+                                    'Level_3_ID' => self::getGenericID(),
+                                    'Level_3_Description' => $accounts[2],
+                                    'Level_2_ID' => $level_2->Level_2_ID
+                                ]);
+            }
+        }
+        return true;
+    }
+
+    private static function saveKEAccountLevel4($account_string)
+    {
+        $accounts = explode('->', $account_string);
+        if (array_key_exists(3,$accounts)) {
+            $level_4 = GLAccountLevel4::where('Level_4_Description', $accounts[3])->first();
+            if (!$level_4){
+                // Save level 3 Account
+                $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+                if (!$level_3)
+                    dd($accounts);
+                $level_4 = GLAccountLevel4::create([
+                                    'Level_4_ID' => self::getGenericID(),
+                                    'Level_4_Description' => $accounts[3],
+                                    'Level_3_ID' => $level_3->Level_3_ID
+                                ]);
+            }
+        }
+        return true;
+    }
+
+    private static function saveKEGLAccount($data)
+    {
+        $accounts = explode('->', $data['chart of group']);
+        $account_level = sizeof($accounts);
+        if ($account_level > 0) {
+            $level = AccountType::where('Level_1_Description', $accounts[0])->first();
+            $insertData['Level_1_ID'] = $level->Level_1_ID;
+            $insertData['Level_1_Description'] = $level->Level_1_Description;
+            $insertData['GL_Account_Level_1'] = $level->Level_1_ID;
+        }
+        if ($account_level > 1) {
+            $level = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+            $insertData['Level_2_ID'] = $level->Level_2_ID;
+            $insertData['Level_2_Description'] = $level->Level_2_Description;
+            $insertData['GL_Account_Level_2'] = $level->Level_2_ID;
+        }
+
+        if ($account_level > 2) {
+            $level = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+            $insertData['Level_3_ID'] = $level->Level_3_ID;
+            $insertData['Level_3_Description'] = $level->Level_3_Description;
+            $insertData['GL_Account_Level_3'] = $level->Level_3_ID;
+        }
+            
+        if ($account_level > 3) {
+            $level = GLAccountLevel4::where('Level_4_Description', $accounts[3])->first();
+            $insertData['Level_4_ID'] = $level->Level_4_ID;
+            $insertData['Level_4_Description'] = $level->Level_4_Description;
+            $insertData['GL_Account_Level_4'] = $level->Level_4_ID;
+        }
+
+        if (isset($data['coa name'])) {
+            $insertData['GL_Account_No'] = self::getGenericID();
+            $insertData['GL_Account_Name'] = $data['coa name'];
+            $insertData['Company_Code'] = 'BPL';
+            $account = GLAccounts::where('GL_Account_Name', $data['coa name'])->first();
+            if (!$account)
+                return GLAccounts::create($insertData);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    private static function saveKEGLEntries($account)
+    {
+        $glaccount = GLAccounts::where('GL_Account_Name', $account['coa name'])->first();
+        if ($glaccount) {
+            $insertData['GL_Entry_No'] = $account['voucher no'];
+            $insertData['GL_Account_No'] = $glaccount->GL_Account_No;
+            $insertData['Debit'] = $account['debit'];
+            $insertData['Credit'] = $account['credit'];
+            $insertData['Amounts'] = ((float)$account['debit']-(float)$account['credit']);
+            $insertData['Currency_Code'] = $account['currency'];
+            $insertData['GL_Posting_Date'] = $account['voucher date'];
+            $insertData['Day'] = $account['voucher date'];
+            $insertData['GL_Document_No'] = $account['doc no'];
+            $insertData['GL_Document_Type'] = NULL;
+            $insertData['Description'] = $account['narration'];
+            $insertData['Company_Code'] = 'BPL';
+            GLEntries::create($insertData);
+        }
+        return true;
     }
 
     public static function getGenericID()
     {
         return round(microtime(true) * 1000);
-        return date('YmdHisu');
+        // return date('YmdHisu');
     }
 
     // Delete this function once this works
@@ -276,7 +369,7 @@ class GLAccounts extends BaseModel
                         "coa name" => "PURCHASE OF PLASTIC GRANULES BLOW",
                         "opening bal" => "0",
                         "opening bal type" => "Dr",
-                        "voucher no" => "FIN\PV\000440\2020",
+                        "voucher no" => "FIN\PV\/000440\/2020",
                         "voucher date" => "2020-01-01 00:00:00",
                         "narration" => "19MBAIM000605914 - MARINE COVER",
                         "doc no" => null,
@@ -292,7 +385,7 @@ class GLAccounts extends BaseModel
                         "coa name" => "PURCHASE OF PLASTIC GRANULES CUP",
                         "opening bal" => "0",
                         "opening bal type" => "Dr",
-                        "voucher no" => "FIN\PV\000441\2020",
+                        "voucher no" => "FIN\PV\/000441\/2020",
                         "voucher date" => "2020-01-01 00:00:00",
                         "narration" => "19MBAIM000605915 - MARINE COVER",
                         "doc no" => null,
@@ -304,11 +397,11 @@ class GLAccounts extends BaseModel
                         "credit" => "0",
                         "running balance" => "13177",
                     ],[
-                        "chart of group" => "EXPENSES->PURCHASE ACCOUNT->PUR. OF Non-CONSUMABLE-R-M",
+                        "chart of group" => "EXPENSES->PURCHASE ACCOUNT->PUR. OF CONSUMABLE-R-M",
                         "coa name" => "PURCHASE OF PLASTIC CUDES BLOW",
                         "opening bal" => "0",
                         "opening bal type" => "Cr",
-                        "voucher no" => "FIN\PV\000442\2020",
+                        "voucher no" => "FIN\PV\/000442\/2020",
                         "voucher date" => "2020-01-01 00:00:00",
                         "narration" => "19MBAIM000605916 - MARINE COVER",
                         "doc no" => null,
