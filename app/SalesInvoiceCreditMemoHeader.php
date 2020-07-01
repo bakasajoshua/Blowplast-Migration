@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class SalesInvoiceCreditMemoHeader extends BaseModel
 {
@@ -39,5 +40,20 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
             SalesInvoiceCreditMemoHeader::insert($data->toArray());
         }
         return true;
+    }
+
+    public function synchHeadersKE()
+    {
+        ini_set("memory_limit", "-1");
+        echo "==> Start pulling Data " . date('Y-m-d H:i:s') . "\n";
+        $data = DB::connection('oracle')->select('select * from SLS$INVOICE$REG$DTL$VW');
+        echo "==> Finished pulling Data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Start  Data " . date('Y-m-d H:i:s') . "\n";
+        foreach ($data as $key => $value) {
+            $value = (array) $value;
+            Temp::insert($value);
+        }
+        echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
+        dd(Temp::first());
     }
 }
