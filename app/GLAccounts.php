@@ -47,7 +47,7 @@ class GLAccounts extends BaseModel
         ChartOfAccountsBreakdown::truncate();
         GLAccountLevel4::truncate();
         GLAccounts::truncate();
-        $reference = GLEntries::selectRaw("DISTINCT GL_Account_No")->get();
+        $reference = GLEntries::selectRaw("DISTINCT GL_Account_No")->where('Company_Code', 'BUL')->get();
         $synchData = collect($this->synch($this->functionCall, $this->endpointColumns));
         $level_1_accounts = $synchData->where('Chart_of_Account_Group', NULL);
         foreach ($level_1_accounts as $level_1_Key => $level_1_value) {
@@ -56,6 +56,7 @@ class GLAccounts extends BaseModel
                 $level_1_db = AccountType::insert([
                                 'Level_1_ID' => $level_1_value['GL_Account_No'],
                                 'Level_1_Description' => $level_1_value['GL_Account_Name'],
+                                'Company_Code' => 'BUL',
                             ]);
                 // Get the Level 2 Accounts belonging to Level 1 Account
                 $level_2_accounts = $synchData->where('Chart_of_Account_Group', $level_1_value['GL_Account_No']);
@@ -66,6 +67,7 @@ class GLAccounts extends BaseModel
                             'Level_2_ID' => $level_2_value['GL_Account_No'],
                             'Level_2_Description' => $level_2_value['GL_Account_Name'],
                             'Level_1_ID' => $level_1_value['GL_Account_No'],
+                            'Company_Code' => 'BUL',
                         ]);
                         // Get the Level 3 Accounts belonging to Level 2 Account
                         $level_3_accounts = $synchData->where('Chart_of_Account_Group', $level_2_value['GL_Account_No']);
@@ -76,6 +78,7 @@ class GLAccounts extends BaseModel
                                             'Level_3_ID' => $level_3_value['GL_Account_No'],
                                             'Level_3_Description' => $level_3_value['GL_Account_Name'],
                                             'Level_2_ID' => $level_2_value['GL_Account_No'],
+                                            'Company_Code' => 'BUL',
                                         ]);
                                 // Get the Level 4 Accounts belonging to Level 3 Account
                                 $level_4_accounts = $synchData->where('Chart_of_Account_Group', $level_3_value['GL_Account_No']);
@@ -86,6 +89,7 @@ class GLAccounts extends BaseModel
                                                         'Level_4_ID' => $level_4_value['GL_Account_No'],
                                                         'Level_4_Description' => $level_4_value['GL_Account_Name'],
                                                         'Level_3_ID' => $level_3_value['GL_Account_No'],
+                                                        'Company_Code' => 'BUL',
                                                     ]);
                                             $gl_accounts = $synchData->where('Chart_of_Account_Group', $level_4_value['GL_Account_No']);
                                             foreach ($gl_accounts as $key => $gl_account) {
@@ -218,10 +222,11 @@ class GLAccounts extends BaseModel
     {
         $accounts = explode('->', $account_string);
         if (array_key_exists(0,$accounts)) {
-            $level_1 = AccountType::where('Level_1_Description', $accounts[0])->first();
+            $level_1 = AccountType::where('Level_1_Description', $accounts[0])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_1){
                 $level_1 = AccountType::create([
                                         'Level_1_ID' => self::getGenericID(),
+                                        'Company_Code' => 'BPL',
                                         'Level_1_Description' => $accounts[0]
                                     ]);
                 
@@ -234,7 +239,7 @@ class GLAccounts extends BaseModel
     {
         $accounts = explode('->', $account_string);
         if (array_key_exists(1,$accounts)) {
-            $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+            $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_2){
                 // Save level 2 Account
                 $level_1 = AccountType::where('Level_1_Description', $accounts[0])->first();
@@ -243,7 +248,8 @@ class GLAccounts extends BaseModel
                 $level_2 = ChartOfAccounts::create([
                                     'Level_2_ID' => self::getGenericID(),
                                     'Level_2_Description' => $accounts[1],
-                                    'Level_1_ID' => $level_1->Level_1_ID
+                                    'Level_1_ID' => $level_1->Level_1_ID,
+                                    'Company_Code' => 'BPL',
                                 ]);
             }
         }
@@ -254,7 +260,7 @@ class GLAccounts extends BaseModel
     {
         $accounts = explode('->', $account_string);
         if (array_key_exists(2,$accounts)) {
-            $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+            $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_3){
                 // Save level 3 Account
                 $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
@@ -263,7 +269,8 @@ class GLAccounts extends BaseModel
                 $level_3 = ChartOfAccountsBreakdown::create([
                                     'Level_3_ID' => self::getGenericID(),
                                     'Level_3_Description' => $accounts[2],
-                                    'Level_2_ID' => $level_2->Level_2_ID
+                                    'Level_2_ID' => $level_2->Level_2_ID,
+                                    'Company_Code' => 'BPL',
                                 ]);
             }
         }
@@ -274,7 +281,7 @@ class GLAccounts extends BaseModel
     {
         $accounts = explode('->', $account_string);
         if (array_key_exists(3,$accounts)) {
-            $level_4 = GLAccountLevel4::where('Level_4_Description', $accounts[3])->first();
+            $level_4 = GLAccountLevel4::where('Level_4_Description', $accounts[3])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_4){
                 // Save level 3 Account
                 $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
@@ -283,7 +290,8 @@ class GLAccounts extends BaseModel
                 $level_4 = GLAccountLevel4::create([
                                     'Level_4_ID' => self::getGenericID(),
                                     'Level_4_Description' => $accounts[3],
-                                    'Level_3_ID' => $level_3->Level_3_ID
+                                    'Level_3_ID' => $level_3->Level_3_ID,
+                                    'Company_Code' => 'BPL',
                                 ]);
             }
         }
