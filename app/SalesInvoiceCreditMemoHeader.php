@@ -56,4 +56,28 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
         echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
         dd(Temp::first());
     }
+
+    public function insertKESales()
+    {
+        ini_set("memory_limit", "-1");
+        foreach (Temp::get() as $key => $sales) {
+            if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
+                SalesInvoiceCreditMemoHeader::create([
+                    'Invoice_Credit_Memo_No' => $sales->invoice_id,
+                    'SI_Document_No' => $sales->invoice_doc_id,
+                    'Sell-To-Customer-No' => $sales->eo_nm,
+                    'Sell-To-Customer-Name' => $sales->eo_nm,
+                    'Bill-To-Customer-No' => $sales->eo_nm,
+                    'Bill-To-Customer-Name' => $sales->eo_nm,
+                    'SI_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
+                    // 'SI_Due_Date' => 'Due_x0020_Date',
+                    'Company_Code' => 'BPL',
+                    'Type' => ucwords($sales->inv_type_desc),
+                    'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
+                    'Total_Amount_Including_Tax' => $sales->net_amnt,
+                    'Currency_Code' => $sales->curr_sp,
+                ]);
+            }
+        }
+    }
 }

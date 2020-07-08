@@ -27,7 +27,7 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
             $table->float('Unit_Cost', 12, 2)->nullable();
             $table->string('Company_Code')->nullable();
             $table->string('Currency_Code')->nullable();
-            $table->enum('Type', ['Invoice', 'Credit Memo', 'Credit Note'])->nullable();
+            $table->enum('Type', ['Invoice', 'Credit Memo', 'Credit Note', 'Direct Invoice'])->nullable();
             $table->float('Total_Amount_Excluding_Tax', 12, 2)->nullable();
             $table->float('Total_Amount_Including_Tax', 12, 2)->nullable();
             $table->string('Sales_Unit_of_Measure')->nullable();
