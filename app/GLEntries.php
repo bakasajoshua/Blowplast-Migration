@@ -43,4 +43,31 @@ class GLEntries extends BaseModel
         }
         return true;
     }
+
+    public static function fillTime()
+    {
+        $start_date = '2018-01-01';
+        $final_date = '2020-07-30';
+        $incremental = 1;
+        while (strtotime($final_date) >= strtotime($start_date)) {
+            echo "==> For Month " . date('Y-m', strtotime($start_date)) . "\n";
+            $glentries = GLEntries::whereYear('Day', date('Y', strtotime($start_date)))->whereMonth('Day', date('m', strtotime($start_date)))->get();
+            if (!$glentries->isEmpty()){
+                foreach ($glentries as $key => $entry) {
+                    $day = Day::whereDate('day_id', date('Y-m-d', strtotime($entry->Day)))->first();
+                    $week = $day->day_week;
+                    $month = $day->day_month;
+                    $quarter = $month->month_quarter;
+                    $year = $month->month_year;
+                    $entry->week = $week->week;
+                    $entry->month = $month->month_id;
+                    $entry->quarter = $quarter->quarter;
+                    $entry->year = $year->year;
+                    $entry->save();
+                }
+            }
+            $start_date = date('Y-m-d', strtotime('+'.$incremental.' month', strtotime($start_date)));
+        }
+        return true;
+    }
 }

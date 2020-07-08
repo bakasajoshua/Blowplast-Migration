@@ -16,8 +16,8 @@ class AlterGLEntriesAddTimeColumns extends Migration
         Schema::table('GL Entries', function (Blueprint $table) {
             $table->string('week')->nullable()->after('Day');
             $table->string('month')->nullable()->after('week');
-            $table->string('quarter')->nullable()->after('month');
-            $table->string('year')->nullable()->after('quarter');
+            $table->tinyInteger('quarter')->nullable()->after('month');
+            $table->integer('year')->nullable()->after('quarter');
         });
     }
 

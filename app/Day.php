@@ -11,4 +11,16 @@ class Day extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public $primaryKey = 'day_id';
+
+    public function day_month()
+    {
+    	return $this->belongsTo(Month::class, 'month', 'month_id');
+    }
+
+    public function day_week()
+    {
+    	return $this->belongsTo(Week::class, 'week', 'week');
+    }
 }
