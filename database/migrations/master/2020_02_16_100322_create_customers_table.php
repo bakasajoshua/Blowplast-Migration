@@ -14,7 +14,8 @@ class CreateCustomersTable extends Migration
     public function up()
     {
         Schema::create('Customer Master', function (Blueprint $table) {
-            $table->string('Customer_No', 50)->primary();
+            $table->bigIncrements('id');
+            $table->string('Customer_No', 50)->unique();
             $table->string('Customer_Name')->nullable();
             $table->string('Customer_Email')->nullable();
             $table->string('Company_Code', 10)->nullable();

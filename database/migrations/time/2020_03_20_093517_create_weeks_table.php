@@ -14,7 +14,8 @@ class CreateWeeksTable extends Migration
     public function up()
     {
         Schema::create('LU_Week', function (Blueprint $table) {
-            $table->string('week')->primary();
+            $table->bigIncrements('id');
+            $table->string('week')->unique();
             $table->integer('year');
             $table->string('last_week')->nullable();
             $table->string('next_week')->nullable();

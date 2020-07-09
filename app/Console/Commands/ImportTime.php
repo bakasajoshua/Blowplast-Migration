@@ -108,8 +108,8 @@ class ImportTime extends Command
 
             // Create weeks
             $current_week = $this->getCurrentWeek($loop_date);
-            // dd($current_week);
-            if (Week::find($current_week['week']) == null) {
+            
+            if (Week::where('week', $current_week['week'])->get()->isEmpty()) {
                 $this->createWeekData($current_week);
             }
             // Create weeks

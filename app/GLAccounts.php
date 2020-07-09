@@ -358,6 +358,15 @@ class GLAccounts extends BaseModel
             $insertData['GL_Document_Type'] = NULL;
             $insertData['Description'] = $account['narration'];
             $insertData['Company_Code'] = 'BPL';
+            $day = Day::whereDate('day_id', date('Y-m-d', strtotime($account['voucher date'])))->first();
+            $week = $day->day_week;
+            $month = $day->day_month;
+            $quarter = $month->month_quarter;
+            $year = $month->month_year;
+            $insertData['week'] = $week->week;
+            $insertData['month'] = $month->month_id;
+            $insertData['quarter'] = $quarter->quarter;
+            $insertData['year'] = $year->year;
             GLEntries::create($insertData);
         }
         return true;

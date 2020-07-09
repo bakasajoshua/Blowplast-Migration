@@ -10,11 +10,7 @@ class ChartOfAccountsBreakdown extends Model
 
     protected $guarded = [];
 
-    protected $primaryKey = 'Level_3_ID';
-
     public $timestamps = false;
-
-    protected $keyType = 'string';
 
     public function level2()
     {

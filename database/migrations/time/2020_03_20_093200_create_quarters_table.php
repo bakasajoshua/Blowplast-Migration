@@ -14,7 +14,8 @@ class CreateQuartersTable extends Migration
     public function up()
     {
         Schema::create('LU_Quarter', function (Blueprint $table) {
-            $table->tinyInteger('quarter')->primary();
+            $table->bigIncrements('id');
+            $table->tinyInteger('quarter')->unique();
             $table->string('quarter_description');
         });
     }

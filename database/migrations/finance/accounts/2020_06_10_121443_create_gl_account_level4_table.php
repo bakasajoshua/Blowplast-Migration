@@ -14,7 +14,8 @@ class CreateGlAccountLevel4Table extends Migration
     public function up()
     {
         Schema::create('GL_Accounts_Level_4', function (Blueprint $table) {
-            $table->string('Level_4_ID')->primary();
+            $table->bigIncrements('id');
+            $table->string('Level_4_ID')->unique();
             $table->string('Level_4_Description');
             $table->string('Level_3_ID');
             $table->string('Company_Code')->nullable();

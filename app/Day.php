@@ -12,8 +12,6 @@ class Day extends Model
 
     public $timestamps = false;
 
-    public $primaryKey = 'day_id';
-
     public function day_month()
     {
     	return $this->belongsTo(Month::class, 'month', 'month_id');

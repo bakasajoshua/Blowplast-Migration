@@ -14,6 +14,7 @@ class CreateInventoryBudgetsTable extends Migration
     public function up()
     {
         Schema::create('Item Budget', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('Inventory_Budget_No');
             $table->string('Item_No', 50);
             $table->string('Customer_No', 50)->nullable();
