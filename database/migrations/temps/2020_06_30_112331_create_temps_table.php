@@ -14,6 +14,7 @@ class CreateTempsTable extends Migration
     public function up()
     {
         Schema::create('temps', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string("org_desc")->nullable();
             $table->string("curr_sp")->nullable();
             $table->string("curr_bs")->nullable();

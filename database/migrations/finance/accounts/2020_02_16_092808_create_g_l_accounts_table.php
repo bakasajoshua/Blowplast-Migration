@@ -14,7 +14,8 @@ class CreateGLAccountsTable extends Migration
     public function up()
     {
         Schema::create('GL Accounts', function (Blueprint $table) {
-             $table->string('Level_1_ID')->nullable();
+            $table->bigIncrements('id');
+            $table->string('Level_1_ID')->nullable();
             $table->string('Level_1_Description', 100)->nullable();
             $table->string('Level_2_ID')->nullable();
             $table->string('Level_2_Description')->nullable();
@@ -22,7 +23,7 @@ class CreateGLAccountsTable extends Migration
             $table->string('Level_3_Description')->nullable();
             $table->string('Level_4_ID')->nullable();
             $table->string('Level_4_Description')->nullable();
-            $table->string('GL_Account_No', 50)->primary();
+            $table->string('GL_Account_No', 50)->unique();
             $table->string('GL_Account_Name')->nullable();
             $table->enum('Income_Balance', ['IS', 'BS'])->nullable();
             $table->tinyInteger('Blocked')->nullable();
@@ -31,11 +32,6 @@ class CreateGLAccountsTable extends Migration
             $table->string('GL_Account_Level_2')->nullable();
             $table->string('GL_Account_Level_3')->nullable();
             $table->string('GL_Account_Level_4')->nullable();
-
-            // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
-            // $table->foreign('GL_Account_Level_1')->references('Level_1_ID')->on('GL_Accounts_Level_1');
-            // $table->foreign('GL_Account_Level_2')->references('Level_2_ID')->on('GL_Accounts_Level_2');
-            // $table->foreign('GL_Account_Level_3')->references('Level_3_ID')->on('GL_Accounts_Level_3');
         });
     }
 

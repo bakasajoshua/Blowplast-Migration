@@ -14,6 +14,7 @@ class CreateCustomerBudgetsTable extends Migration
     public function up()
     {
         Schema::create('Customer Budget', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('Customer_Budget_No');
             $table->string('Customer_No', 50)->nullable();
             $table->string('Company_Code', 10);

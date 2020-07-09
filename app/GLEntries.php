@@ -8,10 +8,6 @@ class GLEntries extends BaseModel
 {
     protected $table = 'GL Entries';
 
-    // protected $primaryKey = 'GL_Entry_No';
-
-    // protected $keyType = 'string';
-
     protected $guarded = [];
 
     public $timestamps = false;
@@ -39,11 +35,30 @@ class GLEntries extends BaseModel
         ini_set("memory_limit", "-1");
         $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
-            GLEntries::insert($data->toArray());
+            $newData = [];
+            foreach ($data as $key => $entry) {
+                $day = Day::whereDate('day_id', date('Y-m-d', strtotime($entry->Day)))->first();
+                $week = $day->day_week;
+                $month = $day->day_month;
+                $quarter = $month->month_quarter;
+                $year = $month->month_year;
+                $entry->week = $week->week;
+                $entry->month = $month->month_id;
+                $entry->quarter = $quarter->quarter;
+                $entry->year = $year->year;
+                $newData[] = $entry->toArray();
+            }
+            GLEntries::insert($newData);
         }
         return true;
     }
 
+
+    /*
+    *
+    *   Quick Fix functions
+    *
+    */
     public static function fillTime()
     {
         $start_date = '2018-01-01';

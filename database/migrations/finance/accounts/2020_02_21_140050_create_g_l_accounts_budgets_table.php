@@ -14,7 +14,8 @@ class CreateGLAccountsBudgetsTable extends Migration
     public function up()
     {
         Schema::create('GL Accounts Budget', function (Blueprint $table) {
-            $table->string('GL_Account_Budget_No')->primary();
+            $table->bigIncrements('id');
+            $table->string('GL_Account_Budget_No')->unique();
             $table->string('GL_Account_No');
             $table->string('Company_Code')->nullable();
             $table->string('Budget_Year');

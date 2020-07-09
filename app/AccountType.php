@@ -12,8 +12,6 @@ class AccountType extends Model
 
     protected $guarded = [];
 
-    protected $primaryKey = 'Level_1_ID';
-
     public $timestamps = false;
 
     public static function syncKELevel1()
@@ -41,11 +39,7 @@ class AccountType extends Model
     		if (AccountType::where('Level_1_Description', $accountype['Level_1_Description'])->get()->isEmpty())
     			AccountType::create($accountype);
     	}
-    	// $chunks = collect($accounttypes)->chunk(20);
-    	// foreach ($chunks as $key => $data) {
-    	// 	if (AccountType::where('Level_1_Description', $level1)->get()->isEmpty()){
-     //        	AccountType::insert($data->toArray());
-     //    }
+    	
         return true;
     }
 }

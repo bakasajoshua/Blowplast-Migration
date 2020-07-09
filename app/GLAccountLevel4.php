@@ -10,8 +10,6 @@ class GLAccountLevel4 extends Model
 
     protected $guarded = [];
 
-    protected $primaryKey = 'Level_4_ID';
-
     public $timestamps = false;
 
     public function level3()

@@ -14,7 +14,8 @@ class CreateYearsTable extends Migration
     public function up()
     {
         Schema::create('LU_Year', function (Blueprint $table) {
-            $table->integer('year')->primary();
+            $table->bigIncrements('id');
+            $table->integer('year')->unique();
             $table->timestamp('year_date')->nullable();
             $table->integer('duration')->nullable();
             $table->integer('prev_year_id')->nullable();

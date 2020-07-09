@@ -14,7 +14,8 @@ class CreateChartOfAccountsTable extends Migration
     public function up()
     {
         Schema::create('GL_Accounts_Level_2', function (Blueprint $table) {
-            $table->string('Level_2_ID')->primary();
+            $table->bigIncrements('id');
+            $table->string('Level_2_ID')->unique();
             $table->string('Level_2_Description');
             $table->string('Level_1_ID');
             $table->string('Company_Code')->nullable();

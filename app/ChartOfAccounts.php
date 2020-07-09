@@ -10,11 +10,7 @@ class ChartOfAccounts extends Model
 
     protected $guarded = [];
 
-    protected $primaryKey = 'Level_2_ID';
-
     public $timestamps = false;
-
-    protected $keyType = 'string';
 
     public function level1()
     {

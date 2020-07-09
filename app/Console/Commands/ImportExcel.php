@@ -47,36 +47,46 @@ class ImportExcel extends Command
     public function handle()
     {
         $this->output->title('Starting on Data import ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
-        // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
-        // $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
-        // Inventory::truncate();
-        // $item = new Inventory;
-        // $synch = $item->synchItems();
-        // $this->output->success('Inventory data complete ' . date('Y-m-d H:i:s'));
+        
+        /**************************************/
+        /******** Import finance Data *********/
+        /**************************************/
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
+        $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
+        Inventory::truncate();
+        $item = new Inventory;
+        $synch = $item->synchItems();
+        $this->output->success('Inventory data complete ' . date('Y-m-d H:i:s'));
 
-        // $this->output->title('Importing customer data ' . date('Y-m-d H:i:s'));
-        // Customer::truncate();
-        // $customer = new Customer;
-        // $synch = $customer->synchCustomer();
-        // $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
-        // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Importing customer data ' . date('Y-m-d H:i:s'));
+        Customer::truncate();
+        $customer = new Customer;
+        $synch = $customer->synchCustomer();
+        $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
+        $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
-        // $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
-        // $entries = $this->processGLEntries();
-        // $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
-        // GLAccounts::truncate();
-        // $gl = new GLAccounts;
-        // $accounts = $gl->synchMasterAccounts();
-        // // $accounts = $gl->synchAccounts();
-        // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting GL Kenya data import ' . date('Y-m-d H:i:s'));
-        // $alKE = GLAccounts::synchKEData();
-        // $this->output->success('GL Kenya data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
+        /**************************************/
+        /******** Import finance Data *********/
+        /**************************************/
+        $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
+        $entries = $this->processGLEntries();
+        $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
+        GLAccounts::truncate();
+        $gl = new GLAccounts;
+        $accounts = $gl->synchMasterAccounts();
+        // $accounts = $gl->synchAccounts();
+        $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting GL Kenya data import ' . date('Y-m-d H:i:s'));
+        $alKE = GLAccounts::synchKEData();
+        $this->output->success('GL Kenya data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
+        /**************************************/
+        /******** Import sales Data *********/
+        /**************************************/
         $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
         $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
         $lines = $this->processCustomerLedgEntries();
