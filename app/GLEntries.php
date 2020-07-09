@@ -49,9 +49,10 @@ class GLEntries extends BaseModel
         $start_date = '2018-01-01';
         $final_date = '2020-07-30';
         $incremental = 1;
+        ini_set("memory_limit", "-1");
         while (strtotime($final_date) >= strtotime($start_date)) {
             echo "==> For Month " . date('Y-m', strtotime($start_date)) . "\n";
-            $glentries = GLEntries::whereYear('Day', date('Y', strtotime($start_date)))->whereMonth('Day', date('m', strtotime($start_date)))->get();
+            $glentries = GLEntries::whereYear('Day', date('Y', strtotime($start_date)))->whereMonth('Day', date('m', strtotime($start_date)))->whereNull('year')->get();
             if (!$glentries->isEmpty()){
                 foreach ($glentries as $key => $entry) {
                     $day = Day::whereDate('day_id', date('Y-m-d', strtotime($entry->Day)))->first();
