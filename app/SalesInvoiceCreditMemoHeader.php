@@ -54,14 +54,23 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
             Temp::insert($value);
         }
         echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
-        dd(Temp::first());
+        echo "==> Inserting data in warehouse " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Inserting the headers " . date('Y-m-d H:i:s') . "\n";
+        $this->insertKESales();
+        echo "==> Finished inserting the headers " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Inserting the lines " . date('Y-m-d H:i:s') . "\n";
+        $lines = new SalesInvoiceCreditMemoLine;
+        $lines->insertKESalesLines();
+        echo "==> Finished inserting the lines " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Finished inserting the warehouse data " . date('Y-m-d H:i:s') . "\n";
+        return true;
     }
 
     public function insertKESales()
     {
         ini_set("memory_limit", "-1");
         foreach (Temp::get() as $key => $sales) {
-            if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
+            // if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
                 SalesInvoiceCreditMemoHeader::create([
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Document_No' => $sales->invoice_doc_id,
@@ -77,7 +86,7 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Currency_Code' => $sales->curr_sp,
                 ]);
-            }
+            // }
         }
     }
 }

@@ -37,16 +37,16 @@ class GLEntries extends BaseModel
         foreach ($chunks as $key => $data) {
             $newData = [];
             foreach ($data as $key => $entry) {
-                $day = Day::whereDate('day_id', date('Y-m-d', strtotime($entry->Day)))->first();
+                $day = Day::whereDate('day_id', date('Y-m-d', strtotime($entry['Day'])))->first();
                 $week = $day->day_week;
                 $month = $day->day_month;
                 $quarter = $month->month_quarter;
                 $year = $month->month_year;
-                $entry->week = $week->week;
-                $entry->month = $month->month_id;
-                $entry->quarter = $quarter->quarter;
-                $entry->year = $year->year;
-                $newData[] = $entry->toArray();
+                $entry['week'] = $week->week;
+                $entry['month'] = $month->month_id;
+                $entry['quarter'] = $quarter->quarter;
+                $entry['year'] = $year->year;
+                $newData[] = $entry;
             }
             GLEntries::insert($newData);
         }
