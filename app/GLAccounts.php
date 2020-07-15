@@ -201,10 +201,10 @@ class GLAccounts extends BaseModel
     public static function synchKEData()
     {
         // $data = self::dataSource();
-        echo "==> Start pulling Data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Start pulling KE Data " . date('Y-m-d H:i:s') . "\n";
         $data = DB::connection('oracle')->select('select * from fin.fin_gl_vw');
-        echo "==> Finished pulling Data " . date('Y-m-d H:i:s') . "\n";
-        echo "==> Start Inserting Data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Finished pulling KE Data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Start Inserting KE Data into the WH " . date('Y-m-d H:i:s') . "\n";
         foreach ($data as $key => $value) {
             $account = (array) $value;
             $account_level1 = self::saveKEAccountLevel1($account['chart of group']);
@@ -214,7 +214,7 @@ class GLAccounts extends BaseModel
             $glaccount = self::saveKEGLAccount($account);
             $glentries =  self::saveKEGLEntries($account);
         }
-        echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Finished inserting KE Data into the WH " . date('Y-m-d H:i:s') . "\n";
         return true;
     }
 
@@ -242,7 +242,7 @@ class GLAccounts extends BaseModel
             $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_2){
                 // Save level 2 Account
-                $level_1 = AccountType::where('Level_1_Description', $accounts[0])->first();
+                $level_1 = AccountType::where('Level_1_Description', $accounts[0])->where('Company_Code', '=', 'BPL')->first();
                 if (!$level_1)
                     dd($accounts);
                 $level_2 = ChartOfAccounts::create([
@@ -263,7 +263,7 @@ class GLAccounts extends BaseModel
             $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_3){
                 // Save level 3 Account
-                $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+                $level_2 = ChartOfAccounts::where('Level_2_Description', $accounts[1])->where('Company_Code', '=', 'BPL')->first();
                 if (!$level_2)
                     dd($accounts);
                 $level_3 = ChartOfAccountsBreakdown::create([
@@ -284,7 +284,7 @@ class GLAccounts extends BaseModel
             $level_4 = GLAccountLevel4::where('Level_4_Description', $accounts[3])->where('Company_Code', '=', 'BPL')->first();
             if (!$level_4){
                 // Save level 3 Account
-                $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+                $level_3 = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->where('Company_Code', '=', 'BPL')->first();
                 if (!$level_3)
                     dd($accounts);
                 $level_4 = GLAccountLevel4::create([
@@ -303,27 +303,27 @@ class GLAccounts extends BaseModel
         $accounts = explode('->', $data['chart of group']);
         $account_level = sizeof($accounts);
         if ($account_level > 0) {
-            $level = AccountType::where('Level_1_Description', $accounts[0])->first();
+            $level = AccountType::where('Level_1_Description', $accounts[0])->where('Company_Code', '=', 'BPL')->first();
             $insertData['Level_1_ID'] = $level->Level_1_ID;
             $insertData['Level_1_Description'] = $level->Level_1_Description;
             $insertData['GL_Account_Level_1'] = $level->Level_1_ID;
         }
         if ($account_level > 1) {
-            $level = ChartOfAccounts::where('Level_2_Description', $accounts[1])->first();
+            $level = ChartOfAccounts::where('Level_2_Description', $accounts[1])->where('Company_Code', '=', 'BPL')->first();
             $insertData['Level_2_ID'] = $level->Level_2_ID;
             $insertData['Level_2_Description'] = $level->Level_2_Description;
             $insertData['GL_Account_Level_2'] = $level->Level_2_ID;
         }
 
         if ($account_level > 2) {
-            $level = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->first();
+            $level = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->where('Company_Code', '=', 'BPL')->first();
             $insertData['Level_3_ID'] = $level->Level_3_ID;
             $insertData['Level_3_Description'] = $level->Level_3_Description;
             $insertData['GL_Account_Level_3'] = $level->Level_3_ID;
         }
             
         if ($account_level > 3) {
-            $level = GLAccountLevel4::where('Level_4_Description', $accounts[3])->first();
+            $level = GLAccountLevel4::where('Level_4_Description', $accounts[3])->where('Company_Code', '=', 'BPL')->first();
             $insertData['Level_4_ID'] = $level->Level_4_ID;
             $insertData['Level_4_Description'] = $level->Level_4_Description;
             $insertData['GL_Account_Level_4'] = $level->Level_4_ID;
@@ -344,7 +344,7 @@ class GLAccounts extends BaseModel
 
     private static function saveKEGLEntries($account)
     {
-        $glaccount = GLAccounts::where('GL_Account_Name', $account['coa name'])->first();
+        $glaccount = GLAccounts::where('GL_Account_Name', $account['coa name'])->where('Company_Code', '=', 'BPL')->first();
         if ($glaccount) {
             $insertData['GL_Entry_No'] = $account['voucher no'];
             $insertData['GL_Account_No'] = $glaccount->GL_Account_No;
@@ -357,7 +357,7 @@ class GLAccounts extends BaseModel
             $insertData['GL_Document_No'] = $account['doc no'];
             $insertData['GL_Document_Type'] = NULL;
             $insertData['Description'] = $account['narration'];
-            $insertData['Company_Code'] = 'BPL';
+            $insertData['Company_Code'] = $glaccount->Company_Code;
             $day = Day::whereDate('day_id', date('Y-m-d', strtotime($account['voucher date'])))->first();
             $week = $day->day_week;
             $month = $day->day_month;
