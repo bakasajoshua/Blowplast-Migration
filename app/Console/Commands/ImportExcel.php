@@ -70,18 +70,18 @@ class ImportExcel extends Command
         /******** Import finance Data *********/
         /**************************************/
         $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
-        $entries = $this->processGLEntries();
-        $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
+        // $entries = $this->processGLEntries();
+        // $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
         // GLAccounts::truncate();
         // $gl = new GLAccounts;
         // $accounts = $gl->synchMasterAccounts();
         // // $accounts = $gl->synchAccounts();
         // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
-        // $this->output->title('Starting GL Kenya data import ' . date('Y-m-d H:i:s'));
-        // $alKE = GLAccounts::synchKEData();
-        // $this->output->success('GL Kenya data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting GL Kenya data import ' . date('Y-m-d H:i:s'));
+        $alKE = GLAccounts::synchKEData();
+        $this->output->success('GL Kenya data import successful ' . date('Y-m-d H:i:s'));
         $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
 
         /**************************************/
