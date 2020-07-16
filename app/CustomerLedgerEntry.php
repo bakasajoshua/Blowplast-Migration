@@ -70,7 +70,7 @@ class CustomerLedgerEntry extends BaseModel
         $data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');
         $dbInsert = [];
         foreach ($data as $key => $value) {
-            $dbInsert[] = [
+            $dbInsert = [
                 'CL_Entry_No' => $value->voucher_number,
                 'Document_No' => $value->voucher_number,
                 'Customer_No' => $value->supplier_name,
@@ -83,11 +83,14 @@ class CustomerLedgerEntry extends BaseModel
                 'Original_Amount_LCY' => $value->voucher_amt,
                 'Original_Amount' => 0,
                 'Currency_Code' => $value->currency,
-                'Currency_Factor' => NULL,
+                'Currency_Factor' => 0,
                 'Remaining_Amount_LCY' => $value->balance_ason,
-                'Remaining_Amount' => NULL
+                'Remaining_Amount' => 0,
+                'Company_Code' => 'BPL'
             ];
+            $insert = CustomerLedgerEntry::insert($dbInsert);
         }
+
         return true;
     }
 }
