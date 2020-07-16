@@ -60,8 +60,6 @@ class CustomerLedgerEntry extends BaseModel
             $entry->Company_Code = 'BUL';
             $entry->save();
         }
-        $ke = $this->synchKEEntries();
-
         return true;
     }
 
@@ -70,7 +68,7 @@ class CustomerLedgerEntry extends BaseModel
         $data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');
         $dbInsert = [];
         foreach ($data as $key => $value) {
-            $dbInsert = [
+            $dbInsert[] = [
                 'CL_Entry_No' => $value->voucher_number,
                 'Document_No' => $value->voucher_number,
                 'Customer_No' => $value->supplier_name,
@@ -88,9 +86,35 @@ class CustomerLedgerEntry extends BaseModel
                 'Remaining_Amount' => 0,
                 'Company_Code' => 'BPL'
             ];
-            $insert = CustomerLedgerEntry::insert($dbInsert);
+            
+        }
+        $chunks = collect($dbInsert)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            $insert = CustomerLedgerEntry::insert($chunk->toArray());
         }
 
+        $customers = CustomerLedgerEntry::where('Company_Code', 'BPL')->get()->unique('Customer_No');
+        foreach ($customers as $key => $customer) {
+            $existing = Customer::where('Customer_Name', $customer->Customer_No)->get();
+            if ($existing->isEmpty()){
+                $newCustomer = Customer::create([
+                        "Customer_No" => round(microtime(true) * 1000),
+                        "Customer_Name" => $customer->Customer_No,
+                        "Company_Code" => 'BPL'
+                    ]);
+            } else {
+                $newCustomer = $existing->first();
+            }
+            $entries = CustomerLedgerEntry::where('Company_Code', 'BPL')->where('Customer_No', $customer->Customer_No)->get();
+            foreach ($entries as $key => $entry) {
+                $entry->fill([
+                        'Customer_No' => $newCustomer->Customer_No,
+                        'Sell-To-Customer-No' => $newCustomer->Customer_No,
+                        'Bill-To-Customer-No' => $newCustomer->Customer_No,
+                    ]);
+                $entry->save();
+            }
+        }
         return true;
     }
 }
