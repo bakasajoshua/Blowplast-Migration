@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class CustomerLedgerEntry extends BaseModel
 {
@@ -58,6 +59,34 @@ class CustomerLedgerEntry extends BaseModel
         foreach (CustomerLedgerEntry::get() as $key => $entry) {
             $entry->Company_Code = 'BUL';
             $entry->save();
+        }
+        $ke = $this->synchKEEntries();
+
+        return true;
+    }
+
+    public function synchKEEntries()
+    {
+        $data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');
+        $dbInsert = [];
+        foreach ($data as $key => $value) {
+            $dbInsert[] = [
+                'CL_Entry_No' => $value->voucher_number,
+                'Document_No' => $value->voucher_number,
+                'Customer_No' => $value->supplier_name,
+                'Sell-To-Customer-No' => $value->supplier_name,
+                'Sell-To-Customer-Name' => $value->supplier_name,
+                'Bill-To-Customer-No' => $value->supplier_name,
+                'Bill-To-Customer-Name' => $value->supplier_name,
+                'Posting_Date' => $value->voucher_date,
+                'Due_Date' => $value->due_date,
+                'Original_Amount_LCY' => $value->voucher_amt,
+                'Original_Amount' => 0,
+                'Currency_Code' => $value->currency,
+                'Currency_Factor' => NULL,
+                'Remaining_Amount_LCY' => $value->balance_ason,
+                'Remaining_Amount' => NULL
+            ];
         }
         return true;
     }

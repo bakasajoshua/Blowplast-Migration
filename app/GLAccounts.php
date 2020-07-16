@@ -378,6 +378,15 @@ class GLAccounts extends BaseModel
         // return date('YmdHisu');
     }
 
+    public static function receivables()
+    {
+        $data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');
+        foreach ($data as $key => $value) {
+            dd($value);
+        }
+        return $data;
+    }
+
     // Delete this function once this works
     private static function dataSource()
     {
