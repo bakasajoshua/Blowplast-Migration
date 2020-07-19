@@ -108,4 +108,52 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
             echo "==> Finished inserting line data into the Warehouse\n";
 
     }
+
+    public function insertUGData()
+    {
+        echo "==> Pulling temp data\n";
+        $sales = TempUGSalesHeader::get();
+        echo "==> Inserting actual data\n";
+        foreach ($sales as $key => $sale) {
+            SalesInvoiceCreditMemoHeader::create([
+                'Invoice_Credit_Memo_No' => $sale->Document_No,
+                'SI_Document_No' => $sale->Document_No,
+                'Sell-To-Customer-No' => $sale->Customer_No,
+                'Sell-To-Customer-Name' => $sale->Customer_Name,
+                'Bill-To-Customer-No' => $sale->Customer_No,
+                'Bill-To-Customer-Name' => $sale->Customer_Name,
+                'SI_Posting_Date' => $sale->Posting_Date,
+                'SI_Due_Date' => $sale->Due_Date,
+                'Company_Code' => $sale->Company_Code,
+                'Type' => $sale->Type,
+                'Total_Amount_Excluding_Tax' => $sale->Total_Amount_Excluding_Tax,
+                'Total_Amount_Including_Tax' => $sale->Total_Amount_Including_Tax,
+                'Currency_Code' => $sale->Currency_Code,
+            ]);
+            foreach ($sale->lines as $key => $line) {
+                SalesInvoiceCreditMemoLine::create([
+                    'SI_Li_Line_No' => $line->Entry_No . '-' . $sale->LineNum,
+                    'Invoice_Credit_Memo_No' => $line->Document_No,
+                    'SI_Li_Document_No' => $line->Document_No,
+                    'Item_No' => $line->ItemCode,
+                    'Item_Weight_kg' => $line->Item_Weight_in_kg,
+                    'Item_Price_kg' => $line->Item_Price_in_kg,
+                    'Item_Description' => $line->Item_Description,
+                    'Quantity' => $line->Quantity,
+                    'Unit_Price' => $line->Unit_Price,
+                    'Unit_Cost' => $line->Unit_Cost,
+                    'Company_Code' => $line->Company_Code,
+                    'Currency_Code' => $line->Currency_Code,
+                    'Type' => $line->Type,
+                    'Total_Amount_Excluding_Tax' => $line->Total_Amount_Excluding_Tax,
+                    'Total_Amount_Including_Tax' => $line->Total_Amount_Including_Tax,
+                    'Sales_Unit_of_Measure' => $line->Sales_Unit_of_Measure,
+                    'SI_Li_Posting_Date' => $line->Posting_Date,
+                    'SI_Li_Due_Date' => $line->Due_Date,
+                ]);
+            }
+        }
+        echo "==> Finished inserting actual data\n";
+        return true;
+    }
 }
