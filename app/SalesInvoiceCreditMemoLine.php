@@ -46,9 +46,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         return true;
     }
 
-    public function insertKESalesLines()
+    public function insertKESalesLines($empty=false)
     {
         ini_set("memory_limit", "-1");
+        if ($empty)
+            SalesInvoiceCreditMemoLine::truncate();
         foreach (Temp::get() as $key => $sales) {
             // if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
                 SalesInvoiceCreditMemoLine::create([
@@ -72,6 +74,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 ]);
             // }
         }
+        return true;
     }
 
     public function insertMissingItems()
