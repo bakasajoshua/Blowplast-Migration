@@ -66,11 +66,20 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
         return true;
     }
 
-    public function insertKESales()
+    public function insertKESales($empty=false, $verbose=false)
     {
         ini_set("memory_limit", "-1");
+        if ($empty) {
+            if ($verbose)
+                echo "==> Deleting the existing data\n";
+            SalesInvoiceCreditMemoHeader::truncate();
+            if ($verbose)
+                echo "==> Finished deleting the existing data\n";
+        }
+        if ($verbose)
+            echo "==> Inserting data into the Warehouse\n";
         foreach (Temp::get() as $key => $sales) {
-            // if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
+            if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
                 SalesInvoiceCreditMemoHeader::create([
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Document_No' => $sales->invoice_doc_id,
@@ -86,7 +95,17 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Currency_Code' => $sales->curr_sp,
                 ]);
-            // }
+            }
         }
+        if ($verbose){
+            echo "==> Finished inserting data into the Warehouse\n";
+            echo "==> Inserting the lines data into the warehouse\n";
+        }
+
+        $lines = new SalesInvoiceCreditMemoLine;
+        $lines->insertKESalesLines(true);
+        if ($verbose)
+            echo "==> Finished inserting line data into the Warehouse\n";
+
     }
 }
