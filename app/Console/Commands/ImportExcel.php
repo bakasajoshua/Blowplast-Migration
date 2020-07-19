@@ -12,6 +12,8 @@ use App\GLAccounts;
 use App\GLEntries;
 use App\SalesInvoiceCreditMemoHeader;
 use App\SalesInvoiceCreditMemoLine;
+use App\TempUGSalesHeader;
+use App\TempUGSalesLine;
 
 class ImportExcel extends Command
 {
@@ -87,13 +89,13 @@ class ImportExcel extends Command
         /**************************************/
         /******** Import sales Data *********/
         /**************************************/
-        $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processCustomerLedgEntries();
-        $this->output->success('UG Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $lines = $this->processKECustomerLedgEntries();
-        $this->output->success('KE Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processCustomerLedgEntries();
+        // $this->output->success('UG Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processKECustomerLedgEntries();
+        // $this->output->success('KE Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
         // $this->output->title('Starting UG Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
         // $lines = $this->processSalesHeaders();
         // $this->output->success('Sales UG invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
@@ -105,6 +107,16 @@ class ImportExcel extends Command
         // $this->output->success('Sales KE invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
         // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
+        /**************************************/
+        /******** Import Temp Data *********/
+        /**************************************/
+        $this->output->title('Starting temp sales data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting temp UG Sales headers data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processTempUGSalesHeaders();
+        $this->output->success('Sales UG temp sales headers data import successful ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting UG temp Sales lines data import ' . date('Y-m-d H:i:s'));
+        $lines = $this->processTempUGSalesLines();
+        $this->output->success('Sales UG temp sales lines data import successful ' . date('Y-m-d H:i:s'));
         $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
     }
 
@@ -141,6 +153,18 @@ class ImportExcel extends Command
     private function processSalesLines()
     {
         return $this->processImportData(SalesInvoiceCreditMemoLine::class,
+                                    'synchLines', 10);
+    }
+
+    private function processTempUGSalesHeaders()
+    {
+        return $this->processImportData(TempUGSalesHeader::class,
+                                    'synchHeaders', 20);
+    }
+
+    private function processTempUGSalesLines()
+    {
+        return $this->processImportData(TempUGSalesLine::class,
                                     'synchLines', 10);
     }
 
