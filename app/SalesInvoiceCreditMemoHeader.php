@@ -111,9 +111,16 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
 
     public function insertUGData()
     {
-        echo "==> Pulling temp data\n";
+        echo "==> Deleting UG Sales header data " . date('Y-m-d H:i:s') . "\n";
+        foreach(SalesInvoiceCreditMemoHeader::where('Company_Code', 'BUL')->get() as $header){
+            $header->delete();
+        }foreach(SalesInvoiceCreditMemoLine::where('Company_Code', 'BUL')->get() as $line){
+            $line->delete();
+        }
+        echo "==> Finishing deleting the UG sales data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Pulling temp data " . date('Y-m-d H:i:s') . "\n";
         $sales = TempUGSalesHeader::get();
-        echo "==> Inserting actual data\n";
+        echo "==> Inserting headers data " . date('Y-m-d H:i:s') . "\n";
         foreach ($sales as $key => $sale) {
             SalesInvoiceCreditMemoHeader::create([
                 'Invoice_Credit_Memo_No' => $sale->Document_No,
@@ -130,30 +137,34 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                 'Total_Amount_Including_Tax' => $sale->Total_Amount_Including_Tax,
                 'Currency_Code' => $sale->Currency_Code,
             ]);
-            foreach ($sale->lines as $key => $line) {
-                SalesInvoiceCreditMemoLine::create([
-                    'SI_Li_Line_No' => $line->Entry_No . '-' . $sale->LineNum,
-                    'Invoice_Credit_Memo_No' => $line->Document_No,
-                    'SI_Li_Document_No' => $line->Document_No,
-                    'Item_No' => $line->ItemCode,
-                    'Item_Weight_kg' => $line->Item_Weight_in_kg,
-                    'Item_Price_kg' => $line->Item_Price_in_kg,
-                    'Item_Description' => $line->Item_Description,
-                    'Quantity' => $line->Quantity,
-                    'Unit_Price' => $line->Unit_Price,
-                    'Unit_Cost' => $line->Unit_Cost,
-                    'Company_Code' => $line->Company_Code,
-                    'Currency_Code' => $line->Currency_Code,
-                    'Type' => $line->Type,
-                    'Total_Amount_Excluding_Tax' => $line->Total_Amount_Excluding_Tax,
-                    'Total_Amount_Including_Tax' => $line->Total_Amount_Including_Tax,
-                    'Sales_Unit_of_Measure' => $line->Sales_Unit_of_Measure,
-                    'SI_Li_Posting_Date' => $line->Posting_Date,
-                    'SI_Li_Due_Date' => $line->Due_Date,
-                ]);
-            }
         }
-        echo "==> Finished inserting actual data\n";
+        echo "==> Finished inserting headers data " . date('Y-m-d H:i:s') . "\n";
+        echo "==> Pulling temp lines data " . date('Y-m-d H:i:s') . "\n";
+        $saleslines = TempUGSalesLine::get();
+        echo "==> Inserting lines data " . date('Y-m-d H:i:s') . "\n";
+        foreach ($saleslines as $key => $line) {
+            SalesInvoiceCreditMemoLine::create([
+                'SI_Li_Line_No' => $line->Entry_No . '-' . $sale->LineNum,
+                'Invoice_Credit_Memo_No' => $line->Document_No,
+                'SI_Li_Document_No' => $line->Document_No,
+                'Item_No' => $line->ItemCode,
+                'Item_Weight_kg' => $line->Item_Weight_in_kg,
+                'Item_Price_kg' => $line->Item_Price_in_kg,
+                'Item_Description' => $line->Item_Description,
+                'Quantity' => $line->Quantity,
+                'Unit_Price' => $line->Unit_Price,
+                'Unit_Cost' => $line->Unit_Cost,
+                'Company_Code' => $line->Company_Code,
+                'Currency_Code' => $line->Currency_Code,
+                'Type' => $line->Type,
+                'Total_Amount_Excluding_Tax' => $line->Total_Amount_Excluding_Tax,
+                'Total_Amount_Including_Tax' => $line->Total_Amount_Including_Tax,
+                'Sales_Unit_of_Measure' => $line->Sales_Unit_of_Measure,
+                'SI_Li_Posting_Date' => $line->Posting_Date,
+                'SI_Li_Due_Date' => $line->Due_Date,
+            ]);
+        }
+        echo "==> Finished inserting lines data " . date('Y-m-d H:i:s') . "\n";
         return true;
     }
 }

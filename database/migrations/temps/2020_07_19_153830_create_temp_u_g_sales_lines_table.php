@@ -31,8 +31,8 @@ class CreateTempUGSalesLinesTable extends Migration
             $table->string('Type')->nullable();
             $table->string('Company_Code')->nullable();
             $table->string('Currency_Code')->nullable();
-            $table->string('Posting_Date')->nullable();
-            $table->string('Due_Date')->nullable();
+            $table->date('Posting_Date')->nullable();
+            $table->date('Due_Date')->nullable();
             $table->timestamps();
         });
     }
