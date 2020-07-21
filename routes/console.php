@@ -26,3 +26,8 @@ Artisan::command('salesKE', function () {
 	$str = new \App\SalesInvoiceCreditMemoHeader;
 	$this->info($str->synchHeadersKE());
 })->describe('Import KE Sales Data');
+
+Artisan::command('temps', function () {
+	$str = new \App\SalesInvoiceCreditMemoHeader;
+	$this->info($str->synchHeadersKE());
+})->describe('Import Temporary Data');
