@@ -21,8 +21,9 @@ class CreateInventoryBudgetsTable extends Migration
             $table->string('Company_Code', 10);
             $table->string('Budget_Year');
             $table->string('Budget_Month');
-            $table->integer('Budget_Qty_Pcs');
-            $table->float('Budget_Qty_Weight');
+            $table->float('Budget_Qty_Pcs')->nullable();
+            $table->float('Budget_Qty_Weight')->nullable();
+            $table->float('Budget_Revenue')->nullable();
 
             // $table->foreign('Item_No')->references('Item_No')->on('Item Master');
             // $table->foreign('Customer_No')->references('Customer_No')->on('Customer Master');
