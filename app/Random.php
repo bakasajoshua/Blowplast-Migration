@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Imports\RandomImport;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\GLEntriesUpdateSheetImport;
+use App\Exports\GLAccountsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use DB;
 
@@ -59,5 +60,33 @@ class Random extends Model
     			'start_date' => $dto->setISODate(date('o', $date), date('W', $date))->format('Y-m-d'),
     			'dis' => date('o/w', $date)
     		];
+    }
+
+    public static function testdb()
+    {
+    	$data = DB::connection('oracle')->select('select * from fin.fin_gl_vw');
+    	var_dump($data);
+    }
+
+    public static function saveCompanyCode()
+    {
+    	foreach (AccountType::get() as $key => $account) {
+            $account->Company_Code = 'BUL';
+            $account->save();
+        }
+        foreach (ChartOfAccounts::get() as $key => $account) {
+            $account->Company_Code = 'BUL';
+            $account->save();
+        }
+        foreach (ChartOfAccountsBreakdown::get() as $key => $account) {
+            $account->Company_Code = 'BUL';
+            $account->save();
+        }
+        return true;
+    }
+
+    public static function exportGL()
+    {
+    	Excel::store(new GLAccountsExport, 'GLAccounts.xlsx');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateYearsTable extends Migration
+class CreateGlAccountLevel4Table extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateYearsTable extends Migration
      */
     public function up()
     {
-        Schema::create('LU_Year', function (Blueprint $table) {
+        Schema::create('GL_Accounts_Level_4', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('year')->unique();
-            $table->timestamp('year_date')->nullable();
-            $table->integer('duration')->nullable();
-            $table->integer('prev_year_id')->nullable();
+            $table->string('Level_4_ID')->unique();
+            $table->string('Level_4_Description');
+            $table->string('Level_3_ID');
+            $table->string('Company_Code')->nullable();
         });
     }
 
@@ -29,6 +29,6 @@ class CreateYearsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('LU_Year');
+        Schema::dropIfExists('GL_Accounts_Level_4');
     }
 }

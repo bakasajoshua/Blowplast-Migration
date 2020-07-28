@@ -14,7 +14,8 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
     public function up()
     {
         Schema::create('Sales Invoice Credit Memo Headers', function (Blueprint $table) {
-            $table->string('Invoice_Credit_Memo_No')->primary();
+            $table->bigIncrements('id');
+            $table->string('Invoice_Credit_Memo_No');
             $table->string('SI_Document_No')->nullable();
             $table->string('Sell-To-Customer-No')->nullable();
             $table->string('Sell-To-Customer-Name')->nullable();
@@ -24,7 +25,7 @@ class CreateSalesInvoiceCreditMemoHeadersTable extends Migration
             $table->date('SI_Due_Date')->nullable();
             $table->date('SI_Order_Date')->nullable();
             $table->string('Company_Code')->nullable();
-            $table->enum('Type', ['Invoice', 'Credit Memo', 'Credit Note'])->nullable();
+            $table->enum('Type', ['Invoice', 'Credit Memo', 'Credit Note', 'Direct Invoice'])->nullable();
             $table->decimal('Total_Amount_Excluding_Tax', 12, 2)->nullable();
             $table->decimal('Total_Amount_Including_Tax', 12, 2)->nullable();
             $table->string('Currency_Code')->nullable();

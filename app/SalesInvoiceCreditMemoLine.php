@@ -45,4 +45,35 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         }
         return true;
     }
+
+    public function insertKESalesLines($empty=false)
+    {
+        ini_set("memory_limit", "-1");
+        if ($empty)
+            SalesInvoiceCreditMemoLine::truncate();
+        foreach (Temp::get() as $key => $sales) {
+            // if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
+                SalesInvoiceCreditMemoLine::create([
+                    'Invoice_Credit_Memo_No' => $sales->invoice_id,
+                    'SI_Li_Document_No' => $sales->invoice_doc_id,
+                    'SI_Li_Line_No' => $sales->shipmnt_id,
+                    'Item_No' => $sales->itm_id,
+                    'Item_Description' => $sales->itm_desc,
+                    'Item_Weight_kg' => $sales->std_weight,
+                    'Item_Price_kg' => $sales->price_per_kg,
+                    'SI_Li_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
+                    'Company_Code' => 'BPL',
+                    'Quantity' => $sales->itm_ship_qty,
+                    'Unit_Price' => $sales->itm_cost,
+                    'Unit_Cost' => $sales->itm_cost,
+                    'Type' => ucwords($sales->inv_type_desc),
+                    'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
+                    'Total_Amount_Including_Tax' => $sales->net_amnt,
+                    'Sales_Unit_of_Measure' => $sales->uom_sls,
+                    'Currency_Code' => $sales->curr_sp,
+                ]);
+            // }
+        }
+        return true;
+    }
 }

@@ -14,7 +14,8 @@ class CreateInventoriesTable extends Migration
     public function up()
     {
         Schema::create('Item Master', function (Blueprint $table) {
-            $table->string('Item_No', 50)->primary();
+            $table->bigIncrements('id');
+            $table->string('Item_No', 50)->unique();
             $table->text('Item_Description')->nullable();
             $table->string('Company_Code')->nullable();
             $table->string('Dimension1')->nullable();

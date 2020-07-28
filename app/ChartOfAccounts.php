@@ -11,4 +11,9 @@ class ChartOfAccounts extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function level1()
+    {
+    	return $this->belongsTo(AccountType::class, 'Level_1_ID', 'Level_1_ID');
+    }
 }

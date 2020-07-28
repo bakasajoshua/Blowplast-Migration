@@ -11,4 +11,9 @@ class ChartOfAccountsBreakdown extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function level2()
+    {
+    	return $this->belongsTo(ChartOfAccounts::class, 'Level_2_ID', 'Level_2_ID');
+    }
 }

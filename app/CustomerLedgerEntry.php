@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class CustomerLedgerEntry extends BaseModel
 {
@@ -54,6 +55,65 @@ class CustomerLedgerEntry extends BaseModel
         $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
             CustomerLedgerEntry::insert($data->toArray());
+        }
+        foreach (CustomerLedgerEntry::get() as $key => $entry) {
+            $entry->Company_Code = 'BUL';
+            $entry->save();
+        }
+        return true;
+    }
+
+    public function synchKEEntries()
+    {
+        $data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');
+        $dbInsert = [];
+        foreach ($data as $key => $value) {
+            $dbInsert[] = [
+                'CL_Entry_No' => $value->voucher_number,
+                'Document_No' => $value->voucher_number,
+                'Customer_No' => $value->supplier_name,
+                'Sell-To-Customer-No' => $value->supplier_name,
+                'Sell-To-Customer-Name' => $value->supplier_name,
+                'Bill-To-Customer-No' => $value->supplier_name,
+                'Bill-To-Customer-Name' => $value->supplier_name,
+                'Posting_Date' => $value->voucher_date,
+                'Due_Date' => $value->due_date,
+                'Original_Amount_LCY' => $value->voucher_amt,
+                'Original_Amount' => 0,
+                'Currency_Code' => $value->currency,
+                'Currency_Factor' => 0,
+                'Remaining_Amount_LCY' => $value->balance_ason,
+                'Remaining_Amount' => 0,
+                'Company_Code' => 'BPL'
+            ];
+            
+        }
+        $chunks = collect($dbInsert)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            $insert = CustomerLedgerEntry::insert($chunk->toArray());
+        }
+
+        $customers = CustomerLedgerEntry::where('Company_Code', 'BPL')->get()->unique('Customer_No');
+        foreach ($customers as $key => $customer) {
+            $existing = Customer::where('Customer_Name', $customer->Customer_No)->get();
+            if ($existing->isEmpty()){
+                $newCustomer = Customer::create([
+                        "Customer_No" => round(microtime(true) * 1000),
+                        "Customer_Name" => $customer->Customer_No,
+                        "Company_Code" => 'BPL'
+                    ]);
+            } else {
+                $newCustomer = $existing->first();
+            }
+            $entries = CustomerLedgerEntry::where('Company_Code', 'BPL')->where('Customer_No', $customer->Customer_No)->get();
+            foreach ($entries as $key => $entry) {
+                $entry->fill([
+                        'Customer_No' => $newCustomer->Customer_No,
+                        'Sell-To-Customer-No' => $newCustomer->Customer_No,
+                        'Bill-To-Customer-No' => $newCustomer->Customer_No,
+                    ]);
+                $entry->save();
+            }
         }
         return true;
     }

@@ -18,9 +18,16 @@ class CreateGLEntriesTable extends Migration
             $table->string('GL_Entry_No', 50);
             $table->string('GL_Account_No', 50)->nullable();
             $table->string('Balancing_GL_Account_No', 50)->nullable();
+            $table->float('Debit', 24, 2)->nullable();
+            $table->float('Credit', 24, 2)->nullable();
             $table->float('Amounts', 24, 2)->nullable();
             $table->string('Currency_Code', 10)->nullable();
             $table->date('GL_Posting_Date')->nullable();
+            $table->date('Day')->nullable();
+            $table->string('week')->nullable();
+            $table->string('month')->nullable();
+            $table->tinyInteger('quarter')->nullable();
+            $table->integer('year')->nullable();
             $table->string('GL_Document_No')->nullable();
             $table->string('GL_Document_Type')->comment("['Payments', 'Invoice', 'Credit Memo', 'Finance', 'Charge', 'Reminder', 'Refund']")->nullable();
             $table->text('Description')->nullable();
