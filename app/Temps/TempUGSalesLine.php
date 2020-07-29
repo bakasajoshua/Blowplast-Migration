@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Temps;
 
+use App\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
 class TempUGSalesLine extends BaseModel
@@ -43,5 +44,12 @@ class TempUGSalesLine extends BaseModel
             TempUGSalesLine::insert($data->toArray());
         }
         return true;
+    }
+
+    public static function insertData($start_date, $final_date)
+    {
+    	$sl = new TempUGSalesLine;
+    	$sl->processImportData(TempUGSalesLine::class, 'synchLines', $start_date, $final_date, 10);
+    	return true;
     }
 }
