@@ -25,10 +25,17 @@ class RandomImport implements ToCollection, WithHeadingRow
     	// DB::table('vehicle_details')->insert($vehicles);
     	
         // dd($vehicles);
+        // dd($collection);
+        
         $tyres = [];
         foreach ($collection as $key => $tyre) {
-            # code...
+            // DB::table('tyre_details')->create($tyre->toArray());
+            $tyres[] = $tyre->toArray();
         }
+        // dd($tyres);
+        DB::table('tyre_details')->insert($tyres);
+        return $tyres;
     }
 }
 
+//https://blogs.sap.com/2016/01/14/sap-business-one-tables/
