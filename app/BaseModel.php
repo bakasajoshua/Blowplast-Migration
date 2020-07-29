@@ -78,6 +78,25 @@ class BaseModel extends Model
     	return '</' . $functionCall . 'Result></' . $functionCall . 'Response></soap:Body></soap:Envelope>';
     }
 
+    protected function processImportData($model, $function, $start_date, $final_date, $incremental)
+    {
+        $model::truncate();
+        $model = new $model;
+        while (strtotime($final_date) >= strtotime($start_date)) {
+            $end_date = date('Y-m-d', strtotime('+'.$incremental.' days', strtotime($start_date)));
+            if (strtotime($end_date) > strtotime($final_date))
+                $end_date = $final_date;
+            $date_range = [
+                        'SDate' => $start_date,
+                        'EDate' => $end_date
+                    ];           
+            
+            $synch = $model->$function($date_range);
+            $start_date = date('Y-m-d', strtotime('+1 day', strtotime($end_date)));
+        }
+        return true;
+    }
+
 
 
 
