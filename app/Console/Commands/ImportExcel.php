@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
+use App\Imports\InventoryBudgetImport;
 use Illuminate\Console\Command;
 use App\Customer;
 use App\CustomerLedgerEntry;
@@ -110,6 +111,13 @@ class ImportExcel extends Command
         // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
         /**************************************/
+        /******** Import Master Data *********/
+        /**************************************/
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/inventorybudgets.xlsx'));
+        $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
+
+        /**************************************/
         /******** Import Temp Data *********/
         /**************************************/
         // $this->output->title('Starting temp sales data import ' . date('Y-m-d H:i:s'));
@@ -120,15 +128,14 @@ class ImportExcel extends Command
         // $lines = $this->processTempUGSalesLines();
         // $this->output->success('Sales UG temp sales lines data import successful ' . date('Y-m-d H:i:s'));
         // $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
-
-        $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
-        $entries = $this->processGLAccountsTemp();
-        $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
-        $entries = $this->processGLEntriesTemp();
-        $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
+        // $entries = $this->processGLAccountsTemp();
+        // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
+        // $entries = $this->processGLEntriesTemp();
+        // $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
     }
 
     private function processGLEntries()
