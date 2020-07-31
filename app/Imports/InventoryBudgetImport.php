@@ -21,7 +21,7 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
     * @return \Illuminate\Database\Eloquent\Model|null
     */
     public function model(array $row)
-    {   
+    {
     	// Check or create inventory
     	$itemCheck = Inventory::where('Item_Description', $row['prod'])->where('Company_Code', 'BPL')->get();
     	if ($itemCheck->isEmpty()){
@@ -48,10 +48,13 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
     	}
 
     	// Build budget lines
+        
 		$data = [];
 		foreach ($row as $key => $value) {
 			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc'])) {
-				$month = substr((string)$key, 4);
+                $date = explode('_', $key);
+				$month = str_replace('_', '/', $key);
+                $year = $date[0];
 				$budgetItem = new InventoryBudget([
 			            'Value_Stream' => $row['vs'],
 			            'Item_Description' => $item->Item_Description,
@@ -59,14 +62,14 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
 			            'Customer_Name' => $customer->Customer_Name,
 			            'Customer_No' => $customer->Customer_No,
 			            'Company_Code' => $item->Company_Code,
-						'Budget_Year' => str_replace($month, '', (string)$key),
+						'Budget_Year' => $year,
 						'Budget_Month' => $month,
 						'Budget_Qty_Pcs' => $value,
 						'Budget_Qty_Weight' => ((float)$value * (float)$row['wt_pc_g']/1000)
 					]);
 			}
 		}
-
+        
     	return $budgetItem;
     }
 }
