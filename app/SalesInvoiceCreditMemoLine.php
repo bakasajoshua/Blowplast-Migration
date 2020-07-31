@@ -82,6 +82,28 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         return true;
     }
 
+
+    public function insertMissingItems()
+    {
+        ini_set("memory_limit", "-1");
+        $items = SalesInvoiceCreditMemoLine::get()->unique('Item_No');
+        $newItems = [];
+        foreach ($items as $key => $item) {
+            $dbitem = Inventory::where('Item_No', $item->Item_No)->get();
+            if ($dbitem->isEmpty()) {
+                $newItems[] = [
+                    'Item_No' => $item->Item_No,
+                    'Item_Description' => $item->Item_Description,
+                    'Company_Code' => $item->Company_Code
+                ];
+            }
+        }
+        $chunks = collect($newItems)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            Inventory::insert($chunk->toArray());
+        }
+    }
+    
     public static function importData()
     {
 
