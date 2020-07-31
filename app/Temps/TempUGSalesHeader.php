@@ -37,6 +37,13 @@ class TempUGSalesHeader extends BaseModel
             TempUGSalesHeader::insert($data->toArray());
         }
         return true;
+    }   
+
+    public static function insertData($start_date, $final_date)
+    {
+        $sl = new TempUGSalesLine;
+        $sl->processImportData(TempUGSalesHeader::class, 'synchHeaders', $start_date, $final_date, 10);
+        return true;
     }
 
     public function lines()
