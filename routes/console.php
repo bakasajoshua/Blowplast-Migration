@@ -33,5 +33,10 @@ Artisan::command('temps', function () {
 })->describe('Import Temporary Data');
 
 Artisan::command('update:task', function(){
-	$str = \App\Random::anything();
+	// Sync the GL entries
+	$model = new \App\GLEntries;
+	$model->scheduledImport();
+
+	// Sync the sales
+	$model = \App\SalesInvoiceCreditMemoLine::scheduledImportData();
 })->describe('Daily task updates');
