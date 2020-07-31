@@ -31,3 +31,7 @@ Artisan::command('temps', function () {
 	$str = new \App\SalesInvoiceCreditMemoHeader;
 	$this->info($str->synchHeadersKE());
 })->describe('Import Temporary Data');
+
+Artisan::command('update:task', function(){
+	$str = \App\Random::anything();
+})->describe('Daily task updates');

@@ -2,7 +2,11 @@
 
 namespace App;
 
+use App\Temps\TempKEGL;
+use App\Temps\TempUGGLEntry;
+use App\Logs\TimeEntry;
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class GLEntries extends BaseModel
 {
@@ -35,21 +39,159 @@ class GLEntries extends BaseModel
         ini_set("memory_limit", "-1");
         $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
-            $newData = [];
-            foreach ($data as $key => $entry) {
-                $day = Day::whereDate('day_id', date('Y-m-d', strtotime($entry['Day'])))->first();
-                $week = $day->day_week;
-                $month = $day->day_month;
-                $quarter = $month->month_quarter;
-                $year = $month->month_year;
-                $entry['week'] = $week->week;
-                $entry['month'] = $month->month_id;
-                $entry['quarter'] = $quarter->quarter;
-                $entry['year'] = $year->year;
-                $newData[] = $entry;
-            }
-            GLEntries::insert($newData);
+            $glentries = GLEntries::insert($data->toArray());
         }
+        $day_dimensions = $this->updateDay();
+        $time_dimensions = $this->updateOtherTimeDimensions();
+        return true;
+    }
+
+    private function updateDay()
+    {
+        DB::statement("
+        UPDATE [dbo].[GL Entries] SET [dbo].[GL Entries].[Day] = [GL Entries].[GL_Posting_Date] WHERE [dbo].[GL Entries].[Day] IS NULL
+        ");
+    }
+
+    private function updateOtherTimeDimensions()
+    {
+        DB::statement("
+            UPDATE 
+                [dbo].[GL Entries]
+            SET 
+                [dbo].[GL Entries].[week] = [LU_Day].[week]
+                ,[dbo].[GL Entries].[month] = [LU_Day].[month]
+                ,[dbo].[GL Entries].[quarter] = [LU_Month].[quarter_id]
+                ,[dbo].[GL Entries].[year] = [LU_Month].[year]
+            FROM 
+                [dbo].[GL Entries]
+                JOIN [dbo].[LU_Day] ON [LU_Day].day_id = [GL Entries].[Day]
+                JOIN [dbo].[LU_Month] ON [LU_Month].[month_id] = [LU_Day].[month]
+            WHERE
+                [dbo].[GL Entries].[week] IS NULL;
+        ");
+    }
+
+    public function scheduledImport()
+    {
+        ini_set("memory_limit", "-1");
+        $year = date('Y');
+        $month = date('m');
+        $start_date = $year . '-' . $month . '-01';
+        $final_date = date('Y-m-d');
+        $incremental = 5;
+
+        /*** Delete all existing data for the period of insertion ***/
+        echo "==> Deleting data for the time period " . date('Y-m-d H:i:s') . "\n";
+        $deletion_data = GLEntries::whereYear('GL_Posting_Date', $year)
+                            ->whereMonth('GL_Posting_Date', $month)->get();
+        foreach ($deletion_data as $key => $line) {
+            $line->delete();
+        }
+        echo "==> Data deletion completed " . date('Y-m-d H:i:s') . "\n";
+        /*** Delete all existing data for the period of insertion ***/
+
+        /*** Working on KE Data ***/
+        echo "==> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+        $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        TempKEGL::truncate();
+        $model = new TempKEGL;
+        $ke = $model->syncData();
+        echo "==> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+        $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        /*** Finished working with the temp Data ***/
+        echo "==> Filling warehouse with GL Entries " . date('Y-m-d H:i:s') . "\n";
+        /*** Inserting the KE Data in the warehouse ***/
+        echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+        $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        $keData = TempKEGL::whereBetween('voucher date', [$start_date, $final_date])->get()->toArray();
+        foreach ($keData as $key => $entry) {
+            $glaccount = GLAccounts::where('GL_Account_Name', $entry['coa name'])->get();
+            if ($glaccount->isEmpty()) {
+                $glaccount = GLAccounts::create([
+                    'GL_Account_No' => round(microtime(true) * 1000),
+                    'GL_Account_Name' => $entry['coa name'],
+                    'Company_Code' => 'BPL',
+                ]);
+            } else {
+                $glaccount = $glaccount->first();
+            }
+            GLEntries::create([
+                'GL_Entry_No' => round(microtime(true) * 1000),
+                'GL_Account_No' => $glaccount->GL_Account_No,
+                'Debit' => $entry['debit'],
+                'Credit' => $entry['credit'],
+                'Amounts' => ((float)$entry['debit']-(float)$entry['credit']),
+                'Currency_Code' => $entry['currency'],
+                'GL_Posting_Date' => date('Y-m-d', strtotime($entry['voucher date'])),
+                'Day' => date('Y-m-d', strtotime($entry['voucher date'])),
+                'GL_Document_No' => $entry['doc no'],
+                'GL_Document_Type' => NULL,
+                'Description' => $entry['narration'],
+                'Company_Code' => $glaccount->Company_Code,
+            ]);
+        }
+        $destination_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        echo "==> Finished inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+        /** Record entry complete **/
+        echo "==> Making time entry \n";
+        TimeEntry::create([
+            'source' => TempKEGL::class,
+            'destination' => GLEntries::class,
+            'Country' => 'KE',
+            'source_start_time' => $source_start_ke,
+            'source_end_time' => $source_end_ke,
+            'destination_start_time' => $destination_start_ke,
+            'destination_end_time' => $destination_end_ke,
+        ]);
+        /*** Working on KE Data ***/
+
+        /*** Working on UG Data ***/
+        echo "==> Filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+        $source_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        TempUGGLEntry::truncate();
+        $this->processImportData(TempUGGLEntry::class, 'synchEntries',
+                            $start_date, $final_date, $incremental);
+        echo "==> Completed filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+        $source_end_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+         /*** Inserting the UG Data in the warehouse ***/
+        echo "==> Inserting UG Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+        $destination_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        $ugData = TempUGGLEntry::whereBetween('Posting_Date', [$start_date, $final_date])->get();
+        foreach ($ugData as $key => $entry) {
+            GLEntries::create([
+                'GL_Entry_No' => (string)$entry->Entry_No . '-' . $entry->GroupMask,
+                'GL_Account_No' => $entry->GL_Account_Number,
+                'Debit' => $entry->Debit,
+                'Credit' => $entry->Credit,
+                'Amounts' => ((float)$entry->Debit-(float)$entry->Credit),
+                'Currency_Code' => $entry->Currency,
+                'GL_Posting_Date' => date('Y-m-d', strtotime($entry->Postng_Date)),
+                'Day' => date('Y-m-d', strtotime($entry->Postng_Date)),
+                'GL_Document_No' => $entry->Document_Number,
+                'GL_Document_Type' => $entry->Document_Type,
+                'Description' => $entry->Description,
+                'Company_Code' => $entry->Company_Code,
+            ]);
+        }
+        $destination_end_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        echo "==> Finished inserting UG Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+        /*** Inserting the UG Data in the warehouse ***/
+        echo "==> Finished inserting GL Entries Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+
+        TimeEntry::create([
+            'source' => TempUGGLEntry::class,
+            'destination' => GLEntries::class,
+            'Country' => 'UG',
+            'source_start_time' => $source_start_ug,
+            'source_end_time' => $source_end_ug,
+            'destination_start_time' => $destination_start_ug,
+            'destination_end_time' => $destination_end_ug,
+        ]);
+        /*** Working on UG Data ***/
+
+        $updates = $this->updateDay();
+        $updates = $this->updateOtherTimeDimensions();
         return true;
     }
 
