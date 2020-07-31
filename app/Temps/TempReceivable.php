@@ -1,7 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Temps;
 
+use App\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
+use App\Imports\InventoryBudgetImport;
 use Illuminate\Console\Command;
 use App\Customer;
 use App\CustomerLedgerEntry;
@@ -12,8 +13,10 @@ use App\GLAccounts;
 use App\GLEntries;
 use App\SalesInvoiceCreditMemoHeader;
 use App\SalesInvoiceCreditMemoLine;
-use App\TempUGSalesHeader;
-use App\TempUGSalesLine;
+use App\Temps\TempUGGL;
+use App\Temps\TempUGGLEntry;
+use App\Temps\TempUGSalesHeader;
+use App\Temps\TempUGSalesLine;
 
 class ImportExcel extends Command
 {
@@ -108,21 +111,49 @@ class ImportExcel extends Command
         // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
         /**************************************/
+        /******** Import Master Data *********/
+        /**************************************/
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/inventorybudgets.xlsx'));
+        $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
+
+        /**************************************/
         /******** Import Temp Data *********/
         /**************************************/
-        $this->output->title('Starting temp sales data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting temp UG Sales headers data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processTempUGSalesHeaders();
-        $this->output->success('Sales UG temp sales headers data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting UG temp Sales lines data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processTempUGSalesLines();
-        $this->output->success('Sales UG temp sales lines data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting temp sales data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting temp UG Sales headers data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processTempUGSalesHeaders();
+        // $this->output->success('Sales UG temp sales headers data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting UG temp Sales lines data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processTempUGSalesLines();
+        // $this->output->success('Sales UG temp sales lines data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Data import complete ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting finance data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting GL Accounts data import ' . date('Y-m-d H:i:s'));
+        // $entries = $this->processGLAccountsTemp();
+        // $this->output->success('GL Accounts data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting UG GL Entries data import ' . date('Y-m-d H:i:s'));
+        // $entries = $this->processGLEntriesTemp();
+        // $this->output->success('UG GL Entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Finance data import successful ' . date('Y-m-d H:i:s'));
     }
 
     private function processGLEntries()
     {
         return $this->processImportData(GLEntries::class,
+                                    'synchEntries', 5);
+    }
+
+    private function processGLAccountsTemp()
+    {
+        TempUGGL::truncate();
+        $model = new TempUGGL;
+        return $model->synchEntries();
+    }
+
+    private function processGLEntriesTemp()
+    {
+        return $this->processImportData(TempUGGLEntry::class,
                                     'synchEntries', 5);
     }
 
@@ -171,7 +202,7 @@ class ImportExcel extends Command
     private function processImportData($model, $function, $incremental)
     {
         $start_date = '2018-01-01';
-        $final_date = '2020-06-30';
+        $final_date = '2020-07-25';
         // $start_date = '2020-06-01';
         // $final_date = '2020-06-30';
         $model::truncate();

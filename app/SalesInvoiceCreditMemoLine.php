@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Logs\TimeEntry;
+use App\Temps\TempUGSalesLine;
 use Illuminate\Database\Eloquent\Model;
 
 class SalesInvoiceCreditMemoLine extends BaseModel
@@ -74,6 +76,97 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 ]);
             // }
         }
+        return true;
+    }
+
+
+    public function insertMissingItems()
+    {
+        ini_set("memory_limit", "-1");
+        $items = SalesInvoiceCreditMemoLine::get()->unique('Item_No');
+        $newItems = [];
+        foreach ($items as $key => $item) {
+            $dbitem = Inventory::where('Item_No', $item->Item_No)->get();
+            if ($dbitem->isEmpty()) {
+                $newItems[] = [
+                    'Item_No' => $item->Item_No,
+                    'Item_Description' => $item->Item_Description,
+                    'Company_Code' => $item->Company_Code
+                ];
+            }
+        }
+        $chunks = collect($newItems)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            Inventory::insert($chunk->toArray());
+        }
+    }
+    
+    public static function importData()
+    {
+
+    }
+
+    public static function scheduledImportData()
+    {
+        $year = date('Y');
+        $month = date('m');
+        // Delete existing data
+        echo "==> Deleting existing data \n";
+        $existing_data = SalesInvoiceCreditMemoLine::whereYear('SI_Li_Posting_Date', $year)
+                            ->whereMonth('SI_Li_Posting_Date', $month)->get();
+        foreach ($existing_data as $key => $line) {
+            $line->delete();
+        }
+
+        /** Pulling in the source data **/
+        echo "==> Pulling Source data \n";
+        $source_start = NULL;
+        $source_start = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        $start_date = $year . '-' . $month . '-01';
+        $final_date = date('Y-m-d');
+        TempUGSalesLine::insertData($start_date, $final_date);
+        $source_data = TempUGSalesLine::whereYear('Posting_Date', $year)
+                            ->whereMonth('Posting_Date', $month)->get();
+        $source_end = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+
+        /*** Bring In the new Data ***/
+        echo "==> Inserting data into the warehouse (Count: {$source_data->count()}) \n";
+        $destination_start = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        foreach ($source_data as $key => $entry) {
+            SalesInvoiceCreditMemoLine::create([
+                'SI_Li_Line_No' => $entry->Entry_No . '-' . $entry->LineNum,
+                'Invoice_Credit_Memo_No' => $entry->Document_No,
+                'SI_Li_Document_No' => $entry->Document_No,
+                'Item_No' => $entry->ItemCode,
+                'Item_Weight_kg' => $entry->Item_Weight_in_kg,
+                'Item_Price_kg' => $entry->Item_Price_in_kg,
+                'Item_Description' => $entry->Item_Description,
+                'Quantity' => $entry->Quantity,
+                'Unit_Price' => $entry->Unit_Price,
+                'Unit_Cost' => $entry->Unit_Cost,
+                'Company_Code' => $entry->Company_Code,
+                'Currency_Code' => $entry->Currency_Code,
+                'Type' => $entry->Type,
+                'Total_Amount_Excluding_Tax' => $entry->Total_Amount_Excluding_Tax,
+                'Total_Amount_Including_Tax' => $entry->Total_Amount_Including_Tax,
+                'Sales_Unit_of_Measure' => $entry->Sales_Unit_of_Measure,
+                'SI_Li_Posting_Date' => $entry->SI_Li_Posting_Date,
+                'SI_Li_Due_Date' => $entry->SI_Li_Due_Date,
+            ]);
+        }
+        $destination_end = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+
+        /** Record entry complete **/
+        echo "==> Making time entry \n";
+        TimeEntry::create([
+            'source' => TempUGSalesLine::class,
+            'destination' => SalesInvoiceCreditMemoLine::class,
+            'Country' => 'UG',
+            'source_start_time' => $source_start,
+            'source_end_time' => $source_end,
+            'destination_start_time' => $destination_start,
+            'destination_end_time' => $destination_end,
+        ]);
         return true;
     }
 }
