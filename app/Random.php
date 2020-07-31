@@ -89,4 +89,17 @@ class Random extends Model
     {
     	Excel::store(new GLAccountsExport, 'GLAccounts.xlsx');
     }
+
+    public static function anything()
+    {
+        if(!is_dir(storage_path('app/sample/'))) mkdir(storage_path('app/sample/'), 0777);
+
+        $file = fopen(storage_path('app/sample/logs.txt'), "a");
+        $writeString = date('Y-m-d H:i:s') . 'This is the entry';
+        fwrite($file, $writeString);
+        fwrite($file, "\r\n");
+        fclose($file);
+
+        return true;
+    }
 }

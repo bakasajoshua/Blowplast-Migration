@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 use App\Customer;
 use App\CustomerLedgerEntry;
 use App\Inventory;
+use App\InventoryBudget;
 use App\GLAccounts;
 use App\GLEntries;
 use App\SalesInvoiceCreditMemoHeader;
@@ -114,6 +115,7 @@ class ImportExcel extends Command
         /******** Import Master Data *********/
         /**************************************/
         $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        InventoryBudget::truncate();
         (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/inventorybudgets.xlsx'));
         $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
 

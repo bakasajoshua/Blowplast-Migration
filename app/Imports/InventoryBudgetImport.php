@@ -6,6 +6,8 @@ use App\Customer;
 use App\Inventory;
 use App\InventoryBudget;
 
+use Carbon\Carbon;
+
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
@@ -22,7 +24,7 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
     */
     public function model(array $row)
     {   
-    	// Check or create inventory
+        // Check or create inventory
     	$itemCheck = Inventory::where('Item_Description', $row['prod'])->where('Company_Code', 'BPL')->get();
     	if ($itemCheck->isEmpty()){
     		$item = Inventory::create([
@@ -49,21 +51,26 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
 
     	// Build budget lines
 		$data = [];
+        $budgetItem = [];
 		foreach ($row as $key => $value) {
-			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc'])) {
-				$month = substr((string)$key, 4);
-				$budgetItem = new InventoryBudget([
+			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc', 'price'])) {
+                $year = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('Y');
+                $month = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('Y/m');
+				
+				$budgetItem = InventoryBudget::create([
 			            'Value_Stream' => $row['vs'],
 			            'Item_Description' => $item->Item_Description,
 			            'Item_No' => $item->Item_No,
 			            'Customer_Name' => $customer->Customer_Name,
 			            'Customer_No' => $customer->Customer_No,
 			            'Company_Code' => $item->Company_Code,
-						'Budget_Year' => str_replace($month, '', (string)$key),
+						'Budget_Year' => $year,
 						'Budget_Month' => $month,
 						'Budget_Qty_Pcs' => $value,
-						'Budget_Qty_Weight' => ((float)$value * (float)$row['wt_pc_g']/1000)
+						'Budget_Qty_Weight' => ((float)$value * (float)$row['wt_pc_g']/1000),
+                        'Budget_Revenue' => ((float)$row['price'] * (float)$value),
 					]);
+                
 			}
 		}
 
