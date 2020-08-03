@@ -6,6 +6,7 @@ use App\Temps\TempKEGL;
 use App\Temps\TempUGGLEntry;
 use App\Logs\TimeEntry;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 use DB;
 
 class GLEntries extends BaseModel
@@ -81,14 +82,23 @@ class GLEntries extends BaseModel
         $final_date = date('Y-m-d');
         $incremental = 5;
 
-        /*** Delete all existing data for the period of insertion ***/
-        echo "==> Deleting data for the time period " . date('Y-m-d H:i:s') . "\n";
-        $deletion_data = GLEntries::whereYear('GL_Posting_Date', $year)
-                            ->whereMonth('GL_Posting_Date', $month)->get();
-        foreach ($deletion_data as $key => $line) {
-            $line->delete();
+        Artisan::command('test:email', function(){
+            \Illuminate\Support\Facades\Mail::to(['baksajoshua09@gmail.com'])->send(new \App\Mail\TestEmail);
+       })->describe('Test Mailer');
+
+        try {
+            echo "==> Deleting data for the time period " . date('Y-m-d H:i:s') . "\n";
+            $deletion_data = GLEntries::whereYear('GL_Posting_Date', $year)
+                                ->whereMonth('GL_Posting_Date', $month)->get();
+            foreach ($deletion_data as $key => $line) {
+                $line->delete();
+            }
+            echo "==> Data deletion completed " . date('Y-m-d H:i:s') . "\n"; 
+        } catch (\Exception $e) {
+            Mail::to([env('MAIL_TO_EMAIL')])->send(new \App\Mail\TestEmail);
         }
-        echo "==> Data deletion completed " . date('Y-m-d H:i:s') . "\n";
+        /*** Delete all existing data for the period of insertion ***/
+        
         /*** Delete all existing data for the period of insertion ***/
 
         /*** Working on KE Data ***/
