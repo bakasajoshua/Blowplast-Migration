@@ -85,7 +85,7 @@ class GLEntries extends BaseModel
         $message = '';
 
         /*** Delete all existing data for the period of insertion ***/
-        $message .= ">> Deleting existing data " . date('Y-m-d H:i:s') . "\n";
+        $message .= ">> Deleting existing GL data " . date('Y-m-d H:i:s') . "\n";
         try {
             echo "==> Deleting data for the time period " . date('Y-m-d H:i:s') . "\n";
             $deletion_data = GLEntries::whereYear('GL_Posting_Date', $year)
@@ -93,17 +93,18 @@ class GLEntries extends BaseModel
             foreach ($deletion_data as $key => $line) {
                 $line->delete();
             }
-            echo "==> Data deletion completed " . date('Y-m-d H:i:s') . "\n";
-            $message .= ">> Deletion successful " . date('Y-m-d H:i:s') . "\n";
+            echo "==> GL Data deletion completed " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> GL Data Deletion successful " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            echo "==> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         } 
         /*** Delete all existing data for the period of insertion ***/
 
         /*** Working on KE Data ***/
-        echo "==> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
-        $message .= ">> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         try {
+            echo "==> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             TempKEGL::truncate();
             $model = new TempKEGL;
@@ -111,7 +112,7 @@ class GLEntries extends BaseModel
             echo "==> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             /*** Finished working with the temp Data ***/
-            echo "==> Filling warehouse with GL Entries " . date('Y-m-d H:i:s') . "\n";
+            echo "==> Filling warehouse with KE GL Entries " . date('Y-m-d H:i:s') . "\n";
             /*** Inserting the KE Data in the warehouse ***/
             echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
@@ -158,12 +159,13 @@ class GLEntries extends BaseModel
             $message .= ">> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
             $message .= ">> Filling KE GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            echo "==> Filling KE GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }        
         /*** Working on KE Data ***/
 
         /*** Working on UG Data ***/
-        $message .= ">> Filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         try {
+            $message .= ">> Filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             echo "==> Filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             $source_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             TempUGGLEntry::truncate();
@@ -208,13 +210,19 @@ class GLEntries extends BaseModel
             $message .= ">> Completed filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
             $message .= ">> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            echo "==> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
         
         /*** Working on UG Data ***/
 
         $updates = $this->updateDay();
         $updates = $this->updateOtherTimeDimensions();
-        Mail::to([env('MAIL_TO_EMAIL')])->send(new DailyScheduledTask($message));
+        Mail::to([
+            env('MAIL_TO_EMAIL'),
+            // 'walter.orando@dataposit.co.ke',
+            // 'diana.adiema@dataposit.co.ke',
+            // 'kkinyanjui@dataposit.co.ke'
+        ])->send(new DailyScheduledTask($message));
         return true;
     }
 

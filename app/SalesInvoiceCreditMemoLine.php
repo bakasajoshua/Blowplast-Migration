@@ -121,7 +121,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         $message = '';
 
         /*** Delete existing data ***/
-        $message .= ">> Deleting existing data " . date('Y-m-d H:i:s') . "\n";
+        $message .= ">> Deleting existing Sales data " . date('Y-m-d H:i:s') . "\n";
         try {
             echo "==> Deleting existing data " . date('Y-m-d H:i:s') . "\n";
             $existing_data = SalesInvoiceCreditMemoLine::whereBetween('SI_Li_Posting_Date', [$start_date, $final_date])->get();
@@ -138,6 +138,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $message .= ">> Deletion successful " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
             $message .= ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            echo "==> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }        
         /*** Delete existing data ***/
 
@@ -213,15 +214,16 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 'destination_start_time' => $destination_start_ug,
                 'destination_end_time' => $destination_end_ug,
             ]);
-            $message .= ">> Completed pulling UG Source data successfully " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Completed pulling UG Sales data successfully " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> Failed Pulling UG Source data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            echo "==> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
         /*** Work on UG data ***/
 
         /*** Work on KE data ***/
-        $message .= ">> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
         try {
+            $message .= ">> Bringing in KE Sales data " . date('Y-m-d H:i:s') . "\n";
             echo "==> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
             $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             Temp::truncate();
@@ -284,15 +286,21 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 'destination_end_time' => $destination_end_ke,
             ]);
             echo "==> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
-            $message .= ">> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> Pulling KE Data failed with error " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
+            echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
         }
         /*** Work on KE data ***/
 
         self::updateDay();
         self::updateOtherTimeDimensions();
-        Mail::to([env('MAIL_TO_EMAIL')])->send(new DailyScheduledTask($message));
+        Mail::to([
+            // env('MAIL_TO_EMAIL'),
+            // 'walter.orando@dataposit.co.ke',
+            // 'diana.adiema@dataposit.co.ke',
+            'kkinyanjui@dataposit.co.ke'
+        ])->send(new DailyScheduledTask($message));
         return true;
     }
 

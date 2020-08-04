@@ -11,4 +11,6 @@ class InventoryBudget extends Model
     protected $guarded = [];
 
     public $timestamps = false;
+
+    protected $primaryKey = 'Inventory_Budget_No';
 }
