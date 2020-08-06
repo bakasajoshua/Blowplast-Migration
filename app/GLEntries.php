@@ -40,6 +40,12 @@ class GLEntries extends BaseModel
     {
         ini_set("memory_limit", "-1");
         $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
+        $insert_chunk = $this->insertChunk($chunks);
+        return true;
+    }
+
+    public function insertChunk($chunks)
+    {
         foreach ($chunks as $key => $data) {
             $glentries = GLEntries::insert($data->toArray());
         }
@@ -117,6 +123,7 @@ class GLEntries extends BaseModel
             echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             $keData = TempKEGL::whereBetween('voucher date', [$start_date, $final_date])->get()->toArray();
+            $chunkKE = [];
             foreach ($keData as $key => $entry) {
                 $glaccount = GLAccounts::where('GL_Account_Name', $entry['coa name'])->get();
                 if ($glaccount->isEmpty()) {
@@ -128,7 +135,7 @@ class GLEntries extends BaseModel
                 } else {
                     $glaccount = $glaccount->first();
                 }
-                GLEntries::create([
+                $chunkKE[] = [
                     'GL_Entry_No' => round(microtime(true) * 1000),
                     'GL_Account_No' => $glaccount->GL_Account_No,
                     'Debit' => $entry['debit'],
@@ -141,8 +148,10 @@ class GLEntries extends BaseModel
                     'GL_Document_Type' => NULL,
                     'Description' => $entry['narration'],
                     'Company_Code' => $glaccount->Company_Code,
-                ]);
+                ];
             }
+            $chunks = collect($chunkKE)->chunk($this->chunkQty);
+            $insert = $this->insertChunk($chunks);
             $destination_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             echo "==> Finished inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             /** Record entry complete **/
@@ -176,23 +185,7 @@ class GLEntries extends BaseModel
              /*** Inserting the UG Data in the warehouse ***/
             echo "==> Inserting UG Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $destination_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-            $ugData = TempUGGLEntry::whereBetween('Posting_Date', [$start_date, $final_date])->get();
-            foreach ($ugData as $key => $entry) {
-                GLEntries::create([
-                    'GL_Entry_No' => (string)$entry->Entry_No . '-' . $entry->GroupMask,
-                    'GL_Account_No' => $entry->GL_Account_Number,
-                    'Debit' => $entry->Debit,
-                    'Credit' => $entry->Credit,
-                    'Amounts' => ((float)$entry->Debit-(float)$entry->Credit),
-                    'Currency_Code' => $entry->Currency,
-                    'GL_Posting_Date' => date('Y-m-d', strtotime($entry->Postng_Date)),
-                    'Day' => date('Y-m-d', strtotime($entry->Postng_Date)),
-                    'GL_Document_No' => $entry->Document_Number,
-                    'GL_Document_Type' => $entry->Document_Type,
-                    'Description' => $entry->Description,
-                    'Company_Code' => $entry->Company_Code,
-                ]);
-            }
+            $UGData = $this->fillUGScheduledData($start_date, $final_date);
             $destination_end_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             echo "==> Finished inserting UG Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             /*** Inserting the UG Data in the warehouse ***/
@@ -223,6 +216,44 @@ class GLEntries extends BaseModel
             // 'diana.adiema@dataposit.co.ke',
             // 'kkinyanjui@dataposit.co.ke'
         ])->send(new DailyScheduledTask($message));
+        return true;
+    }
+
+    public function fillUGScheduledData($start_date=null, $final_date=null)
+    {
+        if (!isset($start_date)){
+            $year = date('Y');
+            $month = date('m');
+            $start_date = $year . '-' . $month . '-01';
+            $final_date = date('Y-m-d');
+            $deletion_data = GLEntries::whereBetween('GL_Posting_Date', [$start_date, $final_date])->get();
+
+            foreach ($deletion_data as $key => $line) {
+                $line->delete();
+            }
+        }
+        $data = [];
+        $ugData = TempUGGLEntry::whereBetween('Posting_Date', [$start_date, $final_date])->get();
+        
+        foreach ($ugData as $key => $entry) {
+            if (strtotime($entry->Posting_Date) >= strtotime($start_date))
+                $data[] = [
+                    'GL_Entry_No' => (string)$entry->Entry_No . '-' . $entry->GroupMask,
+                    'GL_Account_No' => $entry->GL_Account_Number,
+                    'Debit' => $entry->Debit,
+                    'Credit' => $entry->Credit,
+                    'Amounts' => ((float)$entry->Debit-(float)$entry->Credit),
+                    'Currency_Code' => $entry->Currency,
+                    'GL_Posting_Date' => date('Y-m-d', strtotime($entry->Posting_Date)),
+                    'Day' => date('Y-m-d', strtotime($entry->Posting_Date)),
+                    'GL_Document_No' => $entry->Document_Number,
+                    'GL_Document_Type' => $entry->Document_Type,
+                    'Description' => $entry->Description,
+                    'Company_Code' => $entry->Company_Code,
+                ];
+        }
+        $chunks = collect($data)->chunk($this->chunkQty);
+        $insert = $this->insertChunk($chunks);
         return true;
     }
 
