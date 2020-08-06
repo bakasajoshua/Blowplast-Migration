@@ -54,7 +54,7 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
 		$data = [];
         $budgetItem = [];
 		foreach ($row as $key => $value) {
-			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc', 'price'])) {
+			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc', 'price', "wt_pc_repeat_g"])) {
                 $year = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('Y');
                 $month = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('Y/m');
 				

@@ -8,7 +8,10 @@ use DB;
 
 class TempReceivable extends Model
 {
-	protected $guarded = [];
+	protected $connection = 'testdb';
+
+    protected $guarded = [];
+    
     public static function insertData()
     {
     	$data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');

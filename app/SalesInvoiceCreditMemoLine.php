@@ -296,9 +296,9 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         self::updateDay();
         self::updateOtherTimeDimensions();
         Mail::to([
-            // env('MAIL_TO_EMAIL'),
-            // 'walter.orando@dataposit.co.ke',
-            // 'diana.adiema@dataposit.co.ke',
+            env('MAIL_TO_EMAIL'),
+            'walter.orando@dataposit.co.ke',
+            'diana.adiema@dataposit.co.ke',
             'kkinyanjui@dataposit.co.ke'
         ])->send(new DailyScheduledTask($message));
         return true;

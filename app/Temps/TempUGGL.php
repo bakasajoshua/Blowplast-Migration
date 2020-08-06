@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TempUGGL extends BaseModel
 {
+    protected $connection = 'testdb';
+
     protected $guarded = [];
 
     public $timestamps = false;

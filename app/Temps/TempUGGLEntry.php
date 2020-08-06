@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TempUGGLEntry extends BaseModel
 {
+    protected $connection = 'testdb';
+
     protected $guarded = [];
 
     private $functionCall = "GetGLEntries";

@@ -219,9 +219,9 @@ class GLEntries extends BaseModel
         $updates = $this->updateOtherTimeDimensions();
         Mail::to([
             env('MAIL_TO_EMAIL'),
-            // 'walter.orando@dataposit.co.ke',
-            // 'diana.adiema@dataposit.co.ke',
-            // 'kkinyanjui@dataposit.co.ke'
+            'walter.orando@dataposit.co.ke',
+            'diana.adiema@dataposit.co.ke',
+            'kkinyanjui@dataposit.co.ke'
         ])->send(new DailyScheduledTask($message));
         return true;
     }
