@@ -298,12 +298,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         Mail::to([
             env('MAIL_TO_EMAIL'),
             'walter.orando@dataposit.co.ke',
-            'kkinyanjui@dataposit.co.ke',
-        ])->cc([
+            // 'kkinyanjui@dataposit.co.ke',
+        ])/*->cc([
             'diana.adiema@dataposit.co.ke',
             'george.thiga@dataposit.co.ke',
             'aaron.mbowa@dataposit.co.ke',
-        ])->send(new DailyScheduledTask($message));
+        ])*/->send(new DailyScheduledTask($message));
         return true;
     }
 
