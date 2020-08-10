@@ -24,22 +24,22 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     private $endpointColumns = [
         'SI_Li_Line_No' => 'LineNum',
         'Invoice_Credit_Memo_No' => 'Document_x0020_No',
-		'SI_Li_Document_No' => 'Document_x0020_No',
-		'Item_No' => 'ItemCode',
-		'Item_Weight_kg' => 'Item_x0020_Weight_x0020_in_x0020_kg',
-		'Item_Price_kg' => 'Item_x0020_Price_x0020_in_x0020_kg',
-		'Item_Description' => 'Item_x0020_Description',
-		'Quantity' => 'Quantity',
-		'Unit_Price' => 'Unit_x0020_Price',
-		'Unit_Cost' => 'Unit_x0020_Cost',
-		'Company_Code' => 'Company_x0020_Code',
-		'Currency_Code' => 'Currency_x0020_Code',
-		'Type' => 'Type',
-		'Total_Amount_Excluding_Tax' => 'Total_x0020_Amount_x0020_Excluding_x0020_Tax',
-		'Total_Amount_Including_Tax' => 'Total_x0020_Amount_x0020_Including_x0020_Tax',
-		'Sales_Unit_of_Measure' => 'Sales_x0020_Unit_x0020_of_x0020_Measure',
-		'SI_Li_Posting_Date' => 'Posting_x0020_Date',
-		'SI_Li_Due_Date' => 'Due_x0020_Date',
+        'SI_Li_Document_No' => 'Document_x0020_No',
+        'Item_No' => 'ItemCode',
+        'Item_Weight_kg' => 'Item_x0020_Weight_x0020_in_x0020_kg',
+        'Item_Price_kg' => 'Item_x0020_Price_x0020_in_x0020_kg',
+        'Item_Description' => 'Item_x0020_Description',
+        'Quantity' => 'Quantity',
+        'Unit_Price' => 'Unit_x0020_Price',
+        'Unit_Cost' => 'Unit_x0020_Cost',
+        'Company_Code' => 'Company_x0020_Code',
+        'Currency_Code' => 'Currency_x0020_Code',
+        'Type' => 'Type',
+        'Total_Amount_Excluding_Tax' => 'Total_x0020_Amount_x0020_Excluding_x0020_Tax',
+        'Total_Amount_Including_Tax' => 'Total_x0020_Amount_x0020_Including_x0020_Tax',
+        'Sales_Unit_of_Measure' => 'Sales_x0020_Unit_x0020_of_x0020_Measure',
+        'SI_Li_Posting_Date' => 'Posting_x0020_Date',
+        'SI_Li_Due_Date' => 'Due_x0020_Date',
     ];
     private $chunkQty = 100;
 
@@ -124,17 +124,20 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         $message .= ">> Deleting existing Sales data " . date('Y-m-d H:i:s') . "\n";
         try {
             echo "==> Deleting existing data " . date('Y-m-d H:i:s') . "\n";
-            $existing_data = SalesInvoiceCreditMemoLine::whereBetween('SI_Li_Posting_Date', [$start_date, $final_date])->get();
-            foreach ($existing_data as $key => $header) {
+            $existing_headers = SalesInvoiceCreditMemoHeader::whereYear('SI_Posting_Date', $year)
+                                ->whereMonth('SI_Posting_Date', $month)
+                                ->get();
+            
+            foreach ($existing_headers as $key => $header) {
                 $header->delete();
             }
-            $existing_data = SalesInvoiceCreditMemoLine::whereYear('SI_Li_Posting_Date', $year)
+            $existing_lines = SalesInvoiceCreditMemoLine::whereYear('SI_Li_Posting_Date', $year)
                                 ->whereMonth('SI_Li_Posting_Date', $month)
                                 ->get();
-            foreach ($existing_data as $key => $line) {
+            foreach ($existing_lines as $key => $line) {
                 $line->delete();
             }
-            echo "==> Competed deleting existing data " . date('Y-m-d H:i:s') . "\n";
+            echo "==> Competed deleting {$existing_headers->count()} headers and {$existing_lines->count()} lines " . date('Y-m-d H:i:s') . "\n";
             $message .= ">> Deletion successful " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
             $message .= ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
@@ -146,18 +149,18 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         $message .= ">> Pulling UG Source data " . date('Y-m-d H:i:s') . "\n";
         try {
             echo "==> Pulling UG Source data " . date('Y-m-d H:i:s') . "\n";
-            $source_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            $source_start_ug = date('Y-m-d H:i:s');
             TempUGSalesHeader::truncate();
             TempUGSalesLine::truncate();
             TempUGSalesHeader::insertData($start_date, $final_date);
             TempUGSalesLine::insertData($start_date, $final_date);
             $source_data_headers = TempUGSalesHeader::whereBetween('Posting_Date', [$start_date, $final_date])->get();
             $source_data_lines = TempUGSalesLine::whereBetween('Posting_Date', [$start_date, $final_date])->get();
-            $source_end_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-
+            $source_end_ug = date('Y-m-d H:i:s');
+            
             /*** Bring In the new Data ***/
-            echo "==> Inserting UG data into the warehouse (Count: {$source_data_lines->count()}) \n";
-            $destination_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            echo "==> Inserting UG data into the warehouse (Headers Count: {$source_data_headers->count()} Lines Count: {$source_data_lines->count()}) " . date('Y-m-d H:i:s') . "\n";
+            $destination_start_ug = date('Y-m-d H:i:s');
 
             // Bringing in the headers
             foreach ($source_data_headers as $key => $sale) {
@@ -177,10 +180,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Currency_Code' => $sale->Currency_Code,
                 ]);
             }
-
+            
             // Bringing in the lines
+            $data = [];
             foreach ($source_data_lines as $key => $entry) {
-                SalesInvoiceCreditMemoLine::create([
+                $data[] = [
                     'SI_Li_Line_No' => $entry->Entry_No . '-' . $entry->LineNum,
                     'Invoice_Credit_Memo_No' => $entry->Document_No,
                     'SI_Li_Document_No' => $entry->Document_No,
@@ -197,14 +201,18 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Total_Amount_Excluding_Tax' => $entry->Total_Amount_Excluding_Tax,
                     'Total_Amount_Including_Tax' => $entry->Total_Amount_Including_Tax,
                     'Sales_Unit_of_Measure' => $entry->Sales_Unit_of_Measure,
-                    'SI_Li_Posting_Date' => $entry->SI_Li_Posting_Date,
-                    'SI_Li_Due_Date' => $entry->SI_Li_Due_Date,
-                ]);
+                    'SI_Li_Posting_Date' => date('Y-m-d', strtotime($entry->Posting_Date)),
+                    'SI_Li_Due_Date' => date('Y-m-d', strtotime($entry->Due_Date)),
+                ];
             }
-            $destination_end_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            $chunks = collect($data)->chunk(100);
+            foreach ($chunks as $key => $chunk) {
+                SalesInvoiceCreditMemoLine::insert($chunk->toArray());
+            }
+            $destination_end_ug = date('Y-m-d H:i:s');
 
             /** Record entry complete **/
-            echo "==> Making time for UG entry \n";
+            echo "==> Making time for UG entry " . date('Y-m-d H:i:s') . "\n";
             TimeEntry::create([
                 'source' => TempUGSalesLine::class,
                 'destination' => SalesInvoiceCreditMemoLine::class,
@@ -225,13 +233,13 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         try {
             $message .= ">> Bringing in KE Sales data " . date('Y-m-d H:i:s') . "\n";
             echo "==> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
-            $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            $source_start_ke = date('Y-m-d H:i:s');
             Temp::truncate();
             Temp::pullData();
             echo "==> Completed filling KE source data " . date('Y-m-d H:i:s') . "\n";
-            $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            $source_end_ke = date('Y-m-d H:i:s');
 
-            $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            $destination_start_ke = date('Y-m-d H:i:s');
             echo "==> Inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $source_data = Temp::whereBetween('invoice_doc_dt', [$start_date, $final_date])->get();
             foreach ($source_data as $key => $sales) {
@@ -272,10 +280,10 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 ]);
             }
             echo "==> Completed inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $destination_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            $destination_end_ke = date('Y-m-d H:i:s');
 
             /** Record entry complete **/
-            echo "==> Making time for KE entry \n";
+            echo "==> Making time for KE entry " . date('Y-m-d H:i:s') . "\n";
             TimeEntry::create([
                 'source' => Temp::class,
                 'destination' => SalesInvoiceCreditMemoLine::class,
