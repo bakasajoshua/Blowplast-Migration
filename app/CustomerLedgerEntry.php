@@ -117,4 +117,77 @@ class CustomerLedgerEntry extends BaseModel
         }
         return true;
     }
+
+    public static function scheduledImport()
+    {
+        $start_date = "2019-01-01";
+        $final_date = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
+        $model = new CustomerLedgerEntry;
+        
+        echo "==> Pulling and Insert UG Customer Ledger Entries\n";
+        $destination_start_ug = date('Y-m-d');
+        $model->processImportData(CustomerLedgerEntry::class,
+                        'synchEntries', $start_date, 
+                        $final_date, 30);
+        $destination_end_ug = date('Y-m-d');
+        echo "==> Pulling and Insert UG Customer Ledger Entries completed.\n";
+
+        echo "==> Pulling and Insert KE Customer Ledger Entries\n";        
+        $destination_start_ke = date('Y-m-d');
+        $model->synchKEEntries();
+        $destination_end_ke = date('Y-m-d');
+        echo "==> Pulling and Insert KE Customer Ledger Entries completed.\n";
+        
+        /** Record entry complete **/
+        echo "==> Making time entries " . date('Y-m-d H:i:s') . "\n";
+
+        TimeEntry::create([
+            // 'source' => Temp::class,
+            'destination' => CustomerLedgerEntry::class,
+            'Country' => 'UG',
+            'destination_start_time' => $destination_start_ug,
+            'destination_end_time' => $destination_end_ug,
+        ]);
+        TimeEntry::create([
+            // 'source' => Temp::class,
+            'destination' => CustomerLedgerEntry::class,
+            'Country' => 'KE',
+            'destination_start_time' => $destination_start_ke,
+            'destination_end_time' => $destination_end_ke,
+        ]);
+
+        echo "==> Updating Time dimensions.\n";
+            self::updateDay();
+            self::updateOtherTimeDimensions();
+        echo "==> Updating Time dimensions completed.\n";
+
+    }
+
+
+    private static function updateDay()
+    {
+        DB::statement("
+        UPDATE 
+            [dbo].[Customer Ledger Entries]
+        SET 
+            [dbo].[Customer Ledger Entries].[Day] = [Customer Ledger Entries].[Posting_Date];
+        ");
+    }
+
+    private static function updateOtherTimeDimensions()
+    {
+        DB::statement("
+            UPDATE 
+                [dbo].[Customer Ledger Entries]
+            SET 
+                [dbo].[Customer Ledger Entries].[week] = [LU_Day].[week]
+                ,[dbo].[Customer Ledger Entries].[month] = [LU_Day].[month]
+                ,[dbo].[Customer Ledger Entries].[quarter] = [LU_Month].[quarter_id]
+                ,[dbo].[Customer Ledger Entries].[year] = [LU_Month].[year]
+            FROM 
+                [dbo].[Customer Ledger Entries]
+                JOIN [dbo].[LU_Day] ON [LU_Day].day_id = [Customer Ledger Entries].[Day]
+                JOIN [dbo].[LU_Month] ON [LU_Month].[month_id] = [LU_Day].[month];
+        ");
+    }
 }
