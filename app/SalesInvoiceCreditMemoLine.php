@@ -24,22 +24,22 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     private $endpointColumns = [
         'SI_Li_Line_No' => 'LineNum',
         'Invoice_Credit_Memo_No' => 'Document_x0020_No',
-		'SI_Li_Document_No' => 'Document_x0020_No',
-		'Item_No' => 'ItemCode',
-		'Item_Weight_kg' => 'Item_x0020_Weight_x0020_in_x0020_kg',
-		'Item_Price_kg' => 'Item_x0020_Price_x0020_in_x0020_kg',
-		'Item_Description' => 'Item_x0020_Description',
-		'Quantity' => 'Quantity',
-		'Unit_Price' => 'Unit_x0020_Price',
-		'Unit_Cost' => 'Unit_x0020_Cost',
-		'Company_Code' => 'Company_x0020_Code',
-		'Currency_Code' => 'Currency_x0020_Code',
-		'Type' => 'Type',
-		'Total_Amount_Excluding_Tax' => 'Total_x0020_Amount_x0020_Excluding_x0020_Tax',
-		'Total_Amount_Including_Tax' => 'Total_x0020_Amount_x0020_Including_x0020_Tax',
-		'Sales_Unit_of_Measure' => 'Sales_x0020_Unit_x0020_of_x0020_Measure',
-		'SI_Li_Posting_Date' => 'Posting_x0020_Date',
-		'SI_Li_Due_Date' => 'Due_x0020_Date',
+        'SI_Li_Document_No' => 'Document_x0020_No',
+        'Item_No' => 'ItemCode',
+        'Item_Weight_kg' => 'Item_x0020_Weight_x0020_in_x0020_kg',
+        'Item_Price_kg' => 'Item_x0020_Price_x0020_in_x0020_kg',
+        'Item_Description' => 'Item_x0020_Description',
+        'Quantity' => 'Quantity',
+        'Unit_Price' => 'Unit_x0020_Price',
+        'Unit_Cost' => 'Unit_x0020_Cost',
+        'Company_Code' => 'Company_x0020_Code',
+        'Currency_Code' => 'Currency_x0020_Code',
+        'Type' => 'Type',
+        'Total_Amount_Excluding_Tax' => 'Total_x0020_Amount_x0020_Excluding_x0020_Tax',
+        'Total_Amount_Including_Tax' => 'Total_x0020_Amount_x0020_Including_x0020_Tax',
+        'Sales_Unit_of_Measure' => 'Sales_x0020_Unit_x0020_of_x0020_Measure',
+        'SI_Li_Posting_Date' => 'Posting_x0020_Date',
+        'SI_Li_Due_Date' => 'Due_x0020_Date',
     ];
     private $chunkQty = 100;
 
@@ -114,10 +114,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     public static function scheduledImportData()
     {
         ini_set("memory_limit", "-1");
-        $year = date('Y');
-        $month = date('m');
+        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
+        $year = date('Y', strtotime($yesterday));
+        $month = date('m', strtotime($yesterday));
         $start_date = $year . '-' . $month . '-01';
-        $final_date = date('Y-m-d');
+        $final_date = $yesterday;
         $message = '';
 
         /*** Delete existing data ***/
@@ -303,15 +304,15 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
         self::updateDay();
         self::updateOtherTimeDimensions();
-        // Mail::to([
-        //     env('MAIL_TO_EMAIL'),
-        //     'walter.orando@dataposit.co.ke',
-        //     'kkinyanjui@dataposit.co.ke',
-        // ])->cc([
-        //     'diana.adiema@dataposit.co.ke',
-        //     'george.thiga@dataposit.co.ke',
-        //     'aaron.mbowa@dataposit.co.ke',
-        // ])->send(new DailyScheduledTask($message));
+        Mail::to([
+            env('MAIL_TO_EMAIL'),
+            'walter.orando@dataposit.co.ke',
+            'kkinyanjui@dataposit.co.ke',
+        ])->cc([
+            'diana.adiema@dataposit.co.ke',
+            'george.thiga@dataposit.co.ke',
+            'aaron.mbowa@dataposit.co.ke',
+        ])->send(new DailyScheduledTask($message));
         return true;
     }
 

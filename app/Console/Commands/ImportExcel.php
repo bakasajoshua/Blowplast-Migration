@@ -204,7 +204,7 @@ class ImportExcel extends Command
     private function processImportData($model, $function, $incremental)
     {
         $start_date = '2018-01-01';
-        $final_date = '2020-07-25';
+        $final_date = '2020-08-09';
         // $start_date = '2020-06-01';
         // $final_date = '2020-06-30';
         $model::truncate();
