@@ -52,4 +52,11 @@ class TempUGSalesLine extends BaseModel
     	$sl->processImportData(TempUGSalesLine::class, 'synchLines', $start_date, $final_date, 10);
     	return true;
     }
+
+    public static function fillAllData()
+    {
+        $start_date = '2018-01-01';
+        $final_date = date('Y-m-d');
+        return self::insertData($start_date, $final_date);
+    }
 }

@@ -46,6 +46,13 @@ class TempUGSalesHeader extends BaseModel
         return true;
     }
 
+    public static function fillAllData()
+    {
+        $start_date = '2018-01-01';
+        $final_date = date('Y-m-d');
+        return self::insertData($start_date, $final_date);
+    }
+
     public function lines()
     {
     	return $this->hasMany(TempUGSalesLine::class, 'Document_No', 'Document_No');

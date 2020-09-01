@@ -40,3 +40,7 @@ Artisan::command('update:task', function(){
 	// Sync the sales
 	$model = \App\SalesInvoiceCreditMemoLine::scheduledImportData();
 })->describe('Daily task updates');
+
+Artisan::command('update:kesales', function() {
+	$model = \App\SalesInvoiceCreditMemoLine::scheduledImportDataKE();
+})->describe('Daily task updates for KE data');

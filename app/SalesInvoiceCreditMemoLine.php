@@ -315,6 +315,82 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         return true;
     }
 
+    public static function scheduledImportDataKE()
+    {
+        /*** Work on KE data ***/
+        try {
+            $message .= ">> Bringing in KE Sales data " . date('Y-m-d H:i:s') . "\n";
+            echo "==> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
+            $source_start_ke = date('Y-m-d H:i:s');
+            // Temp::truncate();
+            // Temp::pullData();
+            echo "==> Completed filling KE source data " . date('Y-m-d H:i:s') . "\n";
+            $source_end_ke = date('Y-m-d H:i:s');
+
+            $destination_start_ke = date('Y-m-d H:i:s');
+            echo "==> Inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+            $source_data = Temp::whereBetween('invoice_doc_dt', [$start_date, $final_date])->get();
+            dd($source_data->max('invoice_doc_dt'));
+            foreach ($source_data as $key => $sales) {
+                if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
+                    SalesInvoiceCreditMemoHeader::create([
+                        'Invoice_Credit_Memo_No' => $sales->invoice_id,
+                        'SI_Document_No' => $sales->invoice_doc_id,
+                        'Sell-To-Customer-No' => $sales->eo_nm,
+                        'Sell-To-Customer-Name' => $sales->eo_nm,
+                        'Bill-To-Customer-No' => $sales->eo_nm,
+                        'Bill-To-Customer-Name' => $sales->eo_nm,
+                        'SI_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
+                        'Company_Code' => 'BPL',
+                        'Type' => ucwords($sales->inv_type_desc),
+                        'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
+                        'Total_Amount_Including_Tax' => $sales->net_amnt,
+                        'Currency_Code' => $sales->curr_sp,
+                    ]);
+                }
+                SalesInvoiceCreditMemoLine::create([
+                    'Invoice_Credit_Memo_No' => $sales->invoice_id,
+                    'SI_Li_Document_No' => $sales->invoice_doc_id,
+                    'SI_Li_Line_No' => $sales->shipmnt_id,
+                    'Item_No' => $sales->itm_id,
+                    'Item_Description' => $sales->itm_desc,
+                    'Item_Weight_kg' => $sales->std_weight,
+                    'Item_Price_kg' => $sales->price_per_kg,
+                    'SI_Li_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
+                    'Company_Code' => 'BPL',
+                    'Quantity' => $sales->itm_ship_qty,
+                    'Unit_Price' => $sales->itm_cost,
+                    'Unit_Cost' => $sales->itm_cost,
+                    'Type' => ucwords($sales->inv_type_desc),
+                    'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
+                    'Total_Amount_Including_Tax' => $sales->net_amnt,
+                    'Sales_Unit_of_Measure' => $sales->uom_sls,
+                    'Currency_Code' => $sales->curr_sp,
+                ]);
+            }
+            echo "==> Completed inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+            $destination_end_ke = date('Y-m-d H:i:s');
+
+            /** Record entry complete **/
+            echo "==> Making time for KE entry " . date('Y-m-d H:i:s') . "\n";
+            TimeEntry::create([
+                'source' => Temp::class,
+                'destination' => SalesInvoiceCreditMemoLine::class,
+                'Country' => 'KE',
+                'source_start_time' => $source_start_ke,
+                'source_end_time' => $source_end_ke,
+                'destination_start_time' => $destination_start_ke,
+                'destination_end_time' => $destination_end_ke,
+            ]);
+            echo "==> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
+        } catch (\Exception $e) {
+            $message .= ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
+            echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
+        }
+        /*** Work on KE data ***/
+    }
+
     private static function updateDay()
     {
         DB::statement("

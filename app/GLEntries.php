@@ -229,17 +229,17 @@ class GLEntries extends BaseModel
             $month = date('m');
             $start_date = $year . '-' . $month . '-01';
             $final_date = date('Y-m-d');
-            $deletion_data = GLEntries::whereBetween('GL_Posting_Date', [$start_date, $final_date])->get();
+            $deletion_data = GLEntries::whereBetween('GL_Posting_Date', [$start_date, $final_date])
+                                ->where('Company_Code', 'BUL')->get();
 
             foreach ($deletion_data as $key => $line) {
                 $line->delete();
             }
         }
         $data = [];
-        $ugData = TempUGGLEntry::whereBetween('Posting_Date', [$start_date, $final_date])->get();
-        
+        $ugData = TempUGGLEntry::whereRaw(" CONVERT(DATE, Posting_Date) BETWEEN '{$start_date}' AND '{$final_date}'")->get();
         foreach ($ugData as $key => $entry) {
-            if (strtotime($entry->Posting_Date) >= strtotime($start_date))
+            // if (strtotime($entry->Posting_Date) >= strtotime($start_date))
                 $data[] = [
                     'GL_Entry_No' => (string)$entry->Entry_No . '-' . $entry->GroupMask,
                     'GL_Account_No' => $entry->GL_Account_Number,
@@ -255,6 +255,7 @@ class GLEntries extends BaseModel
                     'Company_Code' => $entry->Company_Code,
                 ];
         }
+        dd(collect($data)->first());
         $chunks = collect($data)->chunk($this->chunkQty);
         $insert = $this->insertChunk($chunks);
         return true;
