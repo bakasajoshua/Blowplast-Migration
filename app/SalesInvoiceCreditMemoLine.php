@@ -241,7 +241,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
             $destination_start_ke = date('Y-m-d H:i:s');
             echo "==> Inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $source_data = Temp::whereBetween('invoice_doc_dt', [$start_date, $final_date])->get();
+            $source_data = Temp::whereRaw(" CONVERT(DATE, invoice_doc_dt) BETWEEN '{$start_date}' AND '{$final_date}'")->get();
             foreach ($source_data as $key => $sales) {
                 if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
                     SalesInvoiceCreditMemoHeader::create([
@@ -317,7 +317,40 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
     public static function scheduledImportDataKE()
     {
+        $last_day = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
+        $year = date('Y', strtotime($last_day));
+        $month = date('m', strtotime($last_day));
+        $start_date = $year . '-' . $month . '-01';
+        $final_date = $last_day;
+        $message = '';
+        
         /*** Work on KE data ***/
+
+        $message .= ">> Deleting existing Sales data " . date('Y-m-d H:i:s') . "\n";
+        try {
+            echo "==> Deleting existing data " . date('Y-m-d H:i:s') . "\n";
+            $existing_headers = SalesInvoiceCreditMemoHeader::whereYear('SI_Posting_Date', $year)
+                                ->whereMonth('SI_Posting_Date', $month)
+                                ->where('Company_Code', 'BPL')
+                                ->get();
+            
+            foreach ($existing_headers as $key => $header) {
+                $header->delete();
+            }
+            $existing_lines = SalesInvoiceCreditMemoLine::whereYear('SI_Li_Posting_Date', $year)
+                                ->whereMonth('SI_Li_Posting_Date', $month)
+                                ->where('Company_Code', 'BPL')
+                                ->get();
+            foreach ($existing_lines as $key => $line) {
+                $line->delete();
+            }
+            echo "==> Competed deleting {$existing_headers->count()} headers and {$existing_lines->count()} lines " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Deletion successful " . date('Y-m-d H:i:s') . "\n";
+        } catch (\Exception $e) {
+            $message .= ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            echo "==> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+        }   
+
         try {
             $message .= ">> Bringing in KE Sales data " . date('Y-m-d H:i:s') . "\n";
             echo "==> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
@@ -329,8 +362,8 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
             $destination_start_ke = date('Y-m-d H:i:s');
             echo "==> Inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $source_data = Temp::whereBetween('invoice_doc_dt', [$start_date, $final_date])->get();
-            dd($source_data->max('invoice_doc_dt'));
+            $source_data = Temp::whereRaw(" CONVERT(DATE, invoice_doc_dt) BETWEEN '{$start_date}' AND '{$final_date}'")->get();
+            
             foreach ($source_data as $key => $sales) {
                 if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
                     SalesInvoiceCreditMemoHeader::create([
@@ -371,20 +404,24 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             echo "==> Completed inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $destination_end_ke = date('Y-m-d H:i:s');
 
-            /** Record entry complete **/
-            echo "==> Making time for KE entry " . date('Y-m-d H:i:s') . "\n";
-            TimeEntry::create([
-                'source' => Temp::class,
-                'destination' => SalesInvoiceCreditMemoLine::class,
-                'Country' => 'KE',
-                'source_start_time' => $source_start_ke,
-                'source_end_time' => $source_end_ke,
-                'destination_start_time' => $destination_start_ke,
-                'destination_end_time' => $destination_end_ke,
-            ]);
+            // /** Record entry complete **/
+            // echo "==> Making time for KE entry " . date('Y-m-d H:i:s') . "\n";
+            // TimeEntry::create([
+            //     'source' => Temp::class,
+            //     'destination' => SalesInvoiceCreditMemoLine::class,
+            //     'Country' => 'KE',
+            //     'source_start_time' => $source_start_ke,
+            //     'source_end_time' => $source_end_ke,
+            //     'destination_start_time' => $destination_start_ke,
+            //     'destination_end_time' => $destination_end_ke,
+            // ]);
             echo "==> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
             $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
+            self::updateDay();
+            self::updateOtherTimeDimensions();
         } catch (\Exception $e) {
+            ini_set("memory_limit", "-1");
+            print_r($e);
             $message .= ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
             echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
         }
