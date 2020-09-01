@@ -114,10 +114,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     public static function scheduledImportData()
     {
         ini_set("memory_limit", "-1");
-        $year = date('Y');
-        $month = date('m');
+        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
+        $year = date('Y', strtotime($yesterday));
+        $month = date('m', strtotime($yesterday));
         $start_date = $year . '-' . $month . '-01';
-        $final_date = date('Y-m-d');
+        $final_date = $yesterday;
         $message = '';
 
         /*** Delete existing data ***/
