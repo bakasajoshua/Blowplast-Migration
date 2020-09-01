@@ -318,11 +318,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
     public static function scheduledImportDataKE()
     {
-        $last_day = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
-        $year = date('Y', strtotime($last_day));
-        $month = date('m', strtotime($last_day));
+        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
+        $year = date('Y', strtotime($yesterday));
+        $month = date('m', strtotime($yesterday));
         $start_date = $year . '-' . $month . '-01';
-        $final_date = $last_day;
+        $final_date = $yesterday;
         $message = '';
         
         /*** Work on KE data ***/
