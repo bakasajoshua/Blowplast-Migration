@@ -39,6 +39,9 @@ Artisan::command('update:task', function(){
 
 	// Sync the sales
 	$model = \App\SalesInvoiceCreditMemoLine::scheduledImportData();
+
+	// Sync debtors
+	$model = \App\CustomerLedgerEntry::scheduledImport();
 })->describe('Daily task updates');
 
 Artisan::command('update:kesales', function() {
