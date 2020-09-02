@@ -256,7 +256,7 @@ class GLEntries extends BaseModel
                     'Company_Code' => $entry->Company_Code,
                 ];
         }
-        dd(collect($data)->first());
+        // dd(collect($data)->first());
         $chunks = collect($data)->chunk($this->chunkQty);
         $insert = $this->insertChunk($chunks);
         return true;
