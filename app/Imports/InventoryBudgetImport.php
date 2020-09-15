@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Customer;
 use App\Inventory;
 use App\InventoryBudget;
+use App\Temps\Temp;
 
 use Carbon\Carbon;
 
@@ -27,12 +28,23 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
     	// Check or create inventory
     	$itemCheck = Inventory::where('Item_Description', $row['prod'])->where('Company_Code', 'BPL')->get();
     	if ($itemCheck->isEmpty()){
-    		$item = Inventory::create([
-    					'Item_No' => round(microtime(true) * 1000),
-    					'Item_Description' => $row['prod'],
-    					'Company_Code' => 'BPL',
-    					'Dimension1' => $row['vs'],
-    				]);
+            $itemCheckTemp = Temp::where('itm_desc', $row['prod'])->get();
+            if ($itemCheckTemp->isEmpty()) {
+                $item = Inventory::create([
+                        'Item_No' => round(microtime(true) * 1000),
+                        'Item_Description' => $row['prod'],
+                        'Company_Code' => 'BPL',
+                        'Dimension1' => $row['vs'],
+                    ]);
+            } else {
+                $newitem = $itemCheckTemp->first();
+                $item = Inventory::create([
+                            'Item_No' => $newitem->itm_id,
+                            'Item_Description' => $newitem->itm_desc,
+                            'Company_Code' => 'BPL',
+                            'Dimension1' => $row['vs'],
+                        ]);
+            }    		
     	} else {
     		$item = $itemCheck->first();
     	}
