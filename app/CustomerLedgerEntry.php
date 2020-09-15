@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Logs\TimeEntry;
 use DB;
 
 class CustomerLedgerEntry extends BaseModel
@@ -124,19 +125,19 @@ class CustomerLedgerEntry extends BaseModel
         $final_date = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
         $model = new CustomerLedgerEntry;
         
-        echo "==> Pulling and Insert UG Customer Ledger Entries\n";
+        echo "==> Pulling and Insert UG Customer Ledger Entries " . date('Y-m-d H:i:s') . "\n";
         $destination_start_ug = date('Y-m-d');
         $model->processImportData(CustomerLedgerEntry::class,
                         'synchEntries', $start_date, 
                         $final_date, 30);
         $destination_end_ug = date('Y-m-d');
-        echo "==> Pulling and Insert UG Customer Ledger Entries completed.\n";
+        echo "==> Pulling and Insert UG Customer Ledger Entries completed. " . date('Y-m-d H:i:s') . "\n";
 
         echo "==> Pulling and Insert KE Customer Ledger Entries\n";        
         $destination_start_ke = date('Y-m-d');
         $model->synchKEEntries();
         $destination_end_ke = date('Y-m-d');
-        echo "==> Pulling and Insert KE Customer Ledger Entries completed.\n";
+        echo "==> Pulling and Insert KE Customer Ledger Entries completed. " . date('Y-m-d H:i:s') . "\n";
         
         /** Record entry complete **/
         echo "==> Making time entries " . date('Y-m-d H:i:s') . "\n";
@@ -159,7 +160,7 @@ class CustomerLedgerEntry extends BaseModel
         echo "==> Updating Time dimensions.\n";
             self::updateDay();
             self::updateOtherTimeDimensions();
-        echo "==> Updating Time dimensions completed.\n";
+        echo "==> Updating Time dimensions completed. " . date('Y-m-d H:i:s') . "\n";
 
     }
 
