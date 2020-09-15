@@ -26,8 +26,10 @@ class InventoryBudget extends Model
     	foreach ($budgetItems as $key => $budgetItem) {
     		$item = Inventory::where('Item_Description', $budgetItem->Item_Description)
     					->where('Company_Code', $budgetItem->Company_Code)->get();
-    		$budgetItem->Item_No = $item->first()->Item_No;
-    		$budgetItem->save();
+    		if (!$item->isEmpty()){
+    			$budgetItem->Item_No = $item->first()->Item_No;
+    			$budgetItem->save();
+    		}
     	}
     	return true;
     }
