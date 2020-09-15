@@ -1,7 +1,7 @@
 {
-    "name": "laravel/laravel",
+    "name": "blowplast/etl",
     "type": "project",
-    "description": "The Laravel Framework.",
+    "description": "The Blowplast Extract Transform and Load tool for the Microstrategy Warehouse.",
     "keywords": [
         "framework",
         "laravel"
