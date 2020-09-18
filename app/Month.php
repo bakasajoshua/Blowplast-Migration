@@ -21,4 +21,13 @@ class Month extends Model
     {
     	return $this->belongsTo(Quarter::class, 'quarter_id', 'quarter');
     }
+
+    public static function update_no_of_days()
+    {
+        $months = Month::get();
+        foreach ($months as $key => $month) {
+            $month->num_of_days = cal_days_in_month(CAL_GREGORIAN,$month->month_of_year_id,$month->year);
+            $month->save();
+        }
+    }
 }

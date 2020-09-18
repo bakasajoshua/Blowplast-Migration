@@ -182,6 +182,7 @@ class ImportTime extends Command
             'month_of_year_id' => $month,
             'year' => $year,
             'quarter_id' => $this->getQuarter($month)->quarter,
+            'num_of_days' => cal_days_in_month(CAL_GREGORIAN,$month,$year),
         ]);
     }
 
