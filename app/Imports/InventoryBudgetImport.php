@@ -61,14 +61,15 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
     		$customer = $customerCheck->first();
     	}
 
-    	// Build budget lines
-        
+    	// Build budget lines        
 		$data = [];
         $budgetItem = [];
 		foreach ($row as $key => $value) {
-			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc', 'price', "wt_pc_repeat_g"])) {
+			if(!in_array($key, ['vs', 'customer', 'wt_pc_g', 'price_kg', 'prod', 'price_pc', 'price', "wt_pc_repeat_g", "price_q1", "price_q2", "price_q3", "price_q4", "period", ""])) {
+                
                 $year = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('Y');
                 $month = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('Y/m');
+                $actualmonth = (int)Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($key))->format('m');
 				
 				$budgetItem = InventoryBudget::create([
 			            'Value_Stream' => $row['vs'],
@@ -81,12 +82,35 @@ class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
 						'Budget_Month' => $month,
 						'Budget_Qty_Pcs' => $value,
 						'Budget_Qty_Weight' => ((float)$value * (float)$row['wt_pc_g']/1000),
-                        'Budget_Revenue' => ((float)$row['price'] * (float)$value),
+                        'Budget_Revenue' => $this->computePricing($row, $value, $actualmonth),
 					]);
                 
 			}
 		}
         
     	return $budgetItem;
+    }
+
+    private function computePricing($row, $value, $month)
+    {
+        $price_key = $this->getQuarterly($row, $month);
+        return ((float)$row[$price_key] * (float)$value);      
+    }
+
+    private function getQuarterly($row, $month)
+    {
+        if ($row['period'] == "QUARTERLY") {
+            $quarters = [
+                'price_q1' => [1, 2, 3],
+                'price_q2' => [4, 5, 6],
+                'price_q3' => [7, 8, 9],
+                'price_q4' => [10, 11, 12]
+            ];
+            foreach ($quarters as $key => $quarter) {
+                if (in_array($month, $quarter))
+                    return $key;
+            }
+        }
+        return 'price';
     }
 }

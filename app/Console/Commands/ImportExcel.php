@@ -116,7 +116,7 @@ class ImportExcel extends Command
         /**************************************/
         $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
         InventoryBudget::truncate();
-        (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/inventorybudgets.xlsx'));
+        (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/newinventorybudgets.xlsx'));
         $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
 
         /**************************************/
