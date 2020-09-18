@@ -23,6 +23,7 @@ class InventoryBudget extends Model
     public static function harmonizeItemNoKE()
     {
     	$budgetItems = InventoryBudget::where('Company_Code', 'BPL')->get()->unique('Item_Description');
+
     	foreach ($budgetItems as $key => $budgetItem) {
     		$item = Inventory::where('Item_Description', $budgetItem->Item_Description)
     					->where('Company_Code', $budgetItem->Company_Code)->get();
