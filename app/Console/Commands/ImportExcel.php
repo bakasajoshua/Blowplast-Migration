@@ -165,7 +165,7 @@ class ImportExcel extends Command
     private function processSalesHeaders()
     {
         return $this->processImportData(SalesInvoiceCreditMemoHeader::class,
-                                    'synchHeaders', 20);
+                                    'synchHeaders', 20, true);
     }
 
     private function processKESales()
@@ -189,7 +189,7 @@ class ImportExcel extends Command
     private function processSalesLines()
     {
         return $this->processImportData(SalesInvoiceCreditMemoLine::class,
-                                    'synchLines', 10);
+                                    'synchLines', 10, true);
     }
 
     private function processTempUGSalesHeaders()
@@ -204,13 +204,14 @@ class ImportExcel extends Command
                                     'synchLines', 10);
     }
 
-    private function processImportData($model, $function, $incremental)
+    private function processImportData($model, $function, $incremental, $empty=false)
     {
         $start_date = '2018-01-01';
         $final_date = date('Y-m-d');
         // $start_date = '2020-06-01';
         // $final_date = '2020-06-30';
-        $model::truncate();
+        if ($empty)
+            $model::truncate();
         $model = new $model;
         while (strtotime($final_date) >= strtotime($start_date)) {
             $end_date = date('Y-m-d', strtotime('+'.$incremental.' days', strtotime($start_date)));

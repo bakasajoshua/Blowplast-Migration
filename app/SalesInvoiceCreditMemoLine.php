@@ -58,9 +58,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         ini_set("memory_limit", "-1");
         if ($empty)
             SalesInvoiceCreditMemoLine::truncate();
+
+        $data = [];
         foreach (Temp::get() as $key => $sales) {
             // if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
-                SalesInvoiceCreditMemoLine::create([
+            $data[] = [
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Li_Document_No' => $sales->invoice_doc_id,
                     'SI_Li_Line_No' => $sales->shipmnt_id,
@@ -78,8 +80,13 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Sales_Unit_of_Measure' => $sales->uom_sls,
                     'Currency_Code' => $sales->curr_sp,
-                ]);
+                ];
+                
             // }
+        }
+        $chunks = collect($data)->chunk(100);
+        foreach ($chunks as $key => $chunk) {
+            SalesInvoiceCreditMemoLine::insert($chunk->toArray());
         }
         return true;
     }
