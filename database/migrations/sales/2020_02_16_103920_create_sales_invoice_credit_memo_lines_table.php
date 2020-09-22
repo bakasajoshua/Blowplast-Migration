@@ -22,18 +22,24 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
             $table->float('Item_Weight_kg', 12, 2)->nullable();
             $table->float('Item_Price_kg', 12, 2)->nullable();
             $table->text('Item_Description')->nullable();
+            $table->string('Value_Stream')->nullable();
             $table->float('Quantity')->nullable();
             $table->float('Unit_Price', 12, 2)->nullable();
             $table->float('Unit_Cost', 12, 2)->nullable();
             $table->string('Company_Code')->nullable();
             $table->string('Currency_Code')->nullable();
-            $table->enum('Type', ['Invoice', 'Credit Memo', 'Credit Note', 'Direct Invoice'])->nullable();
+            $table->enum('Type', ['Invoice','Credit Memo','Credit Note','Direct Invoice','Debit Note'])->nullable();
             $table->float('Total_Amount_Excluding_Tax', 12, 2)->nullable();
             $table->float('Total_Amount_Including_Tax', 12, 2)->nullable();
             $table->string('Sales_Unit_of_Measure')->nullable();
             $table->date('SI_Li_Posting_Date')->nullable();
             $table->date('SI_Li_Order_Date')->nullable();
             $table->date('SI_Li_Due_Date')->nullable();
+            $table->date('Day')->nullable();
+            $table->string('week')->nullable();
+            $table->string('month')->nullable();
+            $table->tinyInteger('quarter')->nullable();
+            $table->integer('year')->nullable();
 
             // $table->foreign('Invoice_Credit_Memo_No')->references('Invoice_Credit_Memo_No')->on('Sales Invoice Credit Memo Headers');
             // $table->foreign('Item_No')->references('Item_No')->on('Item Master');
