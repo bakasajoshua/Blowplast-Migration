@@ -12,7 +12,7 @@ class TempKEGL extends BaseModel
 
     protected $connection = 'testdb';
 
-    public function syncData($verbose=false)
+    public static function syncData($verbose=false)
     {
     	TempKEGL::truncate();
     	// $data = self::dataSource();

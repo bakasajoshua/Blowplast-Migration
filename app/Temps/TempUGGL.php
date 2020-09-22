@@ -31,12 +31,19 @@ class TempUGGL extends BaseModel
 
     public function synchEntries($params = [])
     {
+        TempUGGL::truncate();
         ini_set("memory_limit", "-1");
         $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
             TempUGGL::insert($data->toArray());
         }
         return true;
+    }
+
+    public static function fillAllData()
+    {
+        $model = new TempUGGL;
+        return $model->synchEntries();
     }
 
 }

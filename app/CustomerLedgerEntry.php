@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Logs\TimeEntry;
+use App\Temps\TempReceivable;
 use DB;
 
 class CustomerLedgerEntry extends BaseModel
@@ -66,7 +67,8 @@ class CustomerLedgerEntry extends BaseModel
 
     public function synchKEEntries()
     {
-        $data = DB::connection('oracle')->select('select * from fin.fin_ar_vw');
+        // DB::connection('oracle')->select('select * from fin.fin_ar_vw');
+        $data = TempReceivable::get();
         $dbInsert = [];
         foreach ($data as $key => $value) {
             $dbInsert[] = [

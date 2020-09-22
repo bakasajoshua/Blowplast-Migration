@@ -41,5 +41,14 @@ class TempUGGLEntry extends BaseModel
         return true;
     }
 
+    public static function fillAllData()
+    {
+        $start_date = '2018-01-01';
+        $final_date = date('Y-m-d');
+        $model = new TempUGGLEntry;
+        return $model->processImportData(TempUGGLEntry::class, 'synchEntries',
+                                    $start_date, $final_date, 5);
+    }
+
 
 }
