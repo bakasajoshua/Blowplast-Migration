@@ -225,6 +225,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             ]);
             $message .= ">> Completed pulling UG Sales data successfully " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
+            print_r($e);
             $message .= ">> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
             echo "==> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
@@ -304,15 +305,16 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
         self::updateDay();
         self::updateOtherTimeDimensions();
-        Mail::to([
-            env('MAIL_TO_EMAIL'),
-            'walter.orando@dataposit.co.ke',
-            'kkinyanjui@dataposit.co.ke',
-        ])->cc([
-            'diana.adiema@dataposit.co.ke',
-            'george.thiga@dataposit.co.ke',
-            'aaron.mbowa@dataposit.co.ke',
-        ])->send(new DailyScheduledTask($message));
+        if (env('SEND_EMAIL'))
+            Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
         return true;
     }
 
@@ -429,7 +431,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         /*** Work on KE data ***/
     }
 
-    private static function updateDay()
+    public static function updateDay()
     {
         DB::statement("
         UPDATE 
@@ -439,7 +441,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         ");
     }
 
-    private static function updateOtherTimeDimensions()
+    public static function updateOtherTimeDimensions()
     {
         DB::statement("
             UPDATE 
