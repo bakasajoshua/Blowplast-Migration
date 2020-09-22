@@ -32,6 +32,11 @@ class CreateCustomerLedgerEntriesTable extends Migration
             $table->float('Remaining_Amount', 12, 2)->default(0.00);
             $table->tinyInteger('Open')->nullable();
             $table->string('Company_Code')->nullable();
+            $table->date('Day')->nullable();
+            $table->string('week')->nullable();
+            $table->string('month')->nullable();
+            $table->tinyInteger('quarter')->nullable();
+            $table->integer('year')->nullable();
 
             // $table->foreign('Customer_No')->references('Customer_No')->on('Customer Master');
             // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
