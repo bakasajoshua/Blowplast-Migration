@@ -57,7 +57,7 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
         // echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
         echo "==> Inserting data in warehouse " . date('Y-m-d H:i:s') . "\n";
         echo "==> Inserting the headers " . date('Y-m-d H:i:s') . "\n";
-        $this->insertKESales();
+        $this->insertKESales(false, true);
         echo "==> Finished inserting the headers " . date('Y-m-d H:i:s') . "\n";
         echo "==> Inserting the lines " . date('Y-m-d H:i:s') . "\n";
         $lines = new SalesInvoiceCreditMemoLine;
@@ -70,6 +70,7 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
     public function insertKESales($empty=false, $verbose=false)
     {
         ini_set("memory_limit", "-1");
+        $data = [];
         if ($empty) {
             if ($verbose)
                 echo "==> Deleting the existing data\n";
@@ -80,8 +81,9 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
         if ($verbose)
             echo "==> Inserting data into the Warehouse\n";
         foreach (Temp::get() as $key => $sales) {
-            if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
-                SalesInvoiceCreditMemoHeader::create([
+            if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty())
+            {
+                $data[] = [
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Document_No' => $sales->invoice_doc_id,
                     'Sell-To-Customer-No' => $sales->eo_nm,
@@ -95,9 +97,15 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                     'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Currency_Code' => $sales->curr_sp,
-                ]);
+                ];
+                
             }
         }
+        $chunks = collect($data)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            SalesInvoiceCreditMemoHeader::insert($chunk->toArray());
+        }
+
         if ($verbose){
             echo "==> Finished inserting data into the Warehouse\n";
             echo "==> Inserting the lines data into the warehouse\n";
@@ -122,8 +130,9 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
         echo "==> Pulling temp data " . date('Y-m-d H:i:s') . "\n";
         $sales = TempUGSalesHeader::get();
         echo "==> Inserting headers data " . date('Y-m-d H:i:s') . "\n";
+        $data = [];
         foreach ($sales as $key => $sale) {
-            SalesInvoiceCreditMemoHeader::create([
+            $data[] = [
                 'Invoice_Credit_Memo_No' => $sale->Document_No,
                 'SI_Document_No' => $sale->Document_No,
                 'Sell-To-Customer-No' => $sale->Customer_No,
@@ -137,14 +146,20 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                 'Total_Amount_Excluding_Tax' => $sale->Total_Amount_Excluding_Tax,
                 'Total_Amount_Including_Tax' => $sale->Total_Amount_Including_Tax,
                 'Currency_Code' => $sale->Currency_Code,
-            ]);
+            ];
+        }
+
+        $chunks = collect($data)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            SalesInvoiceCreditMemoHeader::insert($chunk->toArray());
         }
         echo "==> Finished inserting headers data " . date('Y-m-d H:i:s') . "\n";
         echo "==> Pulling temp lines data " . date('Y-m-d H:i:s') . "\n";
         $saleslines = TempUGSalesLine::get();
         echo "==> Inserting lines data " . date('Y-m-d H:i:s') . "\n";
+        $data = [];
         foreach ($saleslines as $key => $line) {
-            SalesInvoiceCreditMemoLine::create([
+            $data[] = [
                 'SI_Li_Line_No' => $line->Entry_No . '-' . $sale->LineNum,
                 'Invoice_Credit_Memo_No' => $line->Document_No,
                 'SI_Li_Document_No' => $line->Document_No,
@@ -163,7 +178,11 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                 'Sales_Unit_of_Measure' => $line->Sales_Unit_of_Measure,
                 'SI_Li_Posting_Date' => $line->Posting_Date,
                 'SI_Li_Due_Date' => $line->Due_Date,
-            ]);
+            ];
+        }
+        $chunks = collect($data)->chunk($this->chunkQty);
+        foreach ($chunks as $key => $chunk) {
+            SalesInvoiceCreditMemoLine::insert($chunk->toArray());
         }
         echo "==> Finished inserting lines data " . date('Y-m-d H:i:s') . "\n";
         return true;

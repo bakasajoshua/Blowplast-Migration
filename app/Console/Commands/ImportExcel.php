@@ -111,7 +111,7 @@ class ImportExcel extends Command
         $lines = $this->processKESales();
         $this->output->success('Sales KE invoice data import successful ' . date('Y-m-d H:i:s'));
         $this->output->title('Starting KE Credit memos data import ' . date('Y-m-d H:i:s'));
-        $lines = TempReceivable::manuals();
+        $lines = TempReceivable::manuals(true);
         $this->output->success('Sales KE Credit Memos data import successful ' . date('Y-m-d H:i:s'));
         $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 

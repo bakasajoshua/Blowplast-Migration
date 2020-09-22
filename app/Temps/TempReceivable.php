@@ -39,10 +39,12 @@ class TempReceivable extends Model
         return $model;
     }
 
-    public static function manuals()
+    public static function manuals($verbose=false)
     {
         $model = new TempReceivable;
         $headerdata = $lilnedata = [];
+        if ($verbose)
+            echo "==> Getting the credit notes and formatting them " . date('Y-m-d H:i:s') . "\n";
         foreach ($model->no_prefixes as $prefixkey => $prefix) {
             $invoices = TempReceivable::where('voucher_number', 'like', '%'.$prefix.'%')->get();
             foreach ($invoices as $invoicekey => $invoice) {
@@ -80,10 +82,16 @@ class TempReceivable extends Model
             }
         }
 
+        if ($verbose)
+            echo "==> Inserting the credit notes headers " . date('Y-m-d H:i:s') . "\n";
+
         $headerchunks = collect($headerdata)->chunk(10);
         foreach ($headerchunks as $key => $chunk) {
             SalesInvoiceCreditMemoHeader::insert($chunk->toArray());
         }
+
+        if ($verbose)
+            echo "==> Inserting the credit notes lines " . date('Y-m-d H:i:s') . "\n";
 
         $linechunks = collect($lilnedata)->chunk(10);
         foreach ($linechunks as $key => $chunk) {
