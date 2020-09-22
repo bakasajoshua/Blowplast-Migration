@@ -25,11 +25,7 @@ class Temp extends Model
         foreach ($data as $key => $value) {
             $value = (array) $value;
             Temp::insert($value);
-    		if ($verbose)
-            	echo ".";
         }
-    	if ($verbose)
-        	echo "\n";
 
     	if ($verbose)
         	echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";

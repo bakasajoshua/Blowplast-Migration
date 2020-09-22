@@ -59,8 +59,8 @@ class TempReceivable extends Model
                         'SI_Posting_Date' => date('Y-m-d', strtotime($invoice->voucher_date)),
                         'Company_Code' => 'BPL',
                         'Type' => $prefixkey,
-                        'Total_Amount_Excluding_Tax' => $invoice->voucher_amt,
-                        'Total_Amount_Including_Tax' => $invoice->voucher_amt,
+                        'Total_Amount_Excluding_Tax' => ((float)$invoice->voucher_amt * -1),
+                        'Total_Amount_Including_Tax' => ((float)$invoice->voucher_amt * -1),
                         'Currency_Code' => $invoice->currency
                     ];
 
@@ -72,8 +72,8 @@ class TempReceivable extends Model
                         'SI_Li_Posting_Date' => date('Y-m-d', strtotime($invoice->voucher_date)),
                         'Company_Code' => 'BPL',
                         'Type' => $prefixkey,
-                        'Total_Amount_Excluding_Tax' => $invoice->voucher_amt,
-                        'Total_Amount_Including_Tax' => $invoice->voucher_amt,
+                        'Total_Amount_Excluding_Tax' => ((float)$invoice->voucher_amt * -1),
+                        'Total_Amount_Including_Tax' => ((float)$invoice->voucher_amt * -1),
                         'Currency_Code' => $invoice->currency
                     ];
                 }
