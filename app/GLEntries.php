@@ -114,8 +114,7 @@ class GLEntries extends BaseModel
             $message .= ">> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             TempKEGL::truncate();
-            $model = new TempKEGL;
-            $ke = $model->syncData();
+            $model = TempKEGL::syncData();
             echo "==> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
             /*** Finished working with the temp Data ***/
@@ -203,6 +202,7 @@ class GLEntries extends BaseModel
             ]);
             $message .= ">> Completed filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
+            print_r($e);
             $message .= ">> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
             echo "==> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
@@ -213,12 +213,12 @@ class GLEntries extends BaseModel
         $updates = $this->updateOtherTimeDimensions();
         Mail::to([
             env('MAIL_TO_EMAIL'),
-            'walter.orando@dataposit.co.ke',
-            'kkinyanjui@dataposit.co.ke',
+            // 'walter.orando@dataposit.co.ke',
+            // 'kkinyanjui@dataposit.co.ke',
         ])->cc([
-            'diana.adiema@dataposit.co.ke',
-            'george.thiga@dataposit.co.ke',
-            'aaron.mbowa@dataposit.co.ke',
+            // 'diana.adiema@dataposit.co.ke',
+            // 'george.thiga@dataposit.co.ke',
+            // 'aaron.mbowa@dataposit.co.ke',
         ])->send(new DailyScheduledTask($message));
         return true;
     }
