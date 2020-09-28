@@ -464,4 +464,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 JOIN [dbo].[LU_Month] ON [LU_Month].[month_id] = [LU_Day].[month];
         ");
     }
+
+    public static function updateValueStream()
+    {
+        DB::statement("UPDATE 
+                [dbo].[Sales Invoice Credit Memo Lines]
+            SET 
+                [dbo].[Sales Invoice Credit Memo Lines].[Value_Stream] = [Item Master].[Dimension1]
+            FROM 
+                [dbo].[Sales Invoice Credit Memo Lines]
+                JOIN [dbo].[Item Master] ON [Item Master].Item_No = [Sales Invoice Credit Memo Lines].Item_No
+            WHERE
+                [Sales Invoice Credit Memo Lines].Company_Code = 'BPL';");
+    }
 }
