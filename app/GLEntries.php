@@ -103,7 +103,17 @@ class GLEntries extends BaseModel
             echo "==> GL Data deletion completed " . date('Y-m-d H:i:s') . "\n";
             $message .= ">> GL Data Deletion successful " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message = ">> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s');
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
             echo "==> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         } 
         /*** Delete all existing data for the period of insertion ***/
@@ -167,8 +177,18 @@ class GLEntries extends BaseModel
             ]);
             $message .= ">> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> Filling KE GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
-            echo "==> Filling KE GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message = ">> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s');
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
+            echo "==> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s') . "\n";
         }        
         /*** Working on KE Data ***/
 
@@ -202,8 +222,18 @@ class GLEntries extends BaseModel
             ]);
             $message .= ">> Completed filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            print_r($e);
-            $message .= ">> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message = ">> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s');
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
+            
             echo "==> Filling the UG GL Entries unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
         
@@ -211,15 +241,16 @@ class GLEntries extends BaseModel
 
         $updates = $this->updateDay();
         $updates = $this->updateOtherTimeDimensions();
-        Mail::to([
-            env('MAIL_TO_EMAIL'),
-            // 'walter.orando@dataposit.co.ke',
-            // 'kkinyanjui@dataposit.co.ke',
-        ])->cc([
-            // 'diana.adiema@dataposit.co.ke',
-            // 'george.thiga@dataposit.co.ke',
-            // 'aaron.mbowa@dataposit.co.ke',
-        ])->send(new DailyScheduledTask($message));
+        if (env('SEND_EMAIL'))
+            Mail::to([
+                env('MAIL_TO_EMAIL'),
+                'walter.orando@dataposit.co.ke',
+                'kkinyanjui@dataposit.co.ke',
+            ])->cc([
+                'diana.adiema@dataposit.co.ke',
+                'george.thiga@dataposit.co.ke',
+                'aaron.mbowa@dataposit.co.ke',
+            ])->send(new DailyScheduledTask($message));
         return true;
     }
 

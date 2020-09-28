@@ -148,7 +148,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             echo "==> Competed deleting {$existing_headers->count()} headers and {$existing_lines->count()} lines " . date('Y-m-d H:i:s') . "\n";
             $message .= ">> Deletion successful " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message = ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s');
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
             echo "==> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }        
         /*** Delete existing data ***/
@@ -232,8 +242,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             ]);
             $message .= ">> Completed pulling UG Sales data successfully " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            print_r($e);
-            $message .= ">> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            $message = ">> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s');
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
             echo "==> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
         /*** Work on UG data ***/
@@ -305,7 +324,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             echo "==> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
             $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
-            $message .= ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
+            $message = ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s');
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                    env('MAIL_TO_EMAIL'),
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
+                ])->cc([
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
+                ])->send(new DailyScheduledTask($message));
             echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
         }
         /*** Work on KE data ***/
