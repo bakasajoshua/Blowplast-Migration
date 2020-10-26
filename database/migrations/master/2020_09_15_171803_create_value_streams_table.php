@@ -17,7 +17,7 @@ class CreateValueStreamsTable extends Migration
             $table->Increments('id');
             $table->string('value_stream');
             $table->string('Company_Code');
-            $table->string('Country_Code', 10)
+            $table->string('Country_Code', 10);
         });
     }
 
