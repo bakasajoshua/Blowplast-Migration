@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Imports\GLAccountsBudgetImport;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
 use App\Imports\InventoryBudgetImport;
@@ -11,6 +12,7 @@ use App\CustomerLedgerEntry;
 use App\Inventory;
 use App\InventoryBudget;
 use App\GLAccounts;
+use App\GLAccountsBudget;
 use App\GLEntries;
 use App\SalesInvoiceCreditMemoHeader;
 use App\SalesInvoiceCreditMemoLine;
@@ -94,34 +96,39 @@ class ImportExcel extends Command
         /**************************************/
         /******** Import sales Data *********/
         /**************************************/
-        $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processCustomerLedgEntries();
-        $this->output->success('UG Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $lines = $this->processKECustomerLedgEntries();
-        $this->output->success('KE Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting UG Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesHeaders();
-        $this->output->success('Sales UG invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processSalesLines();
-        $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting KE Sales invoice data import ' . date('Y-m-d H:i:s'));
-        $lines = $this->processKESales();
-        $this->output->success('Sales KE invoice data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->title('Starting KE Credit memos data import ' . date('Y-m-d H:i:s'));
-        $lines = TempReceivable::manuals(true);
-        $this->output->success('Sales KE Credit Memos data import successful ' . date('Y-m-d H:i:s'));
-        $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting sales data import ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Customer ledger entries data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processCustomerLedgEntries();
+        // $this->output->success('UG Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processKECustomerLedgEntries();
+        // $this->output->success('KE Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Customer ledger entries data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting UG Sales invoice credit memo headers data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesHeaders();
+        // $this->output->success('Sales UG invoice credit memo headers data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting Sales invoice credit memo lines data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processSalesLines();
+        // $this->output->success('Sales invoice credit memo lines data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting KE Sales invoice data import ' . date('Y-m-d H:i:s'));
+        // $lines = $this->processKESales();
+        // $this->output->success('Sales KE invoice data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting KE Credit memos data import ' . date('Y-m-d H:i:s'));
+        // $lines = TempReceivable::manuals(true);
+        // $this->output->success('Sales KE Credit Memos data import successful ' . date('Y-m-d H:i:s'));
+        // $this->output->success('Sales data import successful ' . date('Y-m-d H:i:s'));
 
-        /**************************************/
-        /******** Import Budget Data *********/
-        /**************************************/
-        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
-        InventoryBudget::truncate();
-        (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/newinventorybudgets.xlsx'));
-        $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
+        // /**************************************/
+        // /******** Import Budget Data *********/
+        // /**************************************/
+        // $this->output->title('Starting Inventory Budget data import ' . date('Y-m-d H:i:s'));
+        // InventoryBudget::truncate();
+        // (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/newinventorybudgets.xlsx'));
+        // $this->output->title('Completed importing Inventory Budget data ' . date('Y-m-d H:i:s'));
+
+        $this->output->title('Starting GL Account Budget data import ' . date('Y-m-d H:i:s'));
+        GLAccountsBudget::truncate();
+        (new GLAccountsBudgetImport)->withOutput($this->output)->import(public_path('import/KEGLAccountsBudget.xlsx'));
+        $this->output->title('Completed importing GL Account Budget data ' . date('Y-m-d H:i:s'));
 
         /**************************************/
         /******** Import Temp Data *********/

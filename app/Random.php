@@ -14,7 +14,6 @@ class Random extends Model
 {
     public static function import()
     {
-    	
     	// (new RandomImport)->import(public_path('import/vehicles.xlsx'));
     	(new RandomImport)->import(public_path('import/tyres_details.xlsx'));
   //   	// Open a try/catch block

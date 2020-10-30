@@ -56,8 +56,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     public function insertKESalesLines($empty=false)
     {
         ini_set("memory_limit", "-1");
-        if ($empty)
-            SalesInvoiceCreditMemoLine::truncate();
+        if ($empty){
+            // SalesInvoiceCreditMemoLine::truncate();
+            foreach (SalesInvoiceCreditMemoLine::where('Company_Code', 'BPL')->get() as $key => $line) {
+                $line->delete();
+            }
+        }
 
         $data = [];
         foreach (Temp::get() as $key => $sales) {

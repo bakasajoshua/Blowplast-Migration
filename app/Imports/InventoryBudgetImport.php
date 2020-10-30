@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 // use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class InventoryBudgetImport implements  ToModel, WithHeadingRow, WithProgressBar
+class InventoryBudgetImport implements ToModel, WithHeadingRow, WithProgressBar
 {
     use Importable;
     /**

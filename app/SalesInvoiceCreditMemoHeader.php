@@ -46,6 +46,14 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
     public function synchHeadersKE()
     {
         ini_set("memory_limit", "-1");
+        echo "==> Deleting KE sales data " . date('Y-m-d H:i:s') . "\n";
+        foreach (SalesInvoiceCreditMemoHeader::where('Company_Code', 'BPL')->get() as $key => $header) {
+            $header->delete();
+        }
+        foreach (SalesInvoiceCreditMemoLine::where('Company_Code', 'BPL')->get() as $key => $header) {
+            $header->delete();
+        }
+        echo "==> Finished deleting KE sales data " . date('Y-m-d H:i:s') . "\n";
         // echo "==> Start pulling Data " . date('Y-m-d H:i:s') . "\n";
         // $data = DB::connection('oracle')->select('select * from SLS$INVOICE$REG$DTL$VW');
         // echo "==> Finished pulling Data " . date('Y-m-d H:i:s') . "\n";
@@ -108,13 +116,13 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
 
         if ($verbose){
             echo "==> Finished inserting data into the Warehouse\n";
-            echo "==> Inserting the lines data into the warehouse\n";
+            // echo "==> Inserting the lines data into the warehouse\n";
         }
 
-        $lines = new SalesInvoiceCreditMemoLine;
-        $lines->insertKESalesLines(true);
-        if ($verbose)
-            echo "==> Finished inserting line data into the Warehouse\n";
+        // $lines = new SalesInvoiceCreditMemoLine;
+        // $lines->insertKESalesLines(true);
+        // if ($verbose)
+        //     echo "==> Finished inserting line data into the Warehouse\n";
 
     }
 
