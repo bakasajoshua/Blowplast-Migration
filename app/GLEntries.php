@@ -80,28 +80,22 @@ class GLEntries extends BaseModel
         ");
     }
 
-    public function scheduledImport()
+    public function delete_specified_data(&$message, $year, $month, $company = null)
     {
-        ini_set("memory_limit", "-1");
-        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
-        $year = date('Y', strtotime($yesterday));
-        $month = date('m', strtotime($yesterday));
-        $start_date = $year . '-' . $month . '-01';
-        $final_date = $yesterday;
-        $incremental = 5;
-        $message = '';
-
-        /*** Delete all existing data for the period of insertion ***/
         $message .= ">> Deleting existing GL data " . date('Y-m-d H:i:s') . "\n";
         try {
             echo "==> Deleting data for the time period " . date('Y-m-d H:i:s') . "\n";
             $deletion_data = GLEntries::whereYear('GL_Posting_Date', $year)
-                                ->whereMonth('GL_Posting_Date', $month)->get();
+                                ->whereMonth('GL_Posting_Date', $month)
+                                ->when($company, function($query) use ($company) {
+                                    return $query->where('Company_Code', $company);
+                                })->get();
             foreach ($deletion_data as $key => $line) {
                 $line->delete();
             }
             echo "==> GL Data deletion completed " . date('Y-m-d H:i:s') . "\n";
             $message .= ">> GL Data Deletion successful " . date('Y-m-d H:i:s') . "\n";
+            return true;
         } catch (\Exception $e) {
             $message = ">> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s');
             if (env('SEND_EMAIL'))
@@ -115,25 +109,24 @@ class GLEntries extends BaseModel
                     'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> GL Data Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
-        } 
-        /*** Delete all existing data for the period of insertion ***/
 
-        /*** Working on KE Data ***/
+            return false;
+        }
+    }
+
+    public function scheduledKEImport(&$message = '', $start_date, $final_date, $deletion = false)
+    {
         try {
-            echo "==> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
-            $message .= ">> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
-            $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-            TempKEGL::truncate();
-            $model = TempKEGL::syncData();
-            echo "==> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
-            $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-            /*** Finished working with the temp Data ***/
+            if ($deletion) {
+                $year = date('Y', strtotime($start_date));
+                $month = date('m', strtotime($start_date));
+                $deletion = $this->delete_specified_data($message, $year, $month, 'BPL');
+            }            
             echo "==> Filling warehouse with KE GL Entries " . date('Y-m-d H:i:s') . "\n";
             /*** Inserting the KE Data in the warehouse ***/
-            echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-            $keData = TempKEGL::whereBetween('voucher date', [$start_date, $final_date])->get()->toArray();
+            $keData = TempKEGL::whereRaw("CONVERT(DATE, [voucher date]) BETWEEN '{$start_date}' AND '{$final_date}'")->get()->toArray();
             $chunkKE = [];
+            echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             foreach ($keData as $key => $entry) {
                 $glaccount = GLAccounts::where('GL_Account_Name', $entry['coa name'])->get();
                 if ($glaccount->isEmpty()) {
@@ -161,21 +154,8 @@ class GLEntries extends BaseModel
                 ];
             }
             $chunks = collect($chunkKE)->chunk($this->chunkQty);
-            $insert = $this->insertChunk($chunks);
-            $destination_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-            echo "==> Finished inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            /** Record entry complete **/
-            echo "==> Making time entry \n";
-            TimeEntry::create([
-                'source' => TempKEGL::class,
-                'destination' => GLEntries::class,
-                'Country' => 'KE',
-                'source_start_time' => $source_start_ke,
-                'source_end_time' => $source_end_ke,
-                'destination_start_time' => $destination_start_ke,
-                'destination_end_time' => $destination_end_ke,
-            ]);
-            $message .= ">> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+            $insert = $this->insertChunk($chunks);            
+            echo "==> Finished inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";            
         } catch (\Exception $e) {
             $message = ">> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s');
             if (env('SEND_EMAIL'))
@@ -189,7 +169,52 @@ class GLEntries extends BaseModel
                     'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s') . "\n";
-        }        
+            return false;
+        }
+        $updates = $this->updateDay();
+        $updates = $this->updateOtherTimeDimensions();
+        return true;
+    }
+
+    public function scheduledImport()
+    {
+        ini_set("memory_limit", "-1");
+        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
+        $year = date('Y', strtotime($yesterday));
+        $month = date('m', strtotime($yesterday));
+        $start_date = $year . '-' . $month . '-01';
+        $final_date = $yesterday;
+        $incremental = 5;
+        $message = '';
+
+        /*** Delete all existing data for the period of insertion ***/
+            $deletion = $this->delete_specified_data($message, $year, $month);
+        /*** Delete all existing data for the period of insertion ***/
+
+        /*** Working on KE Data ***/
+            echo "==> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+            $source_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+            TempKEGL::truncate();
+            $model = TempKEGL::syncData();
+            echo "==> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
+            $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        /*** Finished working with the temp Data ***/
+            $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));   
+            $ke_insertion = $this->scheduledKEImport($message, $start_date, $final_date);
+            $destination_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
+        /** Record entry complete **/
+            echo "==> Making time entry \n";
+            TimeEntry::create([
+                'source' => TempKEGL::class,
+                'destination' => GLEntries::class,
+                'Country' => 'KE',
+                'source_start_time' => $source_start_ke,
+                'source_end_time' => $source_end_ke,
+                'destination_start_time' => $destination_start_ke,
+                'destination_end_time' => $destination_end_ke,
+            ]);
+            $message .= ">> Completed filling the KE GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
         /*** Working on KE Data ***/
 
         /*** Working on UG Data ***/
