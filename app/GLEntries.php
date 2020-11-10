@@ -143,6 +143,7 @@ class GLEntries extends BaseModel
                 } else {
                     $glaccount = $glaccount->first();
                 }
+                // dd($glaccount);
                 $chunkKE[] = [
                     'GL_Entry_No' => round(microtime(true) * 1000),
                     'GL_Account_No' => $glaccount->GL_Account_No,
