@@ -337,7 +337,7 @@ class GLAccounts extends BaseModel
             if (!$account)
                 return GLAccounts::create($insertData);
         } else {
-            return false;
+            return GLAccounts::where('GL_Account_Name', $data['coa name'])->first();
         }
         return true;
     }
