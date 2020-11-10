@@ -8,6 +8,7 @@ use App\Temps\TempUGGLEntry;
 use App\Logs\TimeEntry;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class GLEntries extends BaseModel
@@ -114,27 +115,31 @@ class GLEntries extends BaseModel
         }
     }
 
-    public function scheduledKEImport(&$message = '', $start_date, $final_date, $deletion = false)
+    public function scheduledKEImport(&$message = '', $year, $month, $deletion = false)
     {
         try {
             if ($deletion) {
-                $year = date('Y', strtotime($start_date));
-                $month = date('m', strtotime($start_date));
+                // $year = date('Y', strtotime($start_date));
+                // $month = date('m', strtotime($start_date));
                 $deletion = $this->delete_specified_data($message, $year, $month, 'BPL');
             }            
             echo "==> Filling warehouse with KE GL Entries " . date('Y-m-d H:i:s') . "\n";
             /*** Inserting the KE Data in the warehouse ***/
-            $keData = TempKEGL::whereRaw("CONVERT(DATE, [voucher date]) BETWEEN '{$start_date}' AND '{$final_date}'")->get()->toArray();
+            $keData = TempKEGL::whereRaw("YEAR(CONVERT(DATE, [voucher date])) = '{$year}' AND MONTH(CONVERT(DATE, [voucher date])) = '{$month}'")->get();
+            echo "==> Endpoint count " . $keData->count() . "\n";
+            $keData = $keData->toArray();
+            // dd($keData);
             $chunkKE = [];
             echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             foreach ($keData as $key => $entry) {
                 $glaccount = GLAccounts::where('GL_Account_Name', $entry['coa name'])->get();
                 if ($glaccount->isEmpty()) {
-                    $glaccount = GLAccounts::create([
-                        'GL_Account_No' => round(microtime(true) * 1000),
-                        'GL_Account_Name' => $entry['coa name'],
-                        'Company_Code' => 'BPL',
-                    ]);
+                    $glaccount = GLAccounts::saveKEGLAccount($entry);
+                    // $glaccount = GLAccounts::create([
+                    //     'GL_Account_No' => round(microtime(true) * 1000),
+                    //     'GL_Account_Name' => $entry['coa name'],
+                    //     'Company_Code' => 'BPL',
+                    // ]);
                 } else {
                     $glaccount = $glaccount->first();
                 }
@@ -150,23 +155,27 @@ class GLEntries extends BaseModel
                     'GL_Document_No' => $entry['doc no'],
                     'GL_Document_Type' => NULL,
                     'Description' => $entry['narration'],
-                    'Company_Code' => $glaccount->Company_Code,
+                    'Company_Code' => 'BPL',
                 ];
             }
-            $chunks = collect($chunkKE)->chunk($this->chunkQty);
+            $collection = collect($chunkKE);
+            echo "==> Warehouse count " . $collection->count() . "\n";
+            $chunks = $collection->chunk($this->chunkQty);
             $insert = $this->insertChunk($chunks);            
             echo "==> Finished inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";            
         } catch (\Exception $e) {
+            Log::channel('data')->error($e);
             $message = ">> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s');
+
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    'walter.orando@dataposit.co.ke',
-                    'kkinyanjui@dataposit.co.ke',
+                    // 'walter.orando@dataposit.co.ke',
+                    // 'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    'diana.adiema@dataposit.co.ke',
-                    'george.thiga@dataposit.co.ke',
-                    'aaron.mbowa@dataposit.co.ke',
+                    // 'diana.adiema@dataposit.co.ke',
+                    // 'george.thiga@dataposit.co.ke',
+                    // 'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s') . "\n";
             return false;
