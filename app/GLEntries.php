@@ -132,7 +132,7 @@ class GLEntries extends BaseModel
             $chunkKE = [];
             echo "==> Inserting KE Data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             foreach ($keData as $key => $entry) {
-                $glaccount = GLAccounts::where('GL_Account_Name', $entry['coa name'])->get();
+                $glaccount = GLAccounts::where('GL_Account_Name', $entry['coa name'])->where('Company_Code', 'BPL')->get();
                 if ($glaccount->isEmpty()) {
                     $glaccount = GLAccounts::saveKEGLAccount($entry);
                     // $glaccount = GLAccounts::create([
