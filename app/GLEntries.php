@@ -211,7 +211,7 @@ class GLEntries extends BaseModel
             $source_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
         /*** Finished working with the temp Data ***/
             $destination_start_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));   
-            $ke_insertion = $this->scheduledKEImport($message, $start_date, $final_date);
+            $ke_insertion = $this->scheduledKEImport($message, $year, $month);
             $destination_end_ke = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
         /** Record entry complete **/
             echo "==> Making time entry \n";
