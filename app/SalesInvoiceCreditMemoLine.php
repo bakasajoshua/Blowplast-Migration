@@ -345,6 +345,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
 
         self::updateDay();
         self::updateOtherTimeDimensions();
+        self::updateValueStream();
         if (env('SEND_EMAIL'))
             Mail::to([
                     env('MAIL_TO_EMAIL'),
