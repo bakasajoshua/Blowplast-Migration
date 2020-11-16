@@ -463,6 +463,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
             self::updateDay();
             self::updateOtherTimeDimensions();
+            self::updateValueStream();
         } catch (\Exception $e) {
             ini_set("memory_limit", "-1");
             print_r($e);
