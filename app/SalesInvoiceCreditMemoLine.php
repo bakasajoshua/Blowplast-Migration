@@ -43,14 +43,23 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     ];
     private $chunkQty = 100;
 
-    public function synchLines($params = [])
+    public static function insertChunk($chunks)
     {
-        ini_set("memory_limit", "-1");
-        $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
             SalesInvoiceCreditMemoLine::insert($data->toArray());
         }
         return true;
+    }
+
+    public function synchLines($params = [])
+    {
+        ini_set("memory_limit", "-1");
+        $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
+        return SalesInvoiceCreditMemoLine::insertChunk($chunks);
+        // foreach ($chunks as $key => $data) {
+        //     SalesInvoiceCreditMemoLine::insert($data->toArray());
+        // }
+        // return true;
     }
 
     public function insertKESalesLines($empty=false)
@@ -121,6 +130,8 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     {
 
     }
+
+    // public static function scheduledImportData
 
     public static function scheduledImportData()
     {
@@ -359,13 +370,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         return true;
     }
 
-    public static function scheduledImportDataKE()
+    // SalesInvoiceCreditMemoLine::scheduledImportDataKE('2020', '08');
+    public static function scheduledImportDataKE($year = null, $month = null)
     {
-        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
-        $year = date('Y', strtotime($yesterday));
-        $month = date('m', strtotime($yesterday));
-        $start_date = $year . '-' . $month . '-01';
-        $final_date = $yesterday;
+        if ($year) {
+            $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
+            $year = date('Y', strtotime($yesterday));
+            $month = date('m', strtotime($yesterday));
+            $start_date = $year . '-' . $month . '-01';
+            $final_date = $yesterday;
+        }
+        
         $message = '';
         
         /*** Work on KE data ***/
@@ -405,12 +420,14 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $source_end_ke = date('Y-m-d H:i:s');
 
             $destination_start_ke = date('Y-m-d H:i:s');
-            echo "==> Inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $source_data = Temp::whereRaw(" CONVERT(DATE, invoice_doc_dt) BETWEEN '{$start_date}' AND '{$final_date}'")->get();
-            
+            echo "==> Inserting KE Sales data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+            $source_data = Temp::whereRaw("YEAR(CONVERT(DATE, invoice_doc_dt)) = {$year} AND MONTH(CONVERT(DATE, invoice_doc_dt)) = {$month}")->get();
+            echo "==> Endpoint count " . $source_data->count() . "\n";
+            $headers = [];
+            $lines = [];
             foreach ($source_data as $key => $sales) {
                 if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
-                    SalesInvoiceCreditMemoHeader::create([
+                    $headers[] = [
                         'Invoice_Credit_Memo_No' => $sales->invoice_id,
                         'SI_Document_No' => $sales->invoice_doc_id,
                         'Sell-To-Customer-No' => $sales->eo_nm,
@@ -423,9 +440,10 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                         'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
                         'Total_Amount_Including_Tax' => $sales->net_amnt,
                         'Currency_Code' => $sales->curr_sp,
-                    ]);
+                    ];
+                    
                 }
-                SalesInvoiceCreditMemoLine::create([
+                $lines[] = [
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Li_Document_No' => $sales->invoice_doc_id,
                     'SI_Li_Line_No' => $sales->shipmnt_id,
@@ -443,9 +461,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Sales_Unit_of_Measure' => $sales->uom_sls,
                     'Currency_Code' => $sales->curr_sp,
-                ]);
+                ];
+                
             }
-            echo "==> Completed inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+            $header_collection = collect($headers)->chunk(100);
+            SalesInvoiceCreditMemoHeader::insertChunk($header_collection);
+            echo "==> Completed inserting KE Sales Headers data into the warehouse " . date('Y-m-d H:i:s') . "\n";
+            $lines_collection = collect($lines);
+            echo "==> Warehouse count " . $lines_collection->count() . "\n";
+            $chunks = $lines_collection->chunk(100);
+            $insert = self::insertChunk($chunks); 
+            echo "==> Completed inserting KE Sales Lines data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $destination_end_ke = date('Y-m-d H:i:s');
 
             // /** Record entry complete **/

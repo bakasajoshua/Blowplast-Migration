@@ -33,14 +33,19 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
 		];
     private $chunkQty = 100;
 
-    public function synchHeaders($params = [])
+    public static function insertChunk($chunks)
     {
-        ini_set("memory_limit", "-1");
-        $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
         foreach ($chunks as $key => $data) {
             SalesInvoiceCreditMemoHeader::insert($data->toArray());
         }
         return true;
+    }
+
+    public function synchHeaders($params = [])
+    {
+        ini_set("memory_limit", "-1");
+        $chunks = $this->synch($this->functionCall, $this->endpointColumns, $params)->chunk($this->chunkQty);
+        return SalesInvoiceCreditMemoHeader::insertChunk($chunks);
     }
 
     public function synchHeadersKE()
