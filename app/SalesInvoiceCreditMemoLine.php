@@ -373,7 +373,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     // SalesInvoiceCreditMemoLine::scheduledImportDataKE('2020', '08');
     public static function scheduledImportDataKE($year = null, $month = null)
     {
-        if ($year) {
+        if (!$year) {
             $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
             $year = date('Y', strtotime($yesterday));
             $month = date('m', strtotime($yesterday));
@@ -422,6 +422,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $destination_start_ke = date('Y-m-d H:i:s');
             echo "==> Inserting KE Sales data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $source_data = Temp::whereRaw("YEAR(CONVERT(DATE, invoice_doc_dt)) = {$year} AND MONTH(CONVERT(DATE, invoice_doc_dt)) = {$month}")->get();
+            
             echo "==> Endpoint count " . $source_data->count() . "\n";
             $headers = [];
             $lines = [];
@@ -464,7 +465,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Currency_Code' => $sales->curr_sp,
                     'Value_Stream' => $Value_Stream[0],
                 ];
-                
+                // dd($lines);
             }
             $header_collection = collect($headers)->chunk(100);
             SalesInvoiceCreditMemoHeader::insertChunk($header_collection);
@@ -491,7 +492,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
             self::updateDay();
             self::updateOtherTimeDimensions();
-            self::updateValueStream();
+            // self::updateValueStream();
         } catch (\Exception $e) {
             ini_set("memory_limit", "-1");
             print_r($e);
