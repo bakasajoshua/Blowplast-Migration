@@ -443,6 +443,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     ];
                     
                 }
+                $Value_Stream = explode("-", $sales->wh_nm);
                 $lines[] = [
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Li_Document_No' => $sales->invoice_doc_id,
@@ -461,6 +462,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Sales_Unit_of_Measure' => $sales->uom_sls,
                     'Currency_Code' => $sales->curr_sp,
+                    'Value_Stream' => $Value_Stream[0],
                 ];
                 
             }
