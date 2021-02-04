@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Imports\GLAccountsBudgetImport;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
+use App\Imports\CustomerValueStreamImport;
 use App\Imports\InventoryBudgetImport;
 use Illuminate\Console\Command;
 use App\Customer;
@@ -60,7 +61,7 @@ class ImportExcel extends Command
         /**************************************/
         /******** Import Master Data *********/
         /**************************************/
-        // $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
+        $this->output->title('Starting master data import ' . date('Y-m-d H:i:s'));
         // // (new BlowplastImport)->withOutput($this->output)->import(public_path('import/blowplast.xlsx'));
         // $this->output->title('Importing inventory data ' . date('Y-m-d H:i:s'));
         // Inventory::truncate();
@@ -68,12 +69,13 @@ class ImportExcel extends Command
         // $synch = $item->synchItems();
         // $this->output->success('Inventory data complete ' . date('Y-m-d H:i:s'));
 
-        // $this->output->title('Importing customer data ' . date('Y-m-d H:i:s'));
+        $this->output->title('Importing customer data ' . date('Y-m-d H:i:s'));
         // Customer::truncate();
         // $customer = new Customer;
         // $synch = $customer->synchCustomer();
-        // $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
-        // $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
+        (new CustomerValueStreamImport)->withOutput($this->output)->import(public_path('import/Customer Value Streams.csv'));
+        $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
+        $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
         /**************************************/
         /******** Import finance Data *********/
@@ -125,10 +127,10 @@ class ImportExcel extends Command
         // (new InventoryBudgetImport)->withOutput($this->output)->import(public_path('import/newinventorybudgets.xlsx'));
         // $this->output->title('Completed importing Inventory Budget data ' . date('Y-m-d H:i:s'));
 
-        $this->output->title('Starting GL Account Budget data import ' . date('Y-m-d H:i:s'));
-        GLAccountsBudget::truncate();
-        (new GLAccountsBudgetImport)->withOutput($this->output)->import(public_path('import/KEGLAccountsBudget.xlsx'));
-        $this->output->title('Completed importing GL Account Budget data ' . date('Y-m-d H:i:s'));
+        // $this->output->title('Starting GL Account Budget data import ' . date('Y-m-d H:i:s'));
+        // GLAccountsBudget::truncate();
+        // (new GLAccountsBudgetImport)->withOutput($this->output)->import(public_path('import/KEGLAccountsBudget.xlsx'));
+        // $this->output->title('Completed importing GL Account Budget data ' . date('Y-m-d H:i:s'));
 
         /**************************************/
         /******** Import Temp Data *********/
