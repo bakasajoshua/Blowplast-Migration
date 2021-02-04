@@ -68,6 +68,7 @@ class CreateTempsTable extends Migration
             $table->string("grplvl2")->nullable();
             $table->string("grplvl3")->nullable();
             $table->string("grplvl4")->nullable();
+            $table->string("type")->nullable();
         });
     }
 

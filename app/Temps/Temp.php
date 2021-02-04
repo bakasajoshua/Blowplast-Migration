@@ -29,6 +29,33 @@ class Temp extends Model
 
     	if ($verbose)
         	echo "==> Finished inserting Data " . date('Y-m-d H:i:s') . "\n";
+
+        if ($verbose)
+            echo "==> Updating Data " . date('Y-m-d H:i:s') . "\n";
+
+        DB::statement("
+        UPDATE 
+            [BLOWPLAST-MSTR-DEV].[dbo].[temps]
+        SET 
+            [BLOWPLAST-MSTR-DEV].[dbo].[temps].[type] = 'Credit Note'
+        WHERE [inv_type_desc] IN ('RMA WITH CREDIT ONLY', 'RMA WITH RECEIPT AND CREDIT');
+        ");
+
+        DB::statement("
+        UPDATE 
+            [BLOWPLAST-MSTR-DEV].[dbo].[temps]
+        SET 
+            [BLOWPLAST-MSTR-DEV].[dbo].[temps].[type] = 'Invoice'
+        WHERE [inv_type_desc] IN ('DIRECT INVOICE', 'RMA WITH RECEIPT AND NO CREDIT')");
+
         return true;
     }
+
+    // public static function pullSourceData()
+    // {
+    //     $data = DB::connection('oracle')->select('select * from SLS$INVOICE$REG$DTL$VW');
+    //     foreach ($data as $key => $value) {
+    //         # code...
+    //     }
+    // }
 }

@@ -106,7 +106,7 @@ class SalesInvoiceCreditMemoHeader extends BaseModel
                     'SI_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
                     // 'SI_Due_Date' => 'Due_x0020_Date',
                     'Company_Code' => 'BPL',
-                    'Type' => ucwords($sales->inv_type_desc),
+                    'Type' => $sales->type,
                     'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Currency_Code' => $sales->curr_sp,
