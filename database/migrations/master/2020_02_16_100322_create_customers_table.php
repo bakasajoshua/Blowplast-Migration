@@ -19,7 +19,6 @@ class CreateCustomersTable extends Migration
             $table->string('Customer_Name')->nullable();
             $table->string('Customer_Email')->nullable();
             $table->string('Company_Code', 10)->nullable();
-
             // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
         });
     }
