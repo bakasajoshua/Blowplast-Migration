@@ -26,8 +26,8 @@ class CustomerBudgetImport implements ToCollection, WithHeadingRow, WithProgress
         				'Company_Code' => 'BPL',
         				'Budget_Year' => $item['year'],
         				'Budget_Month' => $item['month'],
-        				'Budget_Qty_Pcs' => $item['target_pieces'],
-        				'Budget_Qty_Weight' => $item['target_weight'],
+        				'Budget_Qty_Pcs' => $item['target_pieces'] ?? 0,
+        				'Budget_Qty_Weight' => $item['target_weight'] ?? 0,
         			]);
         }
         return $collection;
