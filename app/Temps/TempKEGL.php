@@ -69,11 +69,11 @@ class TempKEGL extends BaseModel
     public static function syncAllData()
     {
         try {
-            $sql = 'select * from fin.fin_gl_vw';
+            $sql = 'select * from fin.fin_gl_vw_20';
             echo "==> Running {$sql} on the Oracle Connection\n";
             $data = collect(DB::connection('oracle')->select($sql));
             echo "==> Response: \n";
-            print_r($data->first());
+            print_r($data);
         } catch (Exception $e) {
            var_dump($e);
            return false;

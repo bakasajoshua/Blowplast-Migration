@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Imports\CustomerBudgetImport;
 use App\Imports\GLAccountsBudgetImport;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
@@ -73,7 +74,9 @@ class ImportExcel extends Command
         // Customer::truncate();
         // $customer = new Customer;
         // $synch = $customer->synchCustomer();
-        (new CustomerValueStreamImport)->withOutput($this->output)->import(public_path('import/Customer Value Streams.csv'));
+        // (new CustomerValueStreamImport)->withOutput($this->output)->import(public_path('import/Customer Value Streams.csv'));
+        (new CustomerBudgetImport)->withOutput($this->output)->import(public_path('import/customerwisebudget.xlsx'));
+
         $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
         $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
