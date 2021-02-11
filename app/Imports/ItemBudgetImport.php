@@ -25,7 +25,7 @@ class ItemBudgetImport implements ToCollection, WithHeadingRow, WithProgressBar
         	$item_master = Inventory::where('Item_Description', $item['description'])->get();
         	if (!$item_master->isEmpty()) {
         		$item_master = $item_master->first();
-        		$customer = Customer::where('Customer_No', $item['customer_no'])->first();
+        		$customer = Customer::where('Customer_No', "$item['customer_no']")->first();
         		foreach ($months as $key => $month) {
         			$inventory = InventoryBudget::create([
 			        				'Value_Stream' => $customer->Value_Stream ?? NULL,
