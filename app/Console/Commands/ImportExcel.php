@@ -7,6 +7,7 @@ use App\Imports\GLAccountsBudgetImport;
 use App\Imports\GLEntriesSheetImport;
 use App\Imports\BlowplastImport;
 use App\Imports\CustomerValueStreamImport;
+use App\Imports\ItemBudgetImport;
 use App\Imports\InventoryBudgetImport;
 use Illuminate\Console\Command;
 use App\Customer;
@@ -75,8 +76,8 @@ class ImportExcel extends Command
         // $customer = new Customer;
         // $synch = $customer->synchCustomer();
         // (new CustomerValueStreamImport)->withOutput($this->output)->import(public_path('import/Customer Value Streams.csv'));
-        (new CustomerBudgetImport)->withOutput($this->output)->import(public_path('import/customerwisebudget.xlsx'));
-
+        // (new CustomerBudgetImport)->withOutput($this->output)->import(public_path('import/customerwisebudget.xlsx'));
+        (new ItemBudgetImport)->withOutput($this->output)->import(public_path('import/edible customer product wise.xlsx'));
         $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
         $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
