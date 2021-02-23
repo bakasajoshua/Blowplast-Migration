@@ -54,7 +54,7 @@ class TempPrevKEGL extends Model
     			echo "==>Finished and removing old Data in the warehouse " . date('Y-m-d H:i:s') . "\n"; 
     			$gl_entry_class = new GLEntries;
 	            $collection = collect($chunkKE);
-	            dd($collection->first());
+	            // dd($collection->first());
 	            echo "==> Warehouse count " . $collection->count() . "\n";
 	            $chunks = $collection->chunk($gl_entry_class->chunkQty);
 	            $insert = $gl_entry_class->insertChunk($chunks);
