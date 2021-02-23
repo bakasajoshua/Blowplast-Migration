@@ -35,7 +35,7 @@ class GLEntries extends BaseModel
         'Description' => 'Description',
         'Company_Code' => 'Company_x0020_Code',
     ];
-    private $chunkQty = 100;
+    public $chunkQty = 100;
 
     public function synchEntries($params = [])
     {
@@ -50,8 +50,8 @@ class GLEntries extends BaseModel
         foreach ($chunks as $key => $data) {
             $glentries = GLEntries::insert($data->toArray());
         }
-        // $day_dimensions = $this->updateDay();
-        // $time_dimensions = $this->updateOtherTimeDimensions();
+        $day_dimensions = $this->updateDay();
+        $time_dimensions = $this->updateOtherTimeDimensions();
         return true;
     }
 

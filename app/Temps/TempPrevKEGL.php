@@ -25,7 +25,7 @@ class TempPrevKEGL extends Model
     			$chunkKE = [];
     			foreach ($keData as $key => $entry) {
     				$glaccount = GLAccounts::where('GL_Account_Name', $entry['COA Name'])->where('Company_Code', 'BPL')->get();
-    				
+
 	                if ($glaccount->isEmpty()) {
 	                    $glaccount = GLAccounts::saveKEGLAccount($entry);
 	                } else {
@@ -51,10 +51,9 @@ class TempPrevKEGL extends Model
     			foreach ($existing_data as $key => $db_entries) {
     				$db_entries->delete();
     			}
-    			echo "==>Finished and removing old Data in the warehouse " . date('Y-m-d H:i:s') . "\n"; 
+    			echo "==> Finished and removing old Data in the warehouse " . date('Y-m-d H:i:s') . "\n"; 
     			$gl_entry_class = new GLEntries;
 	            $collection = collect($chunkKE);
-	            // dd($collection->first());
 	            echo "==> Warehouse count " . $collection->count() . "\n";
 	            $chunks = $collection->chunk($gl_entry_class->chunkQty);
 	            $insert = $gl_entry_class->insertChunk($chunks);
