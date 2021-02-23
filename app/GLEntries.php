@@ -50,8 +50,8 @@ class GLEntries extends BaseModel
         foreach ($chunks as $key => $data) {
             $glentries = GLEntries::insert($data->toArray());
         }
-        $day_dimensions = $this->updateDay();
-        $time_dimensions = $this->updateOtherTimeDimensions();
+        // $day_dimensions = $this->updateDay();
+        // $time_dimensions = $this->updateOtherTimeDimensions();
         return true;
     }
 

@@ -300,12 +300,13 @@ class GLAccounts extends BaseModel
 
     public static function saveKEGLAccount($data)
     {
-        $accounts = explode('->', $data['chart of group']);
+        $chart_of_group = $data['chart of group'] ?? $data['Chart Of Group'];
+        $accounts = explode('->', $chart_of_group);
         $account_level = sizeof($accounts);
         if ($account_level > 0) {
             $level = AccountType::where('Level_1_Description', $accounts[0])->where('Company_Code', '=', 'BPL')->get();
             if ($level->isEmpty()){
-                $save = self::saveKEAccountLevel1($data['chart of group']);
+                $save = self::saveKEAccountLevel1($chart_of_group);
                 $level = AccountType::where('Level_1_Description', $accounts[0])->where('Company_Code', '=', 'BPL')->first();
             } else {
                 $level = $level->first();
@@ -317,7 +318,7 @@ class GLAccounts extends BaseModel
         if ($account_level > 1) {
             $level = ChartOfAccounts::where('Level_2_Description', $accounts[1])->where('Company_Code', '=', 'BPL')->get();
             if ($level->isEmpty()) {
-                $save = self::saveKEAccountLevel2($data['chart of group']);
+                $save = self::saveKEAccountLevel2($chart_of_group);
                 $level = ChartOfAccounts::where('Level_2_Description', $accounts[1])->where('Company_Code', '=', 'BPL')->first();
             } else {
                 $level = $level->first();
@@ -330,7 +331,7 @@ class GLAccounts extends BaseModel
         if ($account_level > 2) {
             $level = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->where('Company_Code', '=', 'BPL')->get();
             if ($level->isEmpty()) {
-                $save = self::saveKEAccountLevel3($data['chart of group']);
+                $save = self::saveKEAccountLevel3($chart_of_group);
                 $level = ChartOfAccountsBreakdown::where('Level_3_Description', $accounts[2])->where('Company_Code', '=', 'BPL')->first();
             } else {
                 $level = $level->first();
@@ -343,7 +344,7 @@ class GLAccounts extends BaseModel
         if ($account_level > 3) {
             $level = GLAccountLevel4::where('Level_4_Description', $accounts[3])->where('Company_Code', '=', 'BPL')->get();
             if ($level->isEmpty()) {
-                $save = self::saveKEAccountLevel4($data['chart of group']);
+                $save = self::saveKEAccountLevel4($chart_of_group);
                 $level = GLAccountLevel4::where('Level_4_Description', $accounts[3])->where('Company_Code', '=', 'BPL')->first();
             } else {
                 $level = $level->first();
@@ -352,16 +353,16 @@ class GLAccounts extends BaseModel
             $insertData['Level_4_Description'] = $level->Level_4_Description;
             $insertData['GL_Account_Level_4'] = $level->Level_4_ID;
         }
-
-        if (isset($data['coa name'])) {
+        $coa_name = $data['coa name'] ?? $data['COA Name'];
+        if (isset($coa_name)) {
             $insertData['GL_Account_No'] = self::getGenericID();
-            $insertData['GL_Account_Name'] = $data['coa name'];
+            $insertData['GL_Account_Name'] = $coa_name;
             $insertData['Company_Code'] = 'BPL';
-            $account = GLAccounts::where('GL_Account_Name', $data['coa name'])->where('Company_Code', 'BPL')->first();
+            $account = GLAccounts::where('GL_Account_Name', $coa_name)->where('Company_Code', 'BPL')->first();
             if (!$account)
                 return GLAccounts::create($insertData);
         } else {
-            return GLAccounts::where('GL_Account_Name', $data['coa name'])->where('Company_Code', 'BPL')->first();
+            return GLAccounts::where('GL_Account_Name', $coa_name)->where('Company_Code', 'BPL')->first();
         }
         return true;
     }
