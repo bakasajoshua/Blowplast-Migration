@@ -41,7 +41,7 @@ Artisan::command('update:task', function(){
 	$model = \App\SalesInvoiceCreditMemoLine::scheduledImportData();
 
 	// Sync the KE Credit Notes
-	$model = \App\Temps\TempReceivable::insertData();
+	// $model = \App\Temps\TempReceivable::insertData();
 
 	// Sync debtors
 	$model = \App\CustomerLedgerEntry::scheduledImport();
