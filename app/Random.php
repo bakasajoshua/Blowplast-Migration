@@ -101,4 +101,33 @@ class Random extends Model
 
         return true;
     }
+
+    // public static function updateBalances()
+    // {
+    //     echo "==> Begin updating the balances " . date('Y-m-d H:i:s') . "\n";
+    //     while (true) {
+    //         echo "==> Getting the next 500 entries " . date('Y-m-d H:i:s') . "\n";
+    //         $entries = GLEntries::whereNull('Opening_Balance')->limit(500)->get();
+    //         if ($entries->isEmpty()) {
+    //             continue;
+    //         }
+    //         echo "==> Warehouse entries to be updated " . $entries->count() . " " . date('Y-m-d H:i:s') . "\n";
+    //         $entries_ids = $entries->pluck('GL_Entry_No');
+    //         echo "==> Get the related temporary entries " . date('Y-m-d H:i:s') . "\n";
+    //         $temp_entries = Temps\TempPrevKEGL::whereIn('Voucher No', $entries_ids->toArray())->get();
+    //         echo "==> Temp entries found " . $temp_entries->count() . " " . date('Y-m-d H:i:s') . "\n";
+    //         echo "==> Updating the data batch warehouse entries " . date('Y-m-d H:i:s') . "\n";
+    //         foreach($entries as $entry) {
+    //             $temp_entry = $temp_entries->where('Voucher No', $entry->GL_Entry_No);
+    //             if (!$temp_entry->isEmpty()) {
+    //                 $temp_entry = $temp_entry->first()->toArray();
+    //                 $entry->Opening_Balance = $temp_entry['Opening Bal'];
+    //                 $entry->Running_Balance = $temp_entry['Running Balance'];
+    //                 $entry->save();
+    //             }
+    //         }
+    //         echo "==> Finished Updating the data batch warehouse entries " . date('Y-m-d H:i:s') . "\n";
+    //     }
+    //     echo "==> Finished updating the balances " . date('Y-m-d H:i:s') . "\n";
+    // }
 }

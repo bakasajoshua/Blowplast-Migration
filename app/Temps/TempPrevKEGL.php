@@ -44,6 +44,8 @@ class TempPrevKEGL extends Model
 	                    'GL_Document_Type' => NULL,
 	                    'Description' => $entry['NARRATION'],
 	                    'Company_Code' => 'BPL',
+                        'Opening_Balance' => $entry['Opening Bal'],
+                        'Running_Balance' => $entry['Running Balance'],
 	                ];
     			}
     			echo "==> Getting and removing old Data in the warehouse " . date('Y-m-d H:i:s') . "\n"; 
@@ -55,6 +57,7 @@ class TempPrevKEGL extends Model
     			$gl_entry_class = new GLEntries;
 	            $collection = collect($chunkKE);
 	            echo "==> Warehouse count " . $collection->count() . "\n";
+                echo "==> Insert KE Warehouse Data " . $collection->count() . "\n";
 	            $chunks = $collection->chunk($gl_entry_class->chunkQty);
 	            $insert = $gl_entry_class->insertChunk($chunks);
 		        // $updates = $gl_entry_class->updateDay();
