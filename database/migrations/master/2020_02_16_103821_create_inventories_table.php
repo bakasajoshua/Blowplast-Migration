@@ -15,7 +15,7 @@ class CreateInventoriesTable extends Migration
     {
         Schema::create('Item Master', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('Item_No', 50)->unique();
+            $table->string('Item_No', 50);
             $table->text('Item_Description')->nullable();
             $table->string('Company_Code')->nullable();
             $table->string('Dimension1')->nullable();
