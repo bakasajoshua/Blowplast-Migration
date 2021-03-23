@@ -157,8 +157,8 @@ class GLEntries extends BaseModel
                     'GL_Document_Type' => NULL,
                     'Description' => $entry['narration'],
                     'Company_Code' => 'BPL',
-                    'Opening_Balance' => $entry['Opening Bal'],
-                    'Running_Balance' => $entry['Running Balance'],
+                    'Opening_Balance' => $entry['Opening Bal'] ?? $entry['opening bal'] ?? 0,
+                    'Running_Balance' => $entry['Running Balance'] ?? $entry['running balance'] ?? 0,
                 ];
             }
             $collection = collect($chunkKE);

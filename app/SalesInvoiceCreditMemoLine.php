@@ -132,7 +132,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
     }
 
     // public static function scheduledImportData
-
+    // \App\SalesInvoiceCreditMemoLine::scheduledImportData()
     public static function scheduledImportData()
     {
         ini_set("memory_limit", "-1");
@@ -167,12 +167,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    'walter.orando@dataposit.co.ke',
-                    'kkinyanjui@dataposit.co.ke',
+                    // 'walter.orando@dataposit.co.ke',
+                    // 'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    'diana.adiema@dataposit.co.ke',
-                    'george.thiga@dataposit.co.ke',
-                    'aaron.mbowa@dataposit.co.ke',
+                    // 'diana.adiema@dataposit.co.ke',
+                    // 'george.thiga@dataposit.co.ke',
+                    // 'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }        
@@ -261,12 +261,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    'walter.orando@dataposit.co.ke',
-                    'kkinyanjui@dataposit.co.ke',
+                    // 'walter.orando@dataposit.co.ke',
+                    // 'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    'diana.adiema@dataposit.co.ke',
-                    'george.thiga@dataposit.co.ke',
-                    'aaron.mbowa@dataposit.co.ke',
+                    // 'diana.adiema@dataposit.co.ke',
+                    // 'george.thiga@dataposit.co.ke',
+                    // 'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
@@ -277,8 +277,8 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $message .= ">> Bringing in KE Sales data " . date('Y-m-d H:i:s') . "\n";
             echo "==> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
             $source_start_ke = date('Y-m-d H:i:s');
-            Temp::truncate();
-            Temp::pullData();
+            // Temp::truncate();
+            // Temp::pullData();
             echo "==> Completed filling KE source data " . date('Y-m-d H:i:s') . "\n";
             $source_end_ke = date('Y-m-d H:i:s');
 
@@ -343,12 +343,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    'walter.orando@dataposit.co.ke',
-                    'kkinyanjui@dataposit.co.ke',
+                    // 'walter.orando@dataposit.co.ke',
+                    // 'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    'diana.adiema@dataposit.co.ke',
-                    'george.thiga@dataposit.co.ke',
-                    'aaron.mbowa@dataposit.co.ke',
+                    // 'diana.adiema@dataposit.co.ke',
+                    // 'george.thiga@dataposit.co.ke',
+                    // 'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
         }
@@ -360,12 +360,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         if (env('SEND_EMAIL'))
             Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    'walter.orando@dataposit.co.ke',
-                    'kkinyanjui@dataposit.co.ke',
+                    // 'walter.orando@dataposit.co.ke',
+                    // 'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    'diana.adiema@dataposit.co.ke',
-                    'george.thiga@dataposit.co.ke',
-                    'aaron.mbowa@dataposit.co.ke',
+                    // 'diana.adiema@dataposit.co.ke',
+                    // 'george.thiga@dataposit.co.ke',
+                    // 'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
         return true;
     }
