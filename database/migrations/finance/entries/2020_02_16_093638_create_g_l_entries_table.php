@@ -16,7 +16,17 @@ class CreateGLEntriesTable extends Migration
         Schema::create('GL Entries', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('GL_Entry_No', 50);
+            $table->string('Level_1_ID')->nullable();
+            $table->string('Level_1_Description', 100)->nullable();
+            $table->string('Level_2_ID')->nullable();
+            $table->string('Level_2_Description')->nullable();
+            $table->string('Level_3_ID')->nullable();
+            $table->string('Level_3_Description')->nullable();
+            $table->string('Level_4_ID')->nullable();
+            $table->string('Level_4_Description')->nullable();
             $table->string('GL_Account_No', 50)->nullable();
+            $table->string('GL_Account_Name')->nullable();
+            $table->enum('Income_Balance', ['IS', 'BS'])->nullable();
             $table->string('Balancing_GL_Account_No', 50)->nullable();
             $table->float('Debit', 24, 2)->nullable();
             $table->float('Credit', 24, 2)->nullable();
