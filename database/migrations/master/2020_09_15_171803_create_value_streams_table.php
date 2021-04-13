@@ -15,7 +15,7 @@ class CreateValueStreamsTable extends Migration
     {
         Schema::create('Value Streams', function (Blueprint $table) {
             $table->Increments('id');
-            $table->string('value_stream');
+            $table->string('value_stream')->nullable();
             $table->string('Company_Code');
             $table->string('Country_Code', 10);
         });

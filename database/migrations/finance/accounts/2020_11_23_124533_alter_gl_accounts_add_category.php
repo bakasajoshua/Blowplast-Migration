@@ -14,7 +14,8 @@ class AlterGlAccountsAddCategory extends Migration
     public function up()
     {
         Schema::table('GL Accounts', function (Blueprint $table) {
-            $table->string('Category')->nullable();
+            $table->string('Category_1_ID')->nullable();
+            $table->string('Category_1_Description')->nullable();
         });
     }
 

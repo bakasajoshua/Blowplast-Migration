@@ -173,12 +173,12 @@ class GLEntries extends BaseModel
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    // 'walter.orando@dataposit.co.ke',
-                    // 'kkinyanjui@dataposit.co.ke',
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    // 'diana.adiema@dataposit.co.ke',
-                    // 'george.thiga@dataposit.co.ke',
-                    // 'aaron.mbowa@dataposit.co.ke',
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Filling KE GL Entries unsuccessful " . date('Y-m-d H:i:s') . "\n";
             return false;
@@ -234,7 +234,7 @@ class GLEntries extends BaseModel
             $message .= ">> Filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             echo "==> Filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
             $source_start_ug = date('Y-m-d H:i:s', strtotime("+3 Hours", strtotime(date('Y-m-d H:i:s'))));
-            TempUGGLEntry::truncate();
+            // TempUGGLEntry::truncate();
             $this->processImportData(TempUGGLEntry::class, 'synchEntries',
                                 $start_date, $final_date, $incremental);
             echo "==> Completed filling the UG GL Entries temp table " . date('Y-m-d H:i:s') . "\n";
