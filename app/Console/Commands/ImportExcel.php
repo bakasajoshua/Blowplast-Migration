@@ -77,10 +77,17 @@ class ImportExcel extends Command
         // $customer = new Customer;
         // $synch = $customer->synchCustomer();
         // (new CustomerValueStreamImport)->withOutput($this->output)->import(public_path('import/Customer Value Streams.csv'));
-        // (new CustomerBudgetImport)->withOutput($this->output)->import(public_path('import/customerwisebudget.xlsx'));
+        (new CustomerBudgetImport)->withOutput($this->output)->import(public_path('import/customerwisebudget.xlsx'));
         // (new ItemBudgetImport)->withOutput($this->output)->import(public_path('import/edible customer product wise.xlsx'));
         // $this->output->success('Customer data complete ' . date('Y-m-d H:i:s'));
-        (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories.xlsx'));
+        // ini_set("memory_limit", "-1");
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories1.xlsx'));
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories2.xlsx'));
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories8.xlsx'));
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories4.xlsx'));
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories5.xlsx'));
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories6.xlsx'));
+        // (new GLCategoryImport)->withOutput($this->output)->import(public_path('import/GL Categories7.xlsx'));
         $this->output->success('Master data import successful ' . date('Y-m-d H:i:s'));
 
         /**************************************/

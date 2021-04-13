@@ -97,7 +97,20 @@ class BaseModel extends Model
         return true;
     }
 
-
+    public static function testimport()
+    {
+    	ini_set("memory_limit", "-1");
+        $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date('Y-m-d'))));
+        $year = date('Y', strtotime($yesterday));
+        $month = date('m', strtotime($yesterday));
+        $start_date = $year . '-' . $month . '-01';
+        $final_date = $yesterday;
+        $incremental = 5;
+    	$model = new BaseModel;
+    	$import = $model->processImportData(\App\Temps\TempUGGLEntry::class, 'synchEntries',
+                                $start_date, $final_date, $incremental);
+    	return $import;
+    }
 
 
 

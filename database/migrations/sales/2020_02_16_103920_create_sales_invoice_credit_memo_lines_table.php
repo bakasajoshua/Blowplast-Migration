@@ -51,11 +51,6 @@ class CreateSalesInvoiceCreditMemoLinesTable extends Migration
             $table->string('month')->nullable();
             $table->tinyInteger('quarter')->nullable();
             $table->integer('year')->nullable();
-
-            // $table->foreign('Invoice_Credit_Memo_No')->references('Invoice_Credit_Memo_No')->on('Sales Invoice Credit Memo Headers');
-            // $table->foreign('Item_No')->references('Item_No')->on('Item Master');
-            // $table->foreign('Company_Code')->references('Company_Code')->on('Companies');
-            // $table->foreign('Currency_Code')->references('Currency_Code')->on('Currencies');
         });
     }
 

@@ -16,6 +16,7 @@ class ValueStreamSeeder extends Seeder
         	['value_stream' => 'EDIBLE', 'Company_Code' => 'BPL', 'Country_Code' => 'KE'],
         	['value_stream' => 'MISC', 'Company_Code' => 'BPL', 'Country_Code' => 'KE'],
         	['value_stream' => 'LUBE', 'Company_Code' => 'BPL', 'Country_Code' => 'KE'],
+            ['value_stream' => NULL, 'Company_Code' => 'BPL', 'Country_Code' => 'KE'],
         ];
         ValueStreams::truncate();
         ValueStreams::insert($valuestreams);

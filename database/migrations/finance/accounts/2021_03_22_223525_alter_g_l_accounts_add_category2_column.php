@@ -14,7 +14,8 @@ class AlterGLAccountsAddCategory2Column extends Migration
     public function up()
     {
         Schema::table('GL Accounts', function (Blueprint $table) {
-            $table->string('Category2')->nullable();
+            $table->string('Category_2_ID')->nullable();
+            $table->string('Category_2_Description')->nullable();
         });
     }
 

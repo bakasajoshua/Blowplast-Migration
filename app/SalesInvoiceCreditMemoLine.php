@@ -92,7 +92,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Sales_Unit_of_Measure' => $sales->uom_sls,
-                    'Currency_Code' => $sales->curr_sp,
+                    'Currency_Code' => 'KES',
                 ];
                 
             // }
@@ -167,12 +167,12 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    // 'walter.orando@dataposit.co.ke',
-                    // 'kkinyanjui@dataposit.co.ke',
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    // 'diana.adiema@dataposit.co.ke',
-                    // 'george.thiga@dataposit.co.ke',
-                    // 'aaron.mbowa@dataposit.co.ke',
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }        
@@ -214,7 +214,11 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                 ]);
             }
             
-            // Bringing in the lines
+            // Bringing in the lines$year = date('Y', strtotime($sales->invoice_doc_dt));
+            $year = date('Y', strtotime($entry->Posting_Date));
+            $month = date('m', strtotime($entry->Posting_Date));
+            $month_name = date("F", mktime(0, 0, 0, $month, 1, $year));
+            $month_name = ucfirst($month_name);
             $data = [];
             foreach ($source_data_lines as $key => $entry) {
                 $data[] = [
@@ -229,13 +233,14 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Unit_Price' => $entry->Unit_Price,
                     'Unit_Cost' => $entry->Unit_Cost,
                     'Company_Code' => $entry->Company_Code,
-                    'Currency_Code' => $entry->Currency_Code,
+                    'Currency_Code' => $sale->Currency_Code,
                     'Type' => $entry->Type,
                     'Total_Amount_Excluding_Tax' => $entry->Total_Amount_Excluding_Tax,
                     'Total_Amount_Including_Tax' => $entry->Total_Amount_Including_Tax,
                     'Sales_Unit_of_Measure' => $entry->Sales_Unit_of_Measure,
                     'SI_Li_Posting_Date' => date('Y-m-d', strtotime($entry->Posting_Date)),
                     'SI_Li_Due_Date' => date('Y-m-d', strtotime($entry->Due_Date)),
+                    'Month_Of_Year' => $month_name,
                 ];
             }
             $chunks = collect($data)->chunk(100);
@@ -261,117 +266,40 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             if (env('SEND_EMAIL'))
                 Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    // 'walter.orando@dataposit.co.ke',
-                    // 'kkinyanjui@dataposit.co.ke',
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    // 'diana.adiema@dataposit.co.ke',
-                    // 'george.thiga@dataposit.co.ke',
-                    // 'aaron.mbowa@dataposit.co.ke',
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
             echo "==> Failed Pulling UG Sales data " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
         }
         /*** Work on UG data ***/
 
         /*** Work on KE data ***/
-        try {
-            $message .= ">> Bringing in KE Sales data " . date('Y-m-d H:i:s') . "\n";
-            echo "==> Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
-            $source_start_ke = date('Y-m-d H:i:s');
-            // Temp::truncate();
-            // Temp::pullData();
-            echo "==> Completed filling KE source data " . date('Y-m-d H:i:s') . "\n";
-            $source_end_ke = date('Y-m-d H:i:s');
-
-            $destination_start_ke = date('Y-m-d H:i:s');
-            echo "==> Inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $source_data = Temp::whereRaw(" CONVERT(DATE, invoice_doc_dt) BETWEEN '{$start_date}' AND '{$final_date}'")->get();
-            foreach ($source_data as $key => $sales) {
-                if (SalesInvoiceCreditMemoHeader::where('Invoice_Credit_Memo_No', $sales->invoice_id)->get()->isEmpty()) {
-                    SalesInvoiceCreditMemoHeader::create([
-                        'Invoice_Credit_Memo_No' => $sales->invoice_id,
-                        'SI_Document_No' => $sales->invoice_doc_id,
-                        'Sell-To-Customer-No' => $sales->eo_nm,
-                        'Sell-To-Customer-Name' => $sales->eo_nm,
-                        'Bill-To-Customer-No' => $sales->eo_nm,
-                        'Bill-To-Customer-Name' => $sales->eo_nm,
-                        'SI_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
-                        'Company_Code' => 'BPL',
-                        'Type' => $sales->type,
-                        'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
-                        'Total_Amount_Including_Tax' => $sales->net_amnt,
-                        'Currency_Code' => $sales->curr_sp,
-                    ]);
-                }
-                SalesInvoiceCreditMemoLine::create([
-                    'Invoice_Credit_Memo_No' => $sales->invoice_id,
-                    'SI_Li_Document_No' => $sales->invoice_doc_id,
-                    'SI_Li_Line_No' => $sales->shipmnt_id,
-                    'Item_No' => $sales->itm_id,
-                    'Item_Description' => $sales->itm_desc,
-                    'Item_Weight_kg' => $sales->std_weight,
-                    'Item_Price_kg' => $sales->price_per_kg,
-                    'SI_Li_Posting_Date' => date('Y-m-d', strtotime($sales->invoice_doc_dt)),
-                    'Company_Code' => 'BPL',
-                    'Quantity' => $sales->itm_ship_qty,
-                    'Unit_Price' => $sales->itm_cost,
-                    'Unit_Cost' => $sales->itm_cost,
-                    'Type' => $sales->type,
-                    'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
-                    'Total_Amount_Including_Tax' => $sales->net_amnt,
-                    'Sales_Unit_of_Measure' => $sales->uom_sls,
-                    'Currency_Code' => $sales->curr_sp,
-                ]);
-            }
-            echo "==> Completed inserting KE temp data into the warehouse " . date('Y-m-d H:i:s') . "\n";
-            $destination_end_ke = date('Y-m-d H:i:s');
-
-            /** Record entry complete **/
-            echo "==> Making time for KE entry " . date('Y-m-d H:i:s') . "\n";
-            TimeEntry::create([
-                'source' => Temp::class,
-                'destination' => SalesInvoiceCreditMemoLine::class,
-                'Country' => 'KE',
-                'source_start_time' => $source_start_ke,
-                'source_end_time' => $source_end_ke,
-                'destination_start_time' => $destination_start_ke,
-                'destination_end_time' => $destination_end_ke,
-            ]);
-            echo "==> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
-            $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
-        } catch (\Exception $e) {
-            $message = ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s');
-            if (env('SEND_EMAIL'))
-                Mail::to([
-                    env('MAIL_TO_EMAIL'),
-                    // 'walter.orando@dataposit.co.ke',
-                    // 'kkinyanjui@dataposit.co.ke',
-                ])->cc([
-                    // 'diana.adiema@dataposit.co.ke',
-                    // 'george.thiga@dataposit.co.ke',
-                    // 'aaron.mbowa@dataposit.co.ke',
-                ])->send(new DailyScheduledTask($message));
-            echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
-        }
+        self::scheduledImportDataKE($year, $month, $message);
         /*** Work on KE data ***/
-
+        
         self::updateDay();
         self::updateOtherTimeDimensions();
         self::updateValueStream();
+        self::updateQuantitySignage();
         if (env('SEND_EMAIL'))
             Mail::to([
                     env('MAIL_TO_EMAIL'),
-                    // 'walter.orando@dataposit.co.ke',
-                    // 'kkinyanjui@dataposit.co.ke',
+                    'walter.orando@dataposit.co.ke',
+                    'kkinyanjui@dataposit.co.ke',
                 ])->cc([
-                    // 'diana.adiema@dataposit.co.ke',
-                    // 'george.thiga@dataposit.co.ke',
-                    // 'aaron.mbowa@dataposit.co.ke',
+                    'diana.adiema@dataposit.co.ke',
+                    'george.thiga@dataposit.co.ke',
+                    'aaron.mbowa@dataposit.co.ke',
                 ])->send(new DailyScheduledTask($message));
         return true;
     }
 
-    // SalesInvoiceCreditMemoLine::scheduledImportDataKE('2020', '08');
-    public static function scheduledImportDataKE($year = null, $month = null)
+    // \App\SalesInvoiceCreditMemoLine::scheduledImportDataKE('2021', '04');
+    public static function scheduledImportDataKE($year = null, $month = null, &$message)
     {
         if (!$year) {
             $yesterday = date('Y-m-d', strtotime("-1 Day", strtotime(date("Y-m-d"))));
@@ -381,18 +309,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             $final_date = $yesterday;
         }
         
-        $message = '';
         
         /*** Work on KE data ***/
 
-        $message .= ">> Deleting existing Sales data " . date('Y-m-d H:i:s') . "\n";
+        $message .= ">> Deleting existing KE Sales data " . date('Y-m-d H:i:s') . "\n";
         try {
             echo "==> Deleting existing data " . date('Y-m-d H:i:s') . "\n";
             $existing_headers = SalesInvoiceCreditMemoHeader::whereYear('SI_Posting_Date', $year)
                                 ->whereMonth('SI_Posting_Date', $month)
                                 ->where('Company_Code', 'BPL')
                                 ->get();
-            
+            echo "==> Headers found " . $existing_headers->count() . " at" . date('Y-m-d H:i:s') . "\n";
             foreach ($existing_headers as $key => $header) {
                 $header->delete();
             }
@@ -400,6 +327,7 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                                 ->whereMonth('SI_Li_Posting_Date', $month)
                                 ->where('Company_Code', 'BPL')
                                 ->get();
+            echo "==> Lines found " . $existing_lines->count() . " at " . date('Y-m-d H:i:s') . "\n";
             foreach ($existing_lines as $key => $line) {
                 $line->delete();
             }
@@ -408,6 +336,17 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         } catch (\Exception $e) {
             $message .= ">> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
             echo "==> Deletion unsuccessful " . json_encode($e) . " "  . date('Y-m-d H:i:s') . "\n";
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                        env('MAIL_TO_EMAIL'),
+                        'walter.orando@dataposit.co.ke',
+                        'kkinyanjui@dataposit.co.ke',
+                    ])->cc([
+                        'diana.adiema@dataposit.co.ke',
+                        'george.thiga@dataposit.co.ke',
+                        'aaron.mbowa@dataposit.co.ke',
+                    ])->send(new DailyScheduledTask($message));
+            // return true;
         }   
 
         try {
@@ -440,14 +379,22 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                         'Type' => $sales->type,
                         'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
                         'Total_Amount_Including_Tax' => $sales->net_amnt,
-                        'Currency_Code' => $sales->curr_sp,
+                        'Currency_Code' => 'KES',
                     ];
                     
                 }
-                $Value_Stream = explode("-", $sales->wh_nm);
+                $year = date('Y', strtotime($sales->invoice_doc_dt));
+                $month = date('m', strtotime($sales->invoice_doc_dt));
+                $month_name = date("F", mktime(0, 0, 0, $month, 1, $year));
+                $month_name = ucfirst($month_name);
                 $lines[] = [
                     'Invoice_Credit_Memo_No' => $sales->invoice_id,
                     'SI_Li_Document_No' => $sales->invoice_doc_id,
+                    'SI_Document_No' => $sales->invoice_doc_id,
+                    'Sell-To-Customer-No' => $sales->eo_nm,
+                    'Sell-To-Customer-Name' => $sales->eo_nm,
+                    'Bill-To-Customer-No' => $sales->eo_nm,
+                    'Bill-To-Customer-Name' => $sales->eo_nm,
                     'SI_Li_Line_No' => $sales->shipmnt_id,
                     'Item_No' => $sales->itm_id,
                     'Item_Description' => $sales->itm_desc,
@@ -462,17 +409,22 @@ class SalesInvoiceCreditMemoLine extends BaseModel
                     'Total_Amount_Excluding_Tax' => $sales->itm_amt_gs,
                     'Total_Amount_Including_Tax' => $sales->net_amnt,
                     'Sales_Unit_of_Measure' => $sales->uom_sls,
-                    'Currency_Code' => $sales->curr_sp,
-                    'Value_Stream' => $Value_Stream[0],
+                    'Currency_Code' => 'KES',
+                    'Group_Level_1' => $sales->GRPLVL1 ?? $sales->grplvl1 ?? 'UnCategorized',
+                    'Group_Level_2' => $sales->GRPLVL2 ?? $sales->grplvl2 ?? 'UnCategorized',
+                    'Group_Level_3' => $sales->GRPLVL3 ?? $sales->grplvl3 ?? 'UnCategorized',
+                    'Group_Level_4' => $sales->GRPLVL4 ?? $sales->grplvl4 ?? 'UnCategorized',
+                    'Month_Of_Year' => $month_name,
                 ];
-                // dd($lines);
+                
             }
             $header_collection = collect($headers)->chunk(100);
+            echo "==> Inserting KE Sales Headers data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             SalesInvoiceCreditMemoHeader::insertChunk($header_collection);
             echo "==> Completed inserting KE Sales Headers data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $lines_collection = collect($lines);
             echo "==> Warehouse count " . $lines_collection->count() . "\n";
-            $chunks = $lines_collection->chunk(100);
+            $chunks = $lines_collection->chunk(80);
             $insert = self::insertChunk($chunks); 
             echo "==> Completed inserting KE Sales Lines data into the warehouse " . date('Y-m-d H:i:s') . "\n";
             $destination_end_ke = date('Y-m-d H:i:s');
@@ -489,17 +441,36 @@ class SalesInvoiceCreditMemoLine extends BaseModel
             //     'destination_end_time' => $destination_end_ke,
             // ]);
             echo "==> Competed Pulling KE Source data " . date('Y-m-d H:i:s') . "\n";
-            $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
+            echo "==> Running update queries " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Running update queries " . date('Y-m-d H:i:s') . "\n";
             self::updateDay();
             self::updateOtherTimeDimensions();
-            // self::updateValueStream();
+            self::updateValueStream();
+            self::updateQuantitySignage();
+            self::updateCustomerNo();
+            self::updateWeight();
+            echo "==> Completed running update queries " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Completed running update queries " . date('Y-m-d H:i:s') . "\n";
+            $message .= ">> Competed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
         } catch (\Exception $e) {
             ini_set("memory_limit", "-1");
             print_r($e);
             $message .= ">> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
             echo "==> Failed pulling KE sales data " . json_encode($e) . " " . date('Y-m-d H:i:s') . "\n";
+            if (env('SEND_EMAIL'))
+                Mail::to([
+                        env('MAIL_TO_EMAIL'),
+                        'walter.orando@dataposit.co.ke',
+                        'kkinyanjui@dataposit.co.ke',
+                    ])->cc([
+                        'diana.adiema@dataposit.co.ke',
+                        'george.thiga@dataposit.co.ke',
+                        'aaron.mbowa@dataposit.co.ke',
+                    ])->send(new DailyScheduledTask($message));
         }
         /*** Work on KE data ***/
+        $message .= ">> Completed Processing KE Sales data " . date('Y-m-d H:i:s') . "\n";
+        return true;
     }
 
     public static function updateDay()
@@ -534,11 +505,68 @@ class SalesInvoiceCreditMemoLine extends BaseModel
         DB::statement("UPDATE 
                 [dbo].[Sales Invoice Credit Memo Lines]
             SET 
-                [dbo].[Sales Invoice Credit Memo Lines].[Value_Stream] = [Item Master].[Dimension1]
+                [dbo].[Sales Invoice Credit Memo Lines].[Value_Stream] = [Item Master].[Dimension1],
+                [dbo].[Sales Invoice Credit Memo Lines].[Product_Value_Stream] = [Item Master].[Dimension1]
             FROM 
                 [dbo].[Sales Invoice Credit Memo Lines]
                 JOIN [dbo].[Item Master] ON [Item Master].Item_No = [Sales Invoice Credit Memo Lines].Item_No
             WHERE
                 [Sales Invoice Credit Memo Lines].Company_Code = 'BPL';");
+
+        DB::statement("UPDATE 
+                [dbo].[Sales Invoice Credit Memo Lines]
+            SET 
+                [dbo].[Sales Invoice Credit Memo Lines].[Sell-To-Customer-No] = [Customer Master].[Customer_No],
+                [dbo].[Sales Invoice Credit Memo Lines].[Bill-To-Customer-No] = [Customer Master].[Customer_No],
+                [dbo].[Sales Invoice Credit Memo Lines].[Customer_Value_Stream] = [Customer Master].[Value_Stream]
+            FROM 
+                [dbo].[Sales Invoice Credit Memo Lines]
+                JOIN [dbo].[Customer Master] ON [Customer Master].Customer_Name = [Sales Invoice Credit Memo Lines].[Sell-To-Customer-Name]
+            AND [Sales Invoice Credit Memo Lines].[Company_Code] = [Customer Master].[Company_Code]
+            WHERE
+                [Sales Invoice Credit Memo Lines].Company_Code = 'BPL';");
+    }
+
+    public static function updateQuantitySignage()
+    {
+        DB::statement("UPDATE [Sales Invoice Credit Memo Lines]
+            SET [Quantity] = ([Quantity] * -1)
+            WHERE [Type] = 'Credit Note' AND [Company_Code] = 'BPL' AND [Quantity] > 0;");
+        DB::statement("UPDATE [Sales Invoice Credit Memo Lines]
+            SET [Total_Amount_Excluding_Tax] = ([Total_Amount_Excluding_Tax] * -1)
+                ,[Total_Amount_Including_Tax] = ([Total_Amount_Including_Tax] * -1)
+            WHERE [Type] = 'Credit Note' AND [Company_Code] = 'BPL' AND [Total_Amount_Excluding_Tax] > 0;");
+    }
+
+    public static function updateCustomerNo()
+    {
+        DB::statement("UPDATE 
+            [dbo].[Sales Invoice Credit Memo Headers]
+        SET 
+            [dbo].[Sales Invoice Credit Memo Headers].[Sell-To-Customer-No] = [Customer Master].[Customer_No],
+            [dbo].[Sales Invoice Credit Memo Headers].[Bill-To-Customer-No] = [Customer Master].[Customer_No]
+        FROM 
+            [dbo].[Sales Invoice Credit Memo Headers]
+            JOIN [dbo].[Customer Master]
+            ON [Sales Invoice Credit Memo Headers].[Sell-To-Customer-Name] = [Customer Master].[Customer_Name]
+            AND [Sales Invoice Credit Memo Headers].[Company_Code] = [Customer Master].[Company_Code]
+        WHERE 
+            [dbo].[Sales Invoice Credit Memo Headers].[Company_Code] = 'BPL';");
+    }
+
+    public static function updateWeight()
+    {
+        DB::statement("UPDATE [dbo].[Sales Invoice Credit Memo Lines]
+                SET
+                    [dbo].[Sales Invoice Credit Memo Lines].[Line_Weight] = [dbo].[Sales Invoice Credit Memo Lines].Item_Weight_kg
+                    ,[dbo].[Sales Invoice Credit Memo Lines].[Weight_MT] = (([dbo].[Sales Invoice Credit Memo Lines].[Quantity] * [Item Master].STD_Weight)/1000)
+                    ,[dbo].[Sales Invoice Credit Memo Lines].[Item_Weight] = [dbo].[Item Master].STD_Weight
+                    ,[dbo].[Sales Invoice Credit Memo Lines].[Total_Line_Weight_MT] = (([dbo].[Sales Invoice Credit Memo Lines].[Quantity] * [dbo].[Sales Invoice Credit Memo Lines].Item_Weight_kg)/1000)
+                FROM 
+                    [dbo].[Sales Invoice Credit Memo Lines]
+                    JOIN [dbo].[Item Master] ON [dbo].[Item Master].[Item_No] = [dbo].[Sales Invoice Credit Memo Lines].[Item_No]
+                        AND [dbo].[Item Master].[Company_Code] = [dbo].[Sales Invoice Credit Memo Lines].Company_Code
+                WHERE 
+                    [dbo].[Sales Invoice Credit Memo Lines].[Line_Weight] IS NULL;");
     }
 }
