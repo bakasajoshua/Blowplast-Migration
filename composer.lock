@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c503b3a1030623caad211d5c9da4c83",
+    "content-hash": "330739afc413b13554cd811845c6940a",
     "packages": [
         {
             "name": "artisaninweb/laravel-soap",
@@ -1076,31 +1076,31 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.63",
+            "version": "1.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "8132daec326565036bc8e8d1876f77ec183a7bd6"
+                "reference": "f3ad69181b8afed2c9edf7be5a2918144ff4ea32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/8132daec326565036bc8e8d1876f77ec183a7bd6",
-                "reference": "8132daec326565036bc8e8d1876f77ec183a7bd6",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/f3ad69181b8afed2c9edf7be5a2918144ff4ea32",
+                "reference": "f3ad69181b8afed2c9edf7be5a2918144ff4ea32",
                 "shasum": ""
             },
             "require": {
                 "ext-fileinfo": "*",
-                "php": ">=5.5.9"
+                "league/mime-type-detection": "^1.3",
+                "php": "^7.2.5 || ^8.0"
             },
             "conflict": {
                 "league/flysystem-sftp": "<1.0.6"
             },
             "require-dev": {
-                "phpspec/phpspec": "^3.4",
-                "phpunit/phpunit": "^5.7.10"
+                "phpspec/prophecy": "^1.11.1",
+                "phpunit/phpunit": "^8.5.8"
             },
             "suggest": {
-                "ext-fileinfo": "Required for MimeType",
                 "ext-ftp": "Allows you to use FTP server storage",
                 "ext-openssl": "Allows you to use FTPS server storage",
                 "league/flysystem-aws-s3-v2": "Allows you to use S3 storage with AWS SDK v2",
@@ -1156,7 +1156,73 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2020-01-04T16:30:31+00:00"
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem/issues",
+                "source": "https://github.com/thephpleague/flysystem/tree/1.1.4"
+            },
+            "funding": [
+                {
+                    "url": "https://offset.earth/frankdejonge",
+                    "type": "other"
+                }
+            ],
+            "time": "2021-06-23T21:56:05+00:00"
+        },
+        {
+            "name": "league/mime-type-detection",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/mime-type-detection.git",
+                "reference": "3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/mime-type-detection/zipball/3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3",
+                "reference": "3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.18",
+                "phpstan/phpstan": "^0.12.68",
+                "phpunit/phpunit": "^8.5.8 || ^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\MimeTypeDetection\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Mime-type detection for Flysystem",
+            "support": {
+                "issues": "https://github.com/thephpleague/mime-type-detection/issues",
+                "source": "https://github.com/thephpleague/mime-type-detection/tree/1.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-01-18T20:58:21+00:00"
         },
         {
             "name": "maatwebsite/excel",
@@ -4345,56 +4411,6 @@
             "time": "2020-02-13T21:12:28+00:00"
         },
         {
-            "name": "maxakawizard/json-collection-parser",
-            "version": "1.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MAXakaWIZARD/JsonCollectionParser.git",
-                "reference": "2ce4147e0284269f68cf6f62a021953c9a51e8e4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/MAXakaWIZARD/JsonCollectionParser/zipball/2ce4147e0284269f68cf6f62a021953c9a51e8e4",
-                "reference": "2ce4147e0284269f68cf6f62a021953c9a51e8e4",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1",
-                "salsify/json-streaming-parser": "^8.0.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~7.0",
-                "satooshi/php-coveralls": "~2.0",
-                "squizlabs/php_codesniffer": "~3.0"
-            },
-            "suggest": {
-                "ext-zlib": "Needed to support GZIP-compressed files"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "JsonCollectionParser\\": "src/",
-                    "JsonCollectionParser\\Tests\\": "tests/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Max Grigorian",
-                    "email": "maxakawizard@gmail.com"
-                }
-            ],
-            "description": "Streaming parser for large JSON files containing array of objects",
-            "homepage": "https://github.com/MAXakaWIZARD/JsonCollectionParser",
-            "keywords": [
-                "json"
-            ],
-            "time": "2019-11-15T16:14:36+00:00"
-        },
-        {
             "name": "mockery/mockery",
             "version": "1.3.1",
             "source": {
@@ -5264,128 +5280,6 @@
             "time": "2020-01-08T08:49:49+00:00"
         },
         {
-            "name": "rodenastyle/stream-parser",
-            "version": "v1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Rodenastyle/stream-parser.git",
-                "reference": "a160e49da1cefd1660f4e3628a21c3ed97ce31b8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Rodenastyle/stream-parser/zipball/a160e49da1cefd1660f4e3628a21c3ed97ce31b8",
-                "reference": "a160e49da1cefd1660f4e3628a21c3ed97ce31b8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-xmlreader": "*",
-                "maxakawizard/json-collection-parser": "^1.1",
-                "php": "^7.1.3",
-                "tightenco/collect": "^5.7"
-            },
-            "require-dev": {
-                "mockery/mockery": "^0.9.9",
-                "phpunit/phpunit": "^6.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Rodenastyle\\StreamParser\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sergio Ródenas",
-                    "homepage": "https://rodenastyle.com",
-                    "role": "developer"
-                }
-            ],
-            "description": "PHP Multiformat Streaming Parser",
-            "keywords": [
-                "PHP7",
-                "csv",
-                "json",
-                "laravel",
-                "parser",
-                "pull",
-                "stream",
-                "xml"
-            ],
-            "time": "2018-10-29T10:35:06+00:00"
-        },
-        {
-            "name": "salsify/json-streaming-parser",
-            "version": "v8.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/salsify/jsonstreamingparser.git",
-                "reference": "0e5b5cb12611fe5376af653b360e12e8c6c6f3bd"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/salsify/jsonstreamingparser/zipball/0e5b5cb12611fe5376af653b360e12e8c6c6f3bd",
-                "reference": "0e5b5cb12611fe5376af653b360e12e8c6c6f3bd",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "ext-mbstring": "*",
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "ext-json": "*",
-                "satooshi/php-coveralls": "~2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "8.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "JsonStreamingParser\\": "src",
-                    "JsonStreamingParser\\Test\\": "tests"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rob Gonzalez",
-                    "email": "rob@salsify.com",
-                    "homepage": "http://salsify.com/"
-                },
-                {
-                    "name": "Maxim Gnatenko",
-                    "email": "mgnatenko@gmail.com"
-                },
-                {
-                    "name": "Max Grigorian",
-                    "email": "maxakawizard@gmail.com",
-                    "homepage": "http://wizardcat.com/"
-                },
-                {
-                    "name": "ThePanz",
-                    "email": "thepanz@gmail.com"
-                }
-            ],
-            "description": "A streaming parser for JSON in PHP.",
-            "homepage": "https://github.com/salsify/jsonstreamingparser",
-            "keywords": [
-                "json",
-                "parser",
-                "streaming"
-            ],
-            "time": "2019-10-13T13:40:17+00:00"
-        },
-        {
             "name": "scrivo/highlight.php",
             "version": "v9.17.1.1",
             "source": {
@@ -6109,56 +6003,6 @@
             "time": "2019-06-13T22:48:21+00:00"
         },
         {
-            "name": "tightenco/collect",
-            "version": "v5.8.38",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tightenco/collect.git",
-                "reference": "c93a7039e6207ad533a09109838fe80933fcc72c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tightenco/collect/zipball/c93a7039e6207ad533a09109838fe80933fcc72c",
-                "reference": "c93a7039e6207ad533a09109838fe80933fcc72c",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1.3",
-                "symfony/var-dumper": ">=3.4 <5"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "nesbot/carbon": "^1.26.3",
-                "phpunit/phpunit": "^7.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/Collect/Support/helpers.php",
-                    "src/Collect/Support/alias.php"
-                ],
-                "psr-4": {
-                    "Tightenco\\Collect\\": "src/Collect"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylorotwell@gmail.com"
-                }
-            ],
-            "description": "Collect - Illuminate Collections as a separate package.",
-            "keywords": [
-                "collection",
-                "laravel"
-            ],
-            "time": "2019-09-17T18:57:01+00:00"
-        },
-        {
             "name": "webmozart/assert",
             "version": "1.6.0",
             "source": {
@@ -6215,5 +6059,6 @@
     "platform": {
         "php": "^7.2"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }
